@@ -6,6 +6,7 @@
   "scripts": {
     "start": "python3 -m http.server 4173 --bind 127.0.0.1 --directory .",
     "test": "node --test tests/site.test.cjs",
+    "check:assets": "python3 scripts/check_assets.py",
     "package": "python3 scripts/package_site.py"
   },
   "devDependencies": { "playwright": "1.62.1" }
