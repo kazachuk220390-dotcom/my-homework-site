@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "files": [
+    "assets/favicon.svg",
+    "assets/cryo-lab.svg",
+    "assets/photos/professor.webp",
+    "assets/photos/birthday-scientist.webp",
+    "assets/photos/guests.webp",
+    "assets/photos/megafog.webp",
+    "assets/photos/icecream-making.webp",
+    "assets/photos/icecream-result.webp"
+  ]
+}

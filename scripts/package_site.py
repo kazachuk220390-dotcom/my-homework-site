@@ -3,7 +3,9 @@ from pathlib import Path
 from shutil import copy2, copytree, rmtree
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile, ZIP_DEFLATED
-from check_assets import validate, PUBLIC_FILES
+import json
+import re
+from check_assets import validate
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "dist"
@@ -13,15 +15,21 @@ RELEASE = ROOT / "release"
 def main():
     report = validate()
     RELEASE.mkdir(exist_ok=True)
-    archive = RELEASE / "sumnauka-review-v0.1.zip"
+    version = json.loads((ROOT / "package.json").read_text())["version"]
+    if not re.fullmatch(r"\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?", version):
+        raise ValueError("Invalid package version")
+    display_version = version[:-2] if re.fullmatch(r"\d+\.\d+\.0", version) else version
+    archive = RELEASE / f"sumnauka-review-v{display_version}.zip"
     # Build and validate before replacing an existing working release.
     with TemporaryDirectory(prefix="sumnauka-package-") as temporary:
         staging = Path(temporary) / "site"
         staging.mkdir()
-        for name in PUBLIC_FILES:
-            copy2(ROOT / name, staging / name)
-        copytree(ROOT / "assets", staging / "assets")
-        staged_archive = RELEASE / ".sumnauka-review-v0.1.tmp.zip"
+        for item in report["files"]:
+            name = item["path"]
+            destination = staging / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            copy2(ROOT / name, destination)
+        staged_archive = RELEASE / f".sumnauka-review-v{display_version}.tmp.zip"
         try:
             with ZipFile(staged_archive, "w", ZIP_DEFLATED) as bundle:
                 for file in sorted(staging.rglob("*")):

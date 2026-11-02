@@ -21,7 +21,7 @@ function updatePlan() {
   const program = planPackage.value;
   const price = formatMoney(priceFor(program, Number(planGuests.value)));
   document.querySelector('#plan-price').textContent = `от ${price} ₽`;
-  planSummary.value = `${programs[program].name} · ${programs[program].minutes} минут\nГруппа: ${planGuests.selectedOptions[0].text.toLowerCase()}\nПредварительная стоимость: от ${price} ₽, выезд согласуется отдельно.\nДату, время и адрес нужно согласовать с организатором.\nЭто план для обсуждения, не бронирование.`;
+  planSummary.value = `${programs[program].name} · ${programs[program].minutes} минут\nГруппа: ${planGuests.selectedOptions[0].text.toLowerCase()}\nПредварительная стоимость: от ${price} ₽, выезд согласуется отдельно\nДату, время и адрес нужно согласовать с организатором\nЭто план для обсуждения, не бронирование`;
   copyStatus.textContent = '';
 }
 
@@ -52,11 +52,11 @@ document.querySelector('#copy-plan').addEventListener('click', async () => {
   try {
     if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
     await navigator.clipboard.writeText(planSummary.value);
-    copyStatus.textContent = 'План скопирован. Заявка не отправлена.';
+    copyStatus.textContent = 'План скопирован Заявка не отправлена';
   } catch {
     planSummary.focus();
     planSummary.select();
-    copyStatus.textContent = 'Не удалось скопировать автоматически. Текст выделен — скопируйте его вручную.';
+    copyStatus.textContent = 'Не удалось скопировать автоматически Текст выделен — скопируйте его вручную';
   }
 });
 

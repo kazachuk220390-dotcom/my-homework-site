@@ -1,0 +1,66 @@
+{
+  "version": "0.2",
+  "originals_commit": "19a0a6c",
+  "photos": [
+    {
+      "asset": "assets/photos/professor.webp",
+      "original": "assets/2025-10-05 10.07.35 (3).JPG",
+      "original_sha256": "fc03614161fdfecbd60a327f3bd9846dd16b808979348f6b0b1f5064c83d5620",
+      "webp_sha256": "321acb71e209068c2ddcefb38aadd12bee2b2082b0b0f0daad073933a382f596",
+      "width": 961,
+      "height": 1440,
+      "bytes": 133680,
+      "processing": "AI-assisted color correction followed by WebP optimization; original preserved"
+    },
+    {
+      "asset": "assets/photos/birthday-scientist.webp",
+      "original": "assets/2025-10-05 10.07.35.JPG",
+      "original_sha256": "739ca435351effc6ba29c64e6b2b4136a847bab6a990d3ccbd3620ffa18e9f11",
+      "webp_sha256": "738487775515157ff841ce44cc9dab349911eb3db350d71347864e33e23fd286",
+      "width": 961,
+      "height": 1440,
+      "bytes": 124728,
+      "processing": "AI-assisted color correction followed by WebP optimization; original preserved"
+    },
+    {
+      "asset": "assets/photos/guests.webp",
+      "original": "assets/2025-10-05 10.07.36 (1).JPG",
+      "original_sha256": "489f425ce9f00b526d6e0722d918f610e6d824e5f145d7c93236c9cf16e2d3c6",
+      "webp_sha256": "ca02a7c3f599a5f0035ce291435d1e8c412131af9d942d06018919ee9f344cbb",
+      "width": 1440,
+      "height": 961,
+      "bytes": 153282,
+      "processing": "AI-assisted color correction followed by WebP optimization; original preserved"
+    },
+    {
+      "asset": "assets/photos/megafog.webp",
+      "original": "assets/2025-10-05 10.07.42.JPG",
+      "original_sha256": "4955428cfce908561bec04e80872302b0e9217c774209bddec9b1539907f8dab",
+      "webp_sha256": "42e2a86ef89ce929ac5512eeaedac8ffd26ead126b792e82ceac9d5e27208232",
+      "width": 1440,
+      "height": 961,
+      "bytes": 140672,
+      "processing": "AI-assisted color correction followed by WebP optimization; original preserved"
+    },
+    {
+      "asset": "assets/photos/icecream-making.webp",
+      "original": "assets/IMG_3408.jpg",
+      "original_sha256": "891b00cbacd2ac665e0608f648b2377dfec37a0135dfc4bbf689d21acca446b7",
+      "webp_sha256": "f207b09a3c4750f8798a2dcc8ddf1f5a9ae1dabf002737474e163c4e65c8574f",
+      "width": 960,
+      "height": 1440,
+      "bytes": 107466,
+      "processing": "AI-assisted color correction followed by WebP optimization; original preserved"
+    },
+    {
+      "asset": "assets/photos/icecream-result.webp",
+      "original": "assets/IMG_3453.jpg",
+      "original_sha256": "96c9b5d1143301fe33280877c20f37f0f5016251ece1b102e1875d732c49b9d7",
+      "webp_sha256": "79dce5eca39c0bf4b0a638b5e6d8f2e451bb78cdda403397bbb45cbb3d9c3ac9",
+      "width": 960,
+      "height": 1440,
+      "bytes": 70168,
+      "processing": "AI-assisted color correction followed by WebP optimization; original preserved"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "name": "sumnauka-review-site",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Проверочная версия сайта «Сумасшедшая наука»",
   "scripts": {
@@ -9,5 +9,7 @@
     "check:assets": "python3 scripts/check_assets.py",
     "package": "python3 scripts/package_site.py"
   },
-  "devDependencies": { "playwright": "1.62.1" }
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
 }
