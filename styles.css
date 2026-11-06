@@ -11,3 +11,23 @@
 @media(max-width:900px){.hero-photo{min-height:510px}.hero-photo .art-label{font-size:8px}.hero-photo .art-bottom{font-size:11px;bottom:22px}.photo-card figcaption{padding:14px 16px;font-size:12px}.workshop-feature{padding:24px;gap:25px}.workshop-copy h3{font-size:26px}.workshop-photos{gap:12px}.workshop-photos figcaption{font-size:10px}}
 @media(max-width:680px){.hero-photo{min-height:0;aspect-ratio:4/5}.hero-photo .art-label{font-size:9px;left:18px;right:auto;max-width:calc(100% - 36px)}.hero-photo .art-bottom{font-size:12px;bottom:22px}.photo-gallery{display:flex;flex-direction:column;height:auto;gap:16px}.photo-card{border-radius:18px}.photo-frame{flex:none;aspect-ratio:3/2}.photo-card-tall .photo-frame{aspect-ratio:4/5;max-height:440px}.photo-card img{object-position:center 40%}.photo-card figcaption{padding:16px 18px;font-size:12px}.workshop-feature{grid-template-columns:1fr;gap:24px;padding:25px 16px;margin-top:30px;border-radius:20px}.workshop-copy{padding-inline:7px}.workshop-copy h3{font-size:29px}.workshop-copy>p{font-size:13px;max-width:none}.workshop-photos{gap:12px}.workshop-photos figure:nth-child(2){padding-top:24px}.workshop-photos figcaption{font-size:11px}.workshop-copy .text-link{font-size:12px}.moments-section{padding-top:0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+
+
+/* v0.3 — новая пакетная линейка */
+.hero h1{font-size:clamp(36px,4.2vw,60px)}
+.package-card .package-details{margin:-9px 0 23px;border:1px solid #d9e7f1;border-radius:12px;overflow:hidden;background:#f7fbff}
+.package-card .package-details summary{padding:13px 14px;font-size:12px;font-weight:700;color:var(--blue)}
+.package-details-content{padding:2px 14px 16px}
+.package-details-content label{display:block;font-size:11px;font-weight:700;margin:5px 0 8px}
+.package-details-content select{display:block;width:100%;padding:12px 30px 12px 10px;border-radius:8px;font-size:12px}
+.package-details-content p{font-size:11px;line-height:1.7;color:var(--muted);margin:10px 0 0}
+.package-caveat{font-size:11px;line-height:1.65;color:var(--muted);margin:0 0 22px}
+.featured .package-caveat{color:#e5efff}
+.package-card.developing{background:#eef3f8;border-style:dashed}
+.developing-label{background:#dce8f4;color:#295277;font-size:12px;font-weight:700;border-radius:9px;padding:14px;margin-top:auto;text-align:center}
+.package-card.developing .package-caveat{margin-top:14px;margin-bottom:0}
+.price.price-custom strong{font-size:23px;letter-spacing:-.025em}
+#plan-workshop-wrap[hidden]{display:none}
+#plan-price{font-size:clamp(15px,2vw,24px)}
+@media(max-width:900px){.hero h1{font-size:clamp(35px,5.6vw,50px)}}
+@media(max-width:540px){.hero h1{font-size:clamp(34px,8.5vw,46px)}.package-card .price strong{font-size:34px}}
