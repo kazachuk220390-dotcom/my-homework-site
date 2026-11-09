@@ -98,9 +98,10 @@ test('navigation targets exist, review mode is clear, and no tracking or data su
     .map((link) => link.getAttribute('href')).filter((href) => href !== '#' && !document.getElementById(href.slice(1))));
   assert.deepEqual(brokenTargets, []);
   assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
-  assert.match(await page.locator('.review-bar').innerText(), /Версия для куратора/);
-  assert.match(await page.locator('.test-mode').innerText(), /Заявки и персональные данные не отправляются/);
-  assert.equal(await page.locator('form,input,textarea:not([readonly])').count(), 0);
+  assert.equal(await page.locator('.review-bar').count(), 0);
+  assert.match(await page.locator('.test-mode').innerText(), /Дата не бронируется автоматически/);
+  assert.equal(await page.locator('form,input:not([type="checkbox"]),textarea:not([readonly])').count(), 0);
+  assert.equal(await page.locator('input[type="checkbox"]').count(), 2);
   assert.equal(await page.locator('iframe,script[src^="http"],img[src^="http"]').count(), 0);
   assert.ok(requests.every((request) => request.method === 'GET' && request.url.startsWith(baseURL + '/')));
   await page.close();
@@ -144,25 +145,16 @@ test('six selected event photos load as local WebP with useful display area on m
   }
 });
 
-test('visible copy and interactive messages omit sentence periods while preserving other punctuation', async () => {
+test('visual effects and secret laboratory teaser exist', async () => {
   const page = await openPage();
-  for (const summary of await page.locator('details summary').all()) await summary.click();
-  const bodyText = await page.locator('body').innerText();
-  assert.doesNotMatch(withoutPermittedPeriods(bodyText), /[.\u2026]/);
-  assert.match(bodyText, /учёный!/);
-  assert.match(bodyText, /вопрос\?/);
-  assert.match(bodyText, /«Крио/);
-  assert.match(bodyText, /sumnauka\.ru/);
-  assert.match(bodyText, /v0\.2/);
-  assert.doesNotMatch(withoutPermittedPeriods(await page.locator('#plan-summary').inputValue()), /[.\u2026]/);
-  await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => {} } }));
-  await page.locator('#copy-plan').click();
-  await page.waitForFunction(() => document.querySelector('#copy-status').textContent.includes('План скопирован'));
-  assert.doesNotMatch(await page.locator('#copy-status').innerText(), /[.\u2026]/);
-  await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new Error('Denied for test'); } } }));
-  await page.locator('#copy-plan').click();
-  await page.waitForFunction(() => document.querySelector('#copy-status').textContent.includes('вручную'));
-  assert.doesNotMatch(await page.locator('#copy-status').innerText(), /[.\u2026]/);
+  assert.equal(await page.locator('.hero-fog').count(), 1);
+  assert.equal(await page.locator('.science-burst').count(), 1);
+  assert.equal(await page.locator('.science-glassware').count(), 1);
+  const lab = page.locator('.secret-lab');
+  assert.match(await lab.innerText(), /Только для секретных агентов/);
+  assert.match(await lab.innerText(), /59 900/);
+  assert.match(await lab.innerText(), /Скоро рассекретим/);
+  assert.equal(await lab.locator('[data-select-package]').count(), 0);
   await page.close();
 });
 
@@ -183,47 +175,43 @@ test('project Pages subpath resolves scripts, styles, six photographs and packag
   assert.equal(new URL(page.url()).hash, '#planner');
   assert.equal(await page.locator('#plan-package').inputValue(), 'party');
   await page.selectOption('#plan-guests', '20');
-  assert.equal(await page.locator('#plan-price').innerText(), 'от 12 500 ₽');
+  assert.equal(await page.locator('#plan-price').innerText(), 'По расчёту');
   await page.close();
 });
 
-test('approved group prices update every package and remain synchronized with the planner', async () => {
+test('base show and both optional workshops calculate safely', async () => {
   const page = await openPage();
-  const expected = [
-    [10, 9000, 11500, 14500], [15, 9000, 12000, 15000],
-    [20, 9000, 12500, 15500], [25, 9000, 13000, 16000],
-    [30, 9000, 13500, 16500], [35, 9000, 14000, 17000],
-    [40, 9000, 14500, 17500],
-  ];
-  const digits = (value) => Number(value.replace(/\D/g, ''));
-  for (const [guests, start, party, max] of expected) {
-    await page.selectOption('#guest-count', String(guests));
-    assert.equal(await page.locator('#plan-guests').inputValue(), String(guests));
-    for (const [program, price] of [['start', start], ['party', party], ['max', max]]) {
-      assert.equal(digits(await page.locator(`[data-price="${program}"]`).innerText()), price);
-      await page.selectOption('#plan-package', program);
-      assert.equal(digits(await page.locator('#plan-price').innerText()), price);
-      assert.match(await page.locator('#plan-summary').inputValue(), /Это план для обсуждения, не бронирование/);
-    }
-  }
-  await page.selectOption('#plan-guests', '15');
-  assert.equal(await page.locator('#guest-count').inputValue(), '15');
-  assert.equal(digits(await page.locator('[data-price="party"]').innerText()), 12000);
+  await page.selectOption('#plan-package', 'show');
+  await page.selectOption('#plan-show', 'dry');
+  assert.equal(await page.locator('#plan-price').innerText(), '9 500 ₽');
+  await page.selectOption('#plan-show', 'cryo');
+  assert.equal(await page.locator('#plan-price').innerText(), '10 000 ₽');
+  await page.selectOption('#plan-package', 'party');
+  await page.selectOption('#plan-show', 'cryo');
+  assert.equal(await page.locator('#plan-price').innerText(), '29 900 ₽');
+  await page.locator('#plan-workshop-slime').check();
+  assert.equal(await page.locator('#plan-price').innerText(), 'По расчёту');
+  assert.match(await page.locator('#plan-summary').inputValue(), /крио-мороженое и лизуны/);
+  assert.match(await page.locator('#plan-summary').inputValue(), /продолжительность: уточняется/i);
+  await page.locator('#plan-workshop-icecream').uncheck();
+  assert.match(await page.locator('#plan-summary').inputValue(), /Мастер-класс: лизуны/);
+  await page.locator('#plan-workshop-slime').uncheck();
+  assert.equal(await page.locator('#copy-plan').isDisabled(), true);
+  await page.locator('#plan-workshop-icecream').check();
+  assert.equal(await page.locator('#copy-plan').isEnabled(), true);
+  assert.equal(await page.locator('#plan-price').innerText(), '29 900 ₽');
+  await page.selectOption('#plan-guests', '20');
+  assert.equal(await page.locator('#guest-count').inputValue(), '20');
+  assert.equal(await page.locator('#plan-price').innerText(), 'По расчёту');
   await page.close();
 });
 
-test('package buttons choose the requested program and navigate to its plan', async () => {
+test('package buttons choose their plans and scroll to planner', async () => {
   const page = await openPage();
-  for (const [program, name, minutes] of [['start', 'Крио Старт', 60], ['party', 'Крио Праздник', 90], ['max', 'Научный максимум', 120]]) {
-    const buttons = await page.locator(`[data-select-package="${program}"]`).all();
-    assert.ok(buttons.length > 0);
-    for (const button of buttons) {
-      await button.click();
-      assert.equal(await page.locator('#plan-package').inputValue(), program);
-      assert.equal(new URL(page.url()).hash, '#planner');
-      const summary = await page.locator('#plan-summary').inputValue();
-      assert.ok(summary.includes(`${name} · ${minutes} минут`));
-    }
+  for (const code of ['show', 'party']) {
+    await page.locator('.package-button[data-select-package="' + code + '"]').first().click();
+    assert.equal(await page.locator('#plan-package').inputValue(), code);
+    assert.equal(new URL(page.url()).hash, '#planner');
   }
   await page.close();
 });
