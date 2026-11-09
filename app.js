@@ -4,7 +4,7 @@ const shows = {
  cryo: { name:'Большое Криошоу', price:10000, age:'от 5 лет', minutes:'60 минут', description:"Ледяная магия жидкого азота, эффектные замораживания и большой научный финал, где удивляются даже искушенные зрители", highlights:['Жидкий азот','Заморозка и превращения','Научные открытия'] },
  science: { name:'Сумасшедшая наука', price:11000, age:'от 9 лет', minutes:'60 минут', description:"Для любопытных исследователей — сложные увлекательные химические и физические явления с обсуждением удивительных реакций", highlights:['Интерактив с профессором','Необычные реакции','Наука в действии'] },
  potter: { name:'Шоу в стиле Гарри Поттера', price:11000, age:'от 5 лет', minutes:'60 минут', description:"Школа чудесных открытий — наука встречается с атмосферой волшебства, а гости превращаются в юных волшебников", highlights:['Тематическая атмосфера','Секреты превращений','Вовлечение гостей'] },
- graduate: { name:'Сумасшедший выпускной', price:12000, age:'от 6 лет', minutes:'60 минут', description:"Выпускной, где целый класс участвует в опытах, делает открытия и получает праздничное награждение, а в завершении праздника Профессор дарит подарок каждому выпускнику", highlights:['Для целого класса','Групповой интерактив','Праздничный финал'] },
+ graduate: { name:'Сумасшедший выпускной', price:12000, age:'от 6 лет', minutes:'60 минут', description:"Выпускной, где целый класс участвует в опытах, делает открытия и принимает поздравления, а в завершении праздника Профессор дарит подарок каждому выпускнику", highlights:['Для целого класса','Групповой интерактив','Праздничный финал'] },
  kitchen: { name:'Сумасшедшая кухня', price:null, age:'по согласованию', minutes:'по согласованию', description:"Научная кухня, где привычные вещи открываются с неожиданной стороны — детали программы подбираем под формат праздника", highlights:['Необычный формат','Вовлечение гостей','Индивидуальные условия'] }
 };
 const fmt = value => new Intl.NumberFormat('ru-RU').format(value).replace(/\u00a0/g, ' ');
@@ -86,7 +86,7 @@ function updatePlan() {
   const show=party?{name:'Научное шоу',minutes:'60 минут',description:'60 минут интерактивных экспериментов'}:shows[planShow.value];
   if(!show)return;
   const guests=planGuests.value;
-  const {price,extras,extrasTotal,missing,baseParty,baseShow,groupSupplement,partyBasePrice,count}=quotePlan({format:planPackage.value,showCode:planShow.value,guests,chosen});
+  const {price,extras,extrasTotal,missing,baseParty,baseShow,groupSupplement,count}=quotePlan({format:planPackage.value,showCode:planShow.value,guests,chosen});
   const groupLabel=planGuests.selectedOptions[0].textContent.toLowerCase();
   const unknownPrice=count===null?'По расчёту':'Цена шоу уточняется';
   el('plan-price').textContent=missing?'Выберите мастер-класс':price===null?unknownPrice:fmt(price)+' ₽';
@@ -122,11 +122,6 @@ function updatePlan() {
     discussButton.disabled=missing;
     discussButton.setAttribute('aria-disabled',String(missing));
   }
-  const partyCardPrice=document.querySelector('[data-price="party"]');
-  partyCardPrice.textContent=partyBasePrice===null?'по расчёту':fmt(partyBasePrice);
-  partyCardPrice.closest('.price').classList.toggle('price-custom',partyBasePrice===null);
-  document.querySelector('[data-price-caption]').textContent=count===null?'Более 150 детей · индивидуальное предложение':
-    groupLabel.charAt(0).toUpperCase()+groupLabel.slice(1)+' · Научное шоу + крио-мороженое';
   const lines=[
     'Сумасшедшая наука · Калининград и область',
     'Формат: '+(party?'Научный переполох':'Научное шоу'),

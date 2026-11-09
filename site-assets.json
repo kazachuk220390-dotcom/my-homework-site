@@ -8,6 +8,10 @@
     "assets/photos/guests.webp",
     "assets/photos/megafog.webp",
     "assets/photos/icecream-making.webp",
-    "assets/photos/icecream-result.webp"
+    "assets/photos/icecream-result.webp",
+    "assets/fonts/nunito-cyrillic-wght-normal.woff2",
+    "assets/fonts/nunito-latin-wght-normal.woff2",
+    "assets/fonts/OFL.txt",
+    "assets/fonts/nunito-latin-ext-wght-normal.woff2"
   ]
 }

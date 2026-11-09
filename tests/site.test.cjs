@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const { chromium } = require('playwright');
 
 const root = path.resolve(__dirname, '..');
-const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.txt': 'text/plain' };
+const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.woff2': 'font/woff2', '.woff': 'font/woff', '.txt': 'text/plain' };
 let server, browser, baseURL;
 
 before(async () => {
@@ -52,6 +52,7 @@ async function openPage(viewport = { width: 1440, height: 1000 }) {
   const page = await browser.newPage({ viewport, reducedMotion: 'reduce' });
   await stubExternalPresentation(page);
   await page.goto(baseURL, { waitUntil: 'networkidle' });
+  await page.evaluate(async () => { await document.fonts.ready; });
   return page;
 }
 
@@ -63,18 +64,17 @@ async function loadAllImages(page) {
 }
 
 const photoNames = ['birthday-scientist', 'professor', 'guests', 'megafog', 'icecream-making', 'icecream-result'];
-// Verbatim owner input from 10 November 2026, independent of app.js.
+// Owner input, including the later graduate wording correction, independent of app.js.
 const approvedDescriptions = {
   dry: 'Туман, "научная каша" и необычные свойства сухого льда — интерактивное путешествие для самых маленьких исследователей',
   cryo: 'Ледяная магия жидкого азота, эффектные замораживания и большой научный финал, где удивляются даже искушенные зрители',
   science: 'Для любопытных исследователей — сложные увлекательные химические и физические явления с обсуждением удивительных реакций',
   potter: 'Школа чудесных открытий — наука встречается с атмосферой волшебства, а гости превращаются в юных волшебников',
-  graduate: 'Выпускной, где целый класс участвует в опытах, делает открытия и получает праздничное награждение, а в завершении праздника Профессор дарит подарок каждому выпускнику',
+  graduate: 'Выпускной, где целый класс участвует в опытах, делает открытия и принимает поздравления, а в завершении праздника Профессор дарит подарок каждому выпускнику',
   kitchen: 'Научная кухня, где привычные вещи открываются с неожиданной стороны — детали программы подбираем под формат праздника',
 };
-// Tests run offline: remote presentation assets are replaced with deterministic fixtures
+// Only the remote Tilda logo uses a fixture; local fonts are loaded and verified normally.
 async function stubExternalPresentation(page) {
-  await page.route('https://fonts.googleapis.com/**', route => route.fulfill({status: 200, contentType: 'text/css', body: ''}));
   await page.route('https://static.tildacdn.com/**', route => route.fulfill({
     status: 200, contentType: 'image/png',
     body: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFUlEQVR4nGP8////fwYGBgYmBigAAD34BADaOyqcAAAAAElFTkSuQmCC', 'base64')
@@ -91,6 +91,7 @@ for (const width of [320, 390, 768, 1440]) {
     page.on('response', (response) => { if (response.status() >= 400) failures.push(`${response.status()} ${response.url()}`); });
     await stubExternalPresentation(page);
   await page.goto(baseURL, { waitUntil: 'networkidle' });
+  await page.evaluate(async () => { await document.fonts.ready; });
     await loadAllImages(page);
     assert.deepEqual(errors, []);
     assert.deepEqual(failures, []);
@@ -115,6 +116,7 @@ test('navigation targets exist, review mode is clear, and no tracking or data su
   page.on('request', (request) => requests.push({ url: request.url(), method: request.method() }));
   await stubExternalPresentation(page);
   await page.goto(baseURL, { waitUntil: 'networkidle' });
+  await page.evaluate(async () => { await document.fonts.ready; });
   const brokenTargets = await page.locator('a[href^="#"]').evaluateAll((links) => links
     .map((link) => link.getAttribute('href')).filter((href) => href !== '#' && !document.getElementById(href.slice(1))));
   assert.deepEqual(brokenTargets, []);
@@ -125,10 +127,31 @@ test('navigation targets exist, review mode is clear, and no tracking or data su
   assert.equal(await page.locator('input[type="checkbox"]').count(), 2);
   assert.equal(await page.locator('iframe,script[src^="http"]').count(), 0);
   assert.equal(await page.locator('img[src^="http"]').count(), 2);
-  const permittedHosts = [new URL(baseURL).host, 'fonts.googleapis.com', 'static.tildacdn.com'];
+  const permittedHosts = [new URL(baseURL).host, 'static.tildacdn.com'];
   assert.ok(requests.every(request => request.method === 'GET' && permittedHosts.includes(new URL(request.url).host)));
   assert.equal(await page.locator('.hero-facts').count(), 0);
   assert.equal(await page.locator('.dna-graphic').count(), 1);
+  assert.equal(await page.locator('#planner a.official-link,#planner a[href*="sumnauka.ru"]').count(), 0);
+  await page.close();
+});
+
+test('Nunito is loaded locally for Cyrillic text without a Google Fonts request', async () => {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  const requested = [];
+  page.on('request', (request) => requested.push(request.url()));
+  await stubExternalPresentation(page);
+  await page.goto(baseURL, { waitUntil: 'networkidle' });
+  await page.evaluate(async () => { await document.fonts.ready; });
+  const fonts = await page.evaluate(async () => {
+    const loaded = await document.fonts.load('600 20px "Nunito"', 'Сумасшедшая наука');
+    await document.fonts.ready;
+    return { family: getComputedStyle(document.body).fontFamily, loaded: loaded.map((face) => ({ family: face.family, status: face.status })) };
+  });
+  assert.match(fonts.family, /Nunito/);
+  assert.ok(fonts.loaded.length > 0, 'a matching local FontFace must actually load');
+  assert.ok(fonts.loaded.every((font) => /Nunito/.test(font.family) && font.status === 'loaded'));
+  assert.ok(requested.some((url) => url.startsWith(baseURL + '/assets/fonts/') && /\.woff2?(?:\?|$)/.test(url)));
+  assert.ok(!requested.some((url) => /fonts\.googleapis\.com|fonts\.gstatic\.com/.test(url)));
   await page.close();
 });
 
@@ -139,6 +162,7 @@ test('six selected event photos load as local WebP with useful display area on m
     page.on('request', (request) => requested.push(new URL(request.url()).pathname));
     await stubExternalPresentation(page);
   await page.goto(baseURL, { waitUntil: 'networkidle' });
+  await page.evaluate(async () => { await document.fonts.ready; });
     await loadAllImages(page);
     const photos = await page.locator('img[src*="assets/photos/"]').evaluateAll((images) => images.map((image) => {
       const bounds = image.getBoundingClientRect();
@@ -179,8 +203,21 @@ test('updated laboratory decorations preserve links and remove the rejected labe
   assert.deepEqual(await page.locator('svg.gallery-float use').evaluateAll((uses) => uses.map((element) => element.getAttribute('href')).sort()), ['#lab-flask', '#lab-test-tube']);
   assert.equal(await page.locator('.science-burst circle').count(), 0);
   assert.equal(await page.locator('.hero .science-code').count(), 0);
-  assert.equal(await page.locator('.hero .hero-explosion').count(), 0);
-  assert.equal(await page.locator('#show .lab-interlude .hero-explosion').count(), 1);
+  assert.equal(await page.locator('.hero-explosion').count(), 0);
+  assert.equal(await page.locator('.hero-actions .hero-reaction svg.reactor-flask').count(), 1);
+  const interlude = page.locator('#show .lab-interlude');
+  const interludeUses = await interlude.locator('svg use').evaluateAll((uses) => uses.map((element) => element.getAttribute('href')));
+  assert.ok(interludeUses.includes('#lab-flask') && interludeUses.includes('#lab-test-tube'));
+  assert.match(await interlude.textContent(), /H[₂2]O|CO[₂2]|N[₂2]/);
+  const interludeBounds = await interlude.boundingBox();
+  const showBounds = await page.locator('#show').boundingBox();
+  assert.ok(Math.abs(interludeBounds.x + interludeBounds.width / 2 - (showBounds.x + showBounds.width / 2)) < 25, 'laboratory interlude should be centred');
+  assert.equal(await page.locator('.discovery-strip svg').count(), 3);
+  assert.doesNotMatch(await page.locator('.discovery-strip').textContent(), /✳|❄/u);
+  assert.equal(await page.locator('svg.feature-hand,.feature-hand svg').count(), 1);
+  const secondFeature = page.locator('.feature-grid article').nth(1);
+  assert.equal(await secondFeature.locator('h3').innerText(), 'Понятно о сложном');
+  assert.doesNotMatch(await secondFeature.locator('p').innerText(), /участ/iu);
   assert.equal(await page.locator('.feature-sun').count(), 1);
   const sun = page.locator('.feature-sun');
   assert.equal(await sun.locator('svg').count(), 1);
@@ -193,6 +230,7 @@ test('updated laboratory decorations preserve links and remove the rejected labe
   assert.equal(await favicon.getAttribute('href'), brandSource);
   assert.match(await favicon.getAttribute('type'), /image\/png/);
   const hero = page.locator('.hero-photo');
+  assert.equal(await hero.locator('.art-bottom').evaluate((element) => getComputedStyle(element).color), 'rgb(18, 62, 86)');
   assert.equal(await hero.getAttribute('href'), await hero.locator('img').getAttribute('src'));
   const popupPromise = page.waitForEvent('popup');
   await hero.click({ position: { x: 40, y: 80 } });
@@ -200,6 +238,17 @@ test('updated laboratory decorations preserve links and remove the rejected labe
   await popup.waitForLoadState('domcontentloaded');
   assert.match(popup.url(), /\/assets\/photos\/birthday-scientist\.webp$/);
   await popup.close();
+  const fogImageLink = page.locator('a.photo-frame[href$="megafog.webp"]');
+  assert.equal(await fogImageLink.locator('svg.photo-corner-visual').count(), 1);
+  const corner = await fogImageLink.locator('.photo-corner-visual').boundingBox();
+  const frame = await fogImageLink.boundingBox();
+  assert.ok(corner.x + corner.width / 2 > frame.x + frame.width / 2 && corner.y + corner.height / 2 < frame.y + frame.height / 2, 'photo laboratory visual belongs in the upper right corner');
+  const galleryPopupPromise = page.waitForEvent('popup');
+  await fogImageLink.click();
+  const galleryPopup = await galleryPopupPromise;
+  await galleryPopup.waitForLoadState('domcontentloaded');
+  assert.match(galleryPopup.url(), /\/assets\/photos\/megafog\.webp$/);
+  await galleryPopup.close();
   await page.close();
 });
 
@@ -251,17 +300,22 @@ test('photo gallery retains its photo columns and compact separation with decora
 
 test('laboratory decoration does not intercept clicks and respects reduced motion', async () => {
   const page = await openPage();
-  const decoration = await page.locator('.science-sky, .lab-interlude, .gallery-science, .nucleon-transition').evaluateAll((elements) => elements.map((element) => ({
+  const decoration = await page.locator('.science-sky, .lab-interlude, .gallery-science, .nucleon-transition, .hero-reaction, .photo-corner-visual').evaluateAll((elements) => elements.map((element) => ({
     pointerEvents: getComputedStyle(element).pointerEvents,
     svgCount: element.querySelectorAll('svg').length,
     text: element.textContent,
   })));
-  assert.ok(decoration.length >= 4);
+  assert.ok(decoration.length >= 6);
   assert.ok(decoration.every((element) => element.pointerEvents === 'none'));
   assert.ok(decoration.reduce((sum, element) => sum + element.svgCount, 0) >= 5, 'molecules, floating glassware and nucleons should use SVG');
   assert.ok(decoration.some((element) => /H[₂2]O|CO[₂2]|N[₂2]|NaCl/.test(element.text)), 'visible chemical formula decorations should exist');
   const activeAnimations = await page.evaluate(() => document.getAnimations().filter((animation) => animation.playState === 'running').length);
   assert.equal(activeAnimations, 0, 'reduced-motion preference must stop decorative animation');
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  const bubbling = await page.locator('.hero-reaction').evaluate((element) => element.getAnimations({ subtree: true }).filter((animation) => animation.playState === 'running').length);
+  assert.ok(bubbling > 0, 'hero flask should bubble when motion is allowed');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  assert.equal(await page.locator('.hero-reaction').evaluate((element) => element.getAnimations({ subtree: true }).filter((animation) => animation.playState === 'running').length), 0);
   await page.close();
 });
 
@@ -271,6 +325,8 @@ test('secret laboratory remains an unavailable teaser without a booking action',
   assert.match(await lab.innerText(), /Только для секретных агентов/iu);
   assert.match(await lab.innerText(), /59 900/);
   assert.match(await lab.innerText(), /Скоро рассекретим/);
+  assert.equal((await page.locator('#secret-lab-title').innerText()).replace(/\s+/g, ' ').trim(), 'Секретная Лаборатория');
+  assert.doesNotMatch(await lab.innerText(), /Лаборатория\s+[ХX]|№\s*[ХX]|[ХX]-001|Досье.*[ХX]/iu);
   assert.equal(await lab.locator('[data-select-package]').count(), 0);
   await page.close();
 });
@@ -283,6 +339,7 @@ test('project Pages subpath resolves scripts, styles, six photographs and packag
   page.on('request', (request) => resources.push(new URL(request.url()).pathname));
   await stubExternalPresentation(page);
   await page.goto(baseURL + '/my-homework-site/', { waitUntil: 'networkidle' });
+  await page.evaluate(async () => { await document.fonts.ready; });
   await loadAllImages(page);
   assert.deepEqual(failures, []);
   for (const resource of ['app.js', 'styles.css', ...photoNames.map((name) => `assets/photos/${name}.webp`)]) {
@@ -379,6 +436,7 @@ test('party uses the generic approved show, includes ice cream and adds slime fo
     for (const [slime, total] of [[false, base], [true, withSlime]]) {
       await page.locator('#plan-workshop-slime').setChecked(slime);
       assert.equal(numeric(await page.locator('#plan-price').innerText()), total, `party up to ${guests}, slime=${slime}`);
+      assert.match(await page.locator('[data-package="party"] .price').innerText(), /^от\s*29 900\s*₽$/u);
       const summary = await page.locator('#plan-summary').inputValue();
       assert.match(summary, /Основная программа: Научное шоу/);
       assert.doesNotMatch(summary, /Основная программа: Большое Криошоу/);
@@ -426,6 +484,7 @@ test('both group selectors expose approved upper bounds and over-150 plans remai
       assert.match(await page.locator('#plan-price').innerText(), /расч[её]т|уточн|запрос/iu);
       assert.doesNotMatch(await page.locator('#plan-price').innerText(), /^\s*[\d\s]+\s*₽\s*$/);
       assert.match(await page.locator('#plan-summary').inputValue(), /Группа: более\s*150/iu);
+      if (format === 'party') assert.match(await page.locator('[data-package="party"] .price').innerText(), /^от\s*29 900\s*₽$/u);
       assert.equal(await page.locator('#discuss-plan').isEnabled(), true);
       assert.equal(await page.locator('#copy-plan').isEnabled(), true);
     }
@@ -562,6 +621,7 @@ test('secondary save action really copies and offers manual selection when the c
   page.on('request', (request) => { if (request.method() !== 'GET') outbound.push(request.method()); });
   await stubExternalPresentation(page);
   await page.goto(baseURL, { waitUntil: 'networkidle' });
+  await page.evaluate(async () => { await document.fonts.ready; });
   assert.match(await page.locator('#copy-plan').innerText(), /Сохранить подбор/);
   await page.locator('#copy-plan').click();
   await page.waitForFunction(() => document.querySelector('#copy-status').textContent.includes('Подбор скопирован'));

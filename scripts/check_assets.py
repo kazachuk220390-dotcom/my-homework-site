@@ -13,6 +13,7 @@ MAX_SITE_BYTES = 3_000_000
 TEXT_TYPES = {".html", ".css", ".js", ".svg", ".txt"}
 IMAGE_TYPES = {".svg", ".webp", ".avif", ".jpg", ".jpeg", ".png"}
 ALLOWED_ASSET_TYPES = IMAGE_TYPES | {".woff2"}
+ALLOWED_LICENSE_FILES = {"assets/fonts/OFL.txt"}
 EMBEDDED_BASE64 = re.compile(r"data:[^\s\"'<>]*;base64\s*,", re.IGNORECASE)
 CSS_URL = re.compile(r"url\(\s*(['\"]?)(.*?)\1\s*\)", re.IGNORECASE)
 
@@ -130,7 +131,8 @@ def validate(root=ROOT):
             raise ValueError(f"Public files must stay inside the checkout: {path.name}")
         relative = path.relative_to(root).as_posix()
         suffix = path.suffix.lower()
-        if path.is_relative_to(assets) and suffix not in ALLOWED_ASSET_TYPES:
+        if (path.is_relative_to(assets) and suffix not in ALLOWED_ASSET_TYPES
+                and relative not in ALLOWED_LICENSE_FILES):
             raise ValueError(f"Unsupported public asset: {relative}")
         size = path.stat().st_size
         if suffix in IMAGE_TYPES and size > MAX_IMAGE_BYTES:
