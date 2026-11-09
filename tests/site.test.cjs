@@ -90,8 +90,9 @@ for (const width of [320, 390, 768, 1440]) {
       content: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
       heading: document.querySelector('h1').getBoundingClientRect().width,
       images: Array.from(document.images, (image) => image.complete && image.naturalWidth > 0),
+      overflowing: [...document.querySelectorAll('body *')].filter((element) => element.getBoundingClientRect().right > innerWidth + .5).slice(0, 8).map((element) => `${element.tagName}.${element.className?.baseVal || element.className}`),
     }));
-    assert.ok(layout.content <= layout.width, `content ${layout.content} exceeds viewport ${layout.width}`);
+    assert.ok(layout.content <= layout.width, `content ${layout.content} exceeds viewport ${layout.width}: ${layout.overflowing.join(', ')}`);
     assert.ok(layout.heading > 0);
     assert.ok(layout.images.length > 0 && layout.images.every(Boolean));
     assert.equal(await page.locator('h1').count(), 1);
@@ -155,19 +156,110 @@ test('six selected event photos load as local WebP with useful display area on m
       }
     }
     assert.ok(requested.filter((url) => url.includes('/assets/photos/')).length >= 6);
-    assert.ok(!requested.some((url) => /\.(jpe?g|png)$/i.test(url)), 'original full-size source photographs must not be downloaded by the page');
+    assert.ok(!requested.some((url) => /\/assets\/photos\/.*\.(jpe?g|png)$/i.test(url)), 'original full-size source photographs must not be downloaded by the page');
     assert.equal(await page.locator('img[src^="data:"]').count(), 0, 'photographs must be separate cacheable files, not embedded base64');
     await page.close();
   }
 });
 
-test('visual effects and secret laboratory teaser exist', async () => {
+test('updated laboratory decorations preserve links and remove the rejected labels and rings', async () => {
   const page = await openPage();
   assert.equal(await page.locator('.hero-fog').count(), 1);
   assert.equal(await page.locator('.science-burst').count(), 1);
-  assert.equal(await page.locator('.science-glassware').count(), 1);
+  assert.equal(await page.locator('svg.gallery-float').count(), 2);
+  assert.deepEqual(await page.locator('svg.gallery-float use').evaluateAll((uses) => uses.map((element) => element.getAttribute('href')).sort()), ['#lab-flask', '#lab-test-tube']);
+  assert.equal(await page.locator('.science-burst circle').count(), 0);
+  assert.equal(await page.locator('.hero .science-code').count(), 0);
+  assert.equal(await page.locator('.hero .hero-explosion').count(), 0);
+  assert.equal(await page.locator('#show .lab-interlude .hero-explosion').count(), 1);
+  assert.equal(await page.locator('.feature-sun').count(), 1);
+  const sun = page.locator('.feature-sun');
+  assert.equal(await sun.locator('svg').count(), 1);
+  assert.match(await sun.locator('xpath=ancestor::article').innerText(), /У каждой программы свой характер/);
+  const visibleText = await page.locator('body').innerText();
+  assert.equal((visibleText.match(/вау/giu) || []).length, 1);
+  assert.doesNotMatch(visibleText, /серпантин|EXPERIMENT|WOW REACTION|SCIENCE SHOW/iu);
+  const brandSource = await page.locator('.site-header .brand img').getAttribute('src');
+  const favicon = page.locator('link[rel="icon"]');
+  assert.equal(await favicon.getAttribute('href'), brandSource);
+  assert.match(await favicon.getAttribute('type'), /image\/png/);
+  const hero = page.locator('.hero-photo');
+  assert.equal(await hero.getAttribute('href'), await hero.locator('img').getAttribute('src'));
+  const popupPromise = page.waitForEvent('popup');
+  await hero.click({ position: { x: 40, y: 80 } });
+  const popup = await popupPromise;
+  await popup.waitForLoadState('domcontentloaded');
+  assert.match(popup.url(), /\/assets\/photos\/birthday-scientist\.webp$/);
+  await popup.close();
+  await page.close();
+});
+
+test('photo gallery retains its photo columns and compact separation with decorative overlays', async () => {
+  for (const width of [390, 768, 1440]) {
+    const page = await openPage({ width, height: 1000 });
+    await loadAllImages(page);
+    const geometry = await page.evaluate(() => {
+      const gallery = document.querySelector('.photo-gallery');
+      const decoration = gallery.querySelector('.gallery-science');
+      const photos = [...gallery.querySelectorAll('.photo-card')].map((element) => {
+        const { x, y, width, height } = element.getBoundingClientRect();
+        return { x, y, width, height };
+      });
+      return {
+        display: getComputedStyle(gallery).display,
+        columns: getComputedStyle(gallery).gridTemplateColumns.split(' ').map(Number.parseFloat),
+        gap: parseFloat(getComputedStyle(gallery).gap),
+        decorationPosition: getComputedStyle(decoration).position,
+        decorationPointerEvents: getComputedStyle(decoration).pointerEvents,
+        photos,
+        momentsBottom: parseFloat(getComputedStyle(document.querySelector('#moments')).paddingBottom),
+        packagesTop: parseFloat(getComputedStyle(document.querySelector('#packages')).paddingTop),
+      };
+    });
+    assert.equal(geometry.decorationPosition, 'absolute');
+    assert.equal(geometry.decorationPointerEvents, 'none');
+    assert.equal(geometry.gap, width > 1100 ? 20 : 16);
+    if (width > 680) {
+      assert.equal(geometry.display, 'grid');
+      assert.equal(geometry.columns.length, 2);
+      assert.ok(Math.abs(geometry.columns[0] / geometry.columns[1] - 0.8) < 0.02);
+      assert.ok(geometry.photos[0].x < geometry.photos[1].x);
+      assert.equal(geometry.photos[1].x, geometry.photos[2].x);
+    } else {
+      const photos = [...geometry.photos].sort((a, b) => a.y - b.y);
+      for (let index = 1; index < photos.length; index++) {
+        const gap = photos[index].y - (photos[index - 1].y + photos[index - 1].height);
+        assert.ok(Math.abs(gap - 16) < 2, `mobile photographs should be 16px apart, got ${gap}`);
+      }
+    }
+    if (width === 1440) {
+      assert.ok(geometry.momentsBottom + geometry.packagesTop <= 90, 'space between photo block and packages should be compact');
+      assert.equal(await page.locator('#moments .nucleon-transition').count(), 1);
+    }
+    await page.close();
+  }
+});
+
+test('laboratory decoration does not intercept clicks and respects reduced motion', async () => {
+  const page = await openPage();
+  const decoration = await page.locator('.science-sky, .lab-interlude, .gallery-science, .nucleon-transition').evaluateAll((elements) => elements.map((element) => ({
+    pointerEvents: getComputedStyle(element).pointerEvents,
+    svgCount: element.querySelectorAll('svg').length,
+    text: element.textContent,
+  })));
+  assert.ok(decoration.length >= 4);
+  assert.ok(decoration.every((element) => element.pointerEvents === 'none'));
+  assert.ok(decoration.reduce((sum, element) => sum + element.svgCount, 0) >= 5, 'molecules, floating glassware and nucleons should use SVG');
+  assert.ok(decoration.some((element) => /H[₂2]O|CO[₂2]|N[₂2]|NaCl/.test(element.text)), 'visible chemical formula decorations should exist');
+  const activeAnimations = await page.evaluate(() => document.getAnimations().filter((animation) => animation.playState === 'running').length);
+  assert.equal(activeAnimations, 0, 'reduced-motion preference must stop decorative animation');
+  await page.close();
+});
+
+test('secret laboratory remains an unavailable teaser without a booking action', async () => {
+  const page = await openPage();
   const lab = page.locator('.secret-lab');
-  assert.match(await lab.innerText(), /Только для секретных агентов/);
+  assert.match(await lab.innerText(), /Только для секретных агентов/iu);
   assert.match(await lab.innerText(), /59 900/);
   assert.match(await lab.innerText(), /Скоро рассекретим/);
   assert.equal(await lab.locator('[data-select-package]').count(), 0);
@@ -192,35 +284,143 @@ test('project Pages subpath resolves scripts, styles, six photographs and packag
   assert.equal(new URL(page.url()).hash, '#planner');
   assert.equal(await page.locator('#plan-package').inputValue(), 'party');
   await page.selectOption('#plan-guests', '20');
-  assert.equal(await page.locator('#plan-price').innerText(), 'По расчёту');
+  assert.equal(await page.locator('#plan-price').innerText(), '30 900 ₽');
   await page.close();
 });
 
-test('base show and optional workshops remain available in every plan', async () => {
+test('ordinary show prices add each selected workshop for every group of five after ten', async () => {
   const page = await openPage();
   await page.selectOption('#plan-package', 'show');
   assert.equal(await page.locator('#plan-workshop-wrap').isVisible(), true);
-  await page.selectOption('#plan-show', 'dry');
-  assert.equal(await page.locator('#plan-price').innerText(), '9 500 ₽');
-  await page.selectOption('#plan-show', 'cryo');
-  assert.equal(await page.locator('#plan-price').innerText(), '10 000 ₽');
-  await page.locator('#plan-workshop-icecream').check();
-  assert.equal(await page.locator('#plan-price').innerText(), 'По расчёту');
-  assert.match(await page.locator('#plan-summary').inputValue(), /крио-мороженое/);
-  await page.locator('#plan-workshop-slime').check();
-  assert.match(await page.locator('#plan-summary').inputValue(), /крио-мороженое и лизуны/);
+  const groups = [10, 20, 30, 40, 50, 100, 150];
+  const workshopTotals = {
+    ice: [2500, 3500, 4500, 5500, 6500, 11500, 16500],
+    slime: [1500, 2500, 3500, 4500, 5500, 10500, 15500],
+    both: [4000, 6000, 8000, 10000, 12000, 22000, 32000],
+  };
+  const shows = { dry: 9500, cryo: 10000, science: 11000, potter: 11000, halloween: 11000, graduate: 12000, snow: 12000 };
+  const numeric = (text) => Number(text.replace(/\D/g, ''));
+  for (const [show, base] of Object.entries(shows)) {
+    await page.selectOption('#plan-show', show);
+    for (const [index, guests] of groups.entries()) {
+      await page.selectOption('#plan-guests', String(guests));
+      assert.equal(await page.locator('#guest-count').inputValue(), String(guests));
+      for (const [ice, slime, extra] of [[false, false, 0], [true, false, workshopTotals.ice[index]], [false, true, workshopTotals.slime[index]], [true, true, workshopTotals.both[index]]]) {
+        await page.locator('#plan-workshop-icecream').setChecked(ice);
+        await page.locator('#plan-workshop-slime').setChecked(slime);
+        assert.equal(numeric(await page.locator('#plan-price').innerText()), base + extra, `${show}: group ${guests}, icecream=${ice}, slime=${slime}`);
+        const summary = await page.locator('#plan-summary').inputValue();
+        assert.match(summary, new RegExp('Стоимость: ' + (base + extra).toLocaleString('ru-RU').replaceAll('\u00a0', ' ') + ' ₽'));
+        assert.match(summary, extra === 0 ? /Общая продолжительность: 60 минут/ : /Общая продолжительность: уточняется при согласовании/);
+        assert.equal(await page.locator('#copy-plan').isEnabled(), true);
+      }
+    }
+  }
+  await page.close();
+});
+
+test('kitchen keeps its unknown base price explicit instead of showing a made-up complete total', async () => {
+  const page = await openPage();
+  await page.selectOption('#plan-package', 'show');
+  await page.selectOption('#plan-show', 'kitchen');
+  for (const guests of ['10', '40']) {
+    await page.selectOption('#plan-guests', guests);
+    const icePrice = guests === '10' ? '2 500 ₽' : '5 500 ₽';
+    const slimePrice = guests === '10' ? '1 500 ₽' : '4 500 ₽';
+    for (const [ice, slime] of [[false, false], [true, false], [false, true], [true, true]]) {
+      await page.locator('#plan-workshop-icecream').setChecked(ice);
+      await page.locator('#plan-workshop-slime').setChecked(slime);
+      const price = await page.locator('#plan-price').innerText();
+      assert.match(price, /расч[её]т|уточн|запрос/iu);
+      assert.doesNotMatch(price, /^\s*[\d\s]+\s*₽\s*$/);
+      assert.match(await page.locator('#plan-summary').inputValue(), /индивидуал|уточн|расч[её]т|запрос/iu);
+      const breakdown = page.locator('#plan-price-breakdown');
+      assert.equal(await breakdown.isVisible(), true);
+      const text = await breakdown.innerText();
+      assert.match(text, /Стоимость шоу уточняется/);
+      if (ice) assert.ok(text.includes('крио-мороженое — ' + icePrice));
+      if (slime) assert.ok(text.includes('лизуны — ' + slimePrice));
+      assert.equal(await page.locator('#workshop-price-icecream').innerText(), icePrice);
+      assert.equal(await page.locator('#workshop-price-slime').innerText(), slimePrice);
+    }
+  }
+  await page.close();
+});
+
+test('party uses the generic approved show, includes ice cream and adds slime for every approved group', async () => {
+  const page = await openPage();
+  await page.selectOption('#plan-package', 'show');
+  await page.selectOption('#plan-show', 'science');
   await page.selectOption('#plan-package', 'party');
   assert.equal(await page.locator('#plan-workshop-wrap').isVisible(), true);
-  await page.selectOption('#plan-show', 'cryo');
-  assert.equal(await page.locator('#plan-price').innerText(), 'По расчёту');
-  await page.locator('#plan-workshop-slime').uncheck();
-  await page.selectOption('#plan-guests', '10');
-  assert.equal(await page.locator('#plan-price').innerText(), '29 900 ₽');
-  await page.locator('#plan-workshop-icecream').uncheck();
-  assert.equal(await page.locator('#copy-plan').isDisabled(), true);
+  assert.equal(await page.locator('#plan-show').isVisible(), false);
+  assert.equal(await page.locator('#plan-show-label').isVisible(), false);
+  assert.match(await page.locator('#plan-show-description').innerText(), /Научное шоу/);
+  assert.doesNotMatch(await page.locator('#plan-show-description').innerText(), /Криошоу|от\s*\d+\s*лет/iu);
+  assert.equal(await page.locator('#plan-workshop-icecream').isChecked(), true);
+  assert.equal(await page.locator('#plan-workshop-icecream').isDisabled(), true);
+  assert.equal(await page.locator('label[for="plan-workshop-icecream"]').isVisible(), false);
+  assert.equal(await page.locator('#plan-included-workshop').isVisible(), true);
+  assert.match(await page.locator('#plan-included-workshop').innerText(), /крио-мороженое.*включен/iu);
+  const priceCases = [[10, 29900, 31400], [20, 30900, 33400], [30, 31900, 35400], [40, 32900, 37400], [50, 33900, 39400], [100, 38900, 49400], [150, 43900, 59400]];
+  const numeric = (text) => Number(text.replace(/\D/g, ''));
+  for (const [guests, base, withSlime] of priceCases) {
+    await page.selectOption('#plan-guests', String(guests));
+    assert.equal(await page.locator('#guest-count').inputValue(), String(guests));
+    for (const [slime, total] of [[false, base], [true, withSlime]]) {
+      await page.locator('#plan-workshop-slime').setChecked(slime);
+      assert.equal(numeric(await page.locator('#plan-price').innerText()), total, `party up to ${guests}, slime=${slime}`);
+      const summary = await page.locator('#plan-summary').inputValue();
+      assert.match(summary, /Основная программа: Научное шоу/);
+      assert.doesNotMatch(summary, /Основная программа: Большое Криошоу/);
+      assert.doesNotMatch(summary, /от 9 лет|жидкого азота/iu);
+      assert.match(summary, new RegExp('Стоимость: ' + total.toLocaleString('ru-RU').replaceAll('\u00a0', ' ') + ' ₽'));
+      if (slime) assert.match(summary, /крио-мороженое и лизуны/);
+      assert.match(summary, slime ? /Общая продолжительность: с добавлением лизунов согласовывается отдельно/ : /Общая продолжительность: 150 минут/);
+      assert.equal(await page.locator('#copy-plan').isEnabled(), true);
+      assert.equal(await page.locator('#discuss-plan').isEnabled(), true);
+    }
+  }
   await page.selectOption('#plan-package', 'show');
+  assert.equal(await page.locator('#plan-show').isVisible(), true);
+  assert.equal(await page.locator('#plan-show-label').isVisible(), true);
+  assert.equal(await page.locator('#plan-show').inputValue(), 'science', 'returning to ordinary shows should preserve the last selected programme');
+  assert.equal(await page.locator('label[for="plan-workshop-icecream"]').isVisible(), true);
+  assert.equal(await page.locator('#plan-included-workshop').isVisible(), false);
+  assert.equal(await page.locator('#plan-workshop-icecream').isEnabled(), true);
+  assert.equal(await page.locator('#plan-workshop-icecream').isChecked(), false);
+  assert.equal(await page.locator('#plan-workshop-slime').isChecked(), false);
   assert.equal(await page.locator('#copy-plan').isEnabled(), true);
+  assert.equal(await page.locator('#discuss-plan').isEnabled(), true);
   assert.equal(await page.locator('#plan-workshop-wrap').isVisible(), true);
+  await page.close();
+});
+
+test('both group selectors expose approved upper bounds and over-150 plans remain manual in every format', async () => {
+  const page = await openPage();
+  for (const id of ['guest-count', 'plan-guests']) {
+    const options = await page.locator(`#${id} option`).evaluateAll((elements) => elements.map((element) => ({ value: element.value, text: element.textContent })));
+    assert.deepEqual(options.map((option) => option.value), ['10', '20', '30', '40', '50', '100', '150', 'over150']);
+    for (const option of options.slice(0, 7)) assert.match(option.text, new RegExp('До ' + option.value + '\\s*детей', 'iu'));
+    assert.match(options[7].text, /Более\s*150.*по\s*расч[её]ту/iu);
+  }
+  assert.match(await page.locator('body').innerText(), /верхн.*границ|верхн.*числ|максимальн.*числ|до\s*выбранного\s*количества/iu);
+  for (const format of ['show', 'party']) {
+    await page.selectOption('#plan-package', format);
+    if (format === 'show') await page.selectOption('#plan-show', 'cryo');
+    await page.selectOption('#guest-count', 'over150');
+    assert.equal(await page.locator('#plan-guests').inputValue(), 'over150');
+    const additions = format === 'show' ? [[false, false], [true, false], [false, true], [true, true]] : [[true, false], [true, true]];
+    for (const [ice, slime] of additions) {
+      if (format === 'show') await page.locator('#plan-workshop-icecream').setChecked(ice);
+      await page.locator('#plan-workshop-slime').setChecked(slime);
+      assert.match(await page.locator('#plan-price').innerText(), /расч[её]т|уточн|запрос/iu);
+      assert.doesNotMatch(await page.locator('#plan-price').innerText(), /^\s*[\d\s]+\s*₽\s*$/);
+      assert.match(await page.locator('#plan-summary').inputValue(), /Группа: более\s*150/iu);
+      assert.equal(await page.locator('#discuss-plan').isEnabled(), true);
+      assert.equal(await page.locator('#copy-plan').isEnabled(), true);
+    }
+  }
   await page.close();
 });
 
@@ -281,7 +481,7 @@ test('mobile navigation opens, follows links, closes with Escape and resets on d
 
 test('FAQ can be opened and closed using the keyboard', async () => {
   const page = await openPage();
-  const first = page.locator('details').first();
+  const first = page.locator('.faq-list details').first();
   const summary = first.locator('summary');
   await summary.focus();
   await page.keyboard.press('Enter');
@@ -292,24 +492,47 @@ test('FAQ can be opened and closed using the keyboard', async () => {
   await page.close();
 });
 
-test('copy reports actual success and offers manual selection when the clipboard rejects', async () => {
+test('primary holiday action reaches contacts and focuses the phone without copying or sending a request', async () => {
+  const page = await openPage();
+  await page.selectOption('#plan-package', 'show');
+  await page.selectOption('#plan-show', 'cryo');
+  await page.locator('#plan-workshop-slime').check();
+  await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { window.clipboardCalls = (window.clipboardCalls || 0) + 1; } } }));
+  const requests = [];
+  page.on('request', (request) => requests.push({ url: request.url(), method: request.method() }));
+  assert.match(await page.locator('#discuss-plan').innerText(), /Хочу такой праздник/);
+  await page.locator('#discuss-plan').click();
+  assert.equal(new URL(page.url()).hash, '#contacts');
+  assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('href')), 'tel:+79118757385');
+  assert.match(await page.locator('#contact-plan-status').innerText(), /Большое Криошоу/);
+  assert.match(await page.locator('#contact-plan-status').innerText(), /лизуны/);
+  assert.equal(await page.evaluate(() => window.clipboardCalls || 0), 0);
+  assert.doesNotMatch(await page.locator('#copy-status').innerText(), /скопирован|сохран[её]н|отправлен/iu);
+  assert.ok(requests.every((request) => request.method === 'GET'), 'contact navigation must not submit the plan');
+  const contactBounds = await page.locator('#contacts').boundingBox();
+  assert.ok(contactBounds.y < 1000 && contactBounds.y + contactBounds.height > 0, 'contacts should be in view');
+  await page.close();
+});
+
+test('secondary save action really copies and offers manual selection when the clipboard rejects', async () => {
   const context = await browser.newContext({ permissions: ['clipboard-read', 'clipboard-write'], reducedMotion: 'reduce' });
   const page = await context.newPage();
   const outbound = [];
   page.on('request', (request) => { if (request.method() !== 'GET') outbound.push(request.method()); });
   await stubExternalPresentation(page);
   await page.goto(baseURL, { waitUntil: 'networkidle' });
+  assert.match(await page.locator('#copy-plan').innerText(), /Сохранить подбор/);
   await page.locator('#copy-plan').click();
-  await page.waitForFunction(() => document.querySelector('#copy-status').textContent.includes('План скопирован'));
+  await page.waitForFunction(() => document.querySelector('#copy-status').textContent.includes('Подбор скопирован'));
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   assert.equal(copied, await page.locator('#plan-summary').inputValue());
-  assert.match(await page.locator('#copy-status').innerText(), /Заявка не отправлена/);
+  assert.match(await page.locator('#copy-status').innerText(), /можно сохранить или отправить при обсуждении праздника/);
   await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new Error('Denied for test'); } } }));
   await page.locator('#copy-plan').click();
   await page.waitForFunction(() => document.querySelector('#copy-status').textContent.includes('вручную'));
   const selection = await page.locator('#plan-summary').evaluate((element) => ({ start: element.selectionStart, end: element.selectionEnd, length: element.value.length, focused: element === document.activeElement }));
   assert.deepEqual(selection, { start: 0, end: selection.length, length: selection.length, focused: true });
-  assert.doesNotMatch(await page.locator('#copy-status').innerText(), /План скопирован/);
+  assert.doesNotMatch(await page.locator('#copy-status').innerText(), /Подбор скопирован/);
   assert.deepEqual(outbound, []);
   await context.close();
 });

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-site-version="0.6">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,16 +7,22 @@
   <meta name="description" content="Сумасшедшая наука — научные шоу, праздники и выпускные в Калининграде и области. Шоу от 9 500 ₽, праздничный пакет «Научный переполох» 29 900 ₽.">
   <meta name="theme-color" content="#edf6ff">
   <title>Сумасшедшая наука — взрываем привычное представление о праздниках!</title>
-  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="https://static.tildacdn.com/tild6631-3463-4963-b039-383234303133/___128x128.png" type="image/png" sizes="128x128">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css">
-  <script src="./app.js" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=0.6">
+  <script src="./app.js?v=0.6" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
   
+
+  <svg class="science-symbols" width="0" height="0" aria-hidden="true" focusable="false"><defs>
+    <symbol id="lab-flask" viewBox="0 0 100 125"><path d="M36 7v40L10 103c-3 7 2 15 10 15h60c8 0 13-8 10-15L64 47V7M30 7h40" fill="#c9f5ff20" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><path d="m23 84-10 21c-2 5 1 9 7 9h60c6 0 9-4 7-9L77 84Z" fill="#68dff6" fill-opacity=".55"/><path d="M39 41h11M40 57h8M55 100h10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="37" cy="95" r="4" fill="#f5ffff"/><circle cx="58" cy="78" r="3" fill="#f5ffff"/></symbol>
+    <symbol id="lab-test-tube" viewBox="0 0 65 130"><path d="M16 7h33M21 7v93a12 12 0 0 0 24 0V7" fill="#d2faff20" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M25 64v36a8 8 0 0 0 16 0V64Z" fill="#b2ee8c" fill-opacity=".7"/><path d="M33 28h10M33 43h10M33 58h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="32" cy="81" r="3" fill="#fff"/><circle cx="34" cy="96" r="2" fill="#fff"/></symbol>
+    <symbol id="lab-atom" viewBox="0 0 140 95"><g fill="none" stroke="currentColor" stroke-width="1.4" opacity=".7"><ellipse cx="70" cy="47" rx="60" ry="21" transform="rotate(-27 70 47)"/><ellipse cx="70" cy="47" rx="60" ry="21" transform="rotate(27 70 47)"/></g><circle cx="64" cy="44" r="8" fill="#ffb85b"/><circle cx="76" cy="45" r="8" fill="#51bbdf"/><circle cx="70" cy="55" r="8" fill="#7dcde9"/><circle cx="60" cy="55" r="6" fill="#f7c06b"/><path d="M64 41v6M61 44h6" stroke="#fff" stroke-width="1.5"/><circle cx="116" cy="23" r="4" fill="currentColor"/><circle cx="22" cy="25" r="4" fill="#56cfe0"/></symbol>
+  </defs></svg>
   <header class="site-header page-width">
     <a class="brand brand-logo" href="#main" aria-label="Сумасшедшая наука — на главную">
       <img src="https://static.tildacdn.com/tild6631-3463-4963-b039-383234303133/___128x128.png" alt="Логотип Сумасшедшей науки" width="128" height="128">
@@ -38,19 +44,17 @@
         <svg class="molecule-graphic mol-a" viewBox="0 0 120 110" fill="none"><g stroke="#17a5df" stroke-width="3"><path d="m19 58 33-24 32 17 14-29M84 51l13 34M19 58l12 34"/></g><g fill="#d5faff" stroke="#128ec7" stroke-width="3"><circle cx="19" cy="58" r="11"/><circle cx="52" cy="34" r="10"/><circle cx="84" cy="51" r="13"/><circle cx="98" cy="22" r="8"/><circle cx="97" cy="85" r="8"/><circle cx="31" cy="92" r="7"/></g></svg>
         <svg class="molecule-graphic mol-b" viewBox="0 0 120 110" fill="none"><g stroke="#17a5df" stroke-width="3"><path d="m19 58 33-24 32 17 14-29M84 51l13 34M19 58l12 34"/></g><g fill="#d5faff" stroke="#128ec7" stroke-width="3"><circle cx="19" cy="58" r="11"/><circle cx="52" cy="34" r="10"/><circle cx="84" cy="51" r="13"/><circle cx="98" cy="22" r="8"/><circle cx="97" cy="85" r="8"/><circle cx="31" cy="92" r="7"/></g></svg>
       </div>
-      <div class="hero-explosion" aria-hidden="true"><span></span></div>
       <div class="hero-copy">
         <p class="eyebrow"><span class="tiny-spark" aria-hidden="true">✳</span> Калининград и область · научные приключения</p>
         <h1 id="hero-title">Взрываем привычное<br><span class="highlight">представление о праздниках!</span></h1>
         <p class="hero-description">Интерактивные научные шоу для дней рождения, выпускных, школ, лагерей и других событий<br> Гости не просто смотрят — они участвуют в удивительных открытиях!</p>
-        <div class="science-code" aria-hidden="true"><span>EXPERIMENT <b>01</b></span><span>WOW REACTION <b>∞</b></span><span>SCIENCE SHOW <b>✳</b></span></div>
         <a class="button button-primary" href="#packages">Выбрать программу <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         
       </div>
       <a class="hero-art hero-photo" href="./assets/photos/birthday-scientist.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фотографию профессора с ребёнком целиком">
         <div class="art-label"><span class="status-dot" aria-hidden="true"></span> Настоящие участники шоу</div>
         <div class="hero-fog" aria-hidden="true"><i></i><i></i><i></i></div>
-        <svg class="science-burst" viewBox="0 0 150 150" fill="none" aria-hidden="true"><circle cx="75" cy="75" r="28" stroke="currentColor" stroke-width="2" stroke-dasharray="5 10"/><path d="M75 3v22M75 125v22M3 75h22M125 75h22M24 24l16 16M110 110l16 16M126 24l-16 16M40 110l-16 16" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="m75 52 7 16 17 7-17 7-7 16-7-16-17-7 17-7z" fill="currentColor"/></svg>
+        <svg class="science-burst" viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M75 3v22M75 125v22M3 75h22M125 75h22M24 24l16 16M110 110l16 16M126 24l-16 16M40 110l-16 16" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="m75 52 7 16 17 7-17 7-7 16-7-16-17-7 17-7z" fill="currentColor"/></svg>
         
         <img src="./assets/photos/birthday-scientist.webp" alt="Ребёнок вместе с профессором участвует в научной демонстрации" width="961" height="1440" fetchpriority="high">
         <div class="art-bottom"><span>Научные приключения<br><strong>для разных праздников</strong></span><span class="art-arrow" aria-hidden="true"><svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
@@ -59,38 +63,32 @@
     <div class="discovery-strip" aria-hidden="true"><div class="page-width"><span>Удивляемся</span><i>✳</i><span>Участвуем</span><i>✳</i><span>Открываем новое</span><i>✳</i><span>Празднуем</span><i>✳</i></div></div>
     <section id="show" class="section page-width" aria-labelledby="show-title">
       <div class="section-heading"><div><p class="eyebrow">01 / Больше, чем наблюдать</p><h2 id="show-title">Научное шоу,<br>где каждый — исследователь</h2></div><p>Для дней рождения, выпускных и других событий. Эксперименты, которые можно увидеть вблизи и обсудить с профессором.</p></div>
-      <div class="feature-grid"><article><span class="feature-icon" aria-hidden="true">✳</span><h3>Гости участвуют</h3><p>Профессор вовлекает участников в задания и демонстрации. Для дня рождения — особая роль именинника; для выпускного — награждение класса.</p></article><article><span class="feature-icon" aria-hidden="true"><svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>Открытия вместе</h3><p>Физические и химические превращения, вопросы, объяснения и участие гостей в научных экспериментах</p></article><article><span class="feature-icon" aria-hidden="true">☁</span><h3>У каждой программы свой характер</h3><p>Криоэффекты, сухой лёд и тематические сценарии. Наполнение зависит от выбранного научного шоу.</p></article></div>
-      <div class="show-flow light-lab"><div class="flow-intro"><span class="pill">Большое Криошоу</span><h3>60 минут<br>настоящего вау!</h3><p>Действующая программа для детей от 5 лет</p></div><ol class="flow-steps"><li><span>01</span><div><h4>Знакомимся с профессором</h4><p>Необычное приветствие и команда юных учёных</p></div></li><li><span>02</span><div><h4>Исследуем физику и жидкий азот</h4><p>Удивительные свойства привычного и необычного</p></div></li><li><span>03</span><div><h4>Наблюдаем химические превращения</h4><p>Зрелищные демонстрации под контролем ведущего</p></div></li><li><span>04</span><div><h4>Встречаем «Мегатуман»</h4><p>Эффектный финал и поздравление участников</p></div></li></ol></div>
+      <div class="feature-grid"><article><span class="feature-icon" aria-hidden="true">✳</span><h3>Гости участвуют</h3><p>Профессор вовлекает участников в задания и демонстрации. Для дня рождения — особая роль именинника; для выпускного — награждение класса.</p></article><article><span class="feature-icon" aria-hidden="true"><svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>Открытия вместе</h3><p>Физические и химические превращения, вопросы, объяснения и участие гостей в научных экспериментах</p></article><article><span class="feature-icon feature-sun" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="8" fill="#ffd768" stroke="currentColor" stroke-width="2"/><path d="M20 2v5M20 33v5M2 20h5M33 20h5M7 7l4 4M29 29l4 4M33 7l-4 4M11 29l-4 4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg></span><h3>У каждой программы свой характер</h3><p>Криоэффекты, сухой лёд и тематические сценарии. Наполнение зависит от выбранного научного шоу.</p></article></div>
+      <div class="show-flow light-lab"><div class="flow-intro"><span class="pill">Большое Криошоу</span><h3>60 минут<br>научных открытий!</h3><p>Действующая программа для детей от 5 лет</p></div><ol class="flow-steps"><li><span>01</span><div><h4>Знакомимся с профессором</h4><p>Необычное приветствие и команда юных учёных</p></div></li><li><span>02</span><div><h4>Исследуем физику и жидкий азот</h4><p>Удивительные свойства привычного и необычного</p></div></li><li><span>03</span><div><h4>Наблюдаем химические превращения</h4><p>Зрелищные демонстрации под контролем ведущего</p></div></li><li><span>04</span><div><h4>Встречаем «Мегатуман»</h4><p>Эффектный финал и поздравление участников</p></div></li></ol></div>
       <p class="section-note">Площадку и условия демонстраций согласуем заранее<br> Демонстрации со специальными требованиями проводит подготовленный ведущий</p>
+      <div class="lab-interlude" aria-hidden="true"><svg class="interlude-flask" viewBox="0 0 100 125"><use href="#lab-flask"/></svg><span class="chem-formula">H₂O</span><div class="hero-explosion"><span></span></div></div>
     </section>
     <section id="moments" class="moments-section section page-width" aria-labelledby="moments-title">
       <div class="section-heading"><div><p class="eyebrow">02 / Наука в настоящем кадре</p><h2 id="moments-title">Вот так рождается<br>большое «вау»!</h2></div><p>Профессор, гости и научные открытия — фотографии проведённых мероприятий</p></div>
       <div class="photo-gallery">
         <figure class="photo-card photo-card-tall"><a class="photo-frame" href="./assets/photos/professor.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фотографию профессора за научным столом целиком"><img src="./assets/photos/professor.webp" alt="Профессор проводит демонстрацию за лабораторным столом" width="961" height="1440" loading="lazy" decoding="async"></a><figcaption><span>Профессор за научным столом</span><span class="photo-number" aria-hidden="true">01</span></figcaption></figure>
-        <div class="gallery-science" aria-hidden="true"><svg class="science-glassware" viewBox="0 0 205 125" fill="none" aria-hidden="true">
-          <path d="M35 8v44L12 99c-4 9 1 15 11 15h57c10 0 15-6 11-15L68 52V8M29 8h46" stroke="#e8ffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="m23 89-5 11c-2 5 0 9 5 9h57c6 0 8-4 5-9l-5-11Z" fill="#4ce6fa" opacity=".75"/>
-          <path d="M119 13v60l-9 22a15 15 0 0 0 14 20h36a15 15 0 0 0 14-20l-9-22V13M112 13h60" stroke="#e8ffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="m118 88-5 12c-2 6 1 10 11 10h36c9 0 12-4 10-10l-5-12Z" fill="#b5ff71" opacity=".8"/>
-          <path d="M49 39h6M53 64h6M141 37h6M139 58h6" stroke="#e9ffff" stroke-width="4" stroke-linecap="round"/>
-          <circle cx="35" cy="98" r="5" fill="white" opacity=".9"/><circle cx="59" cy="97" r="3" fill="white" opacity=".9"/><circle cx="140" cy="98" r="4" fill="#f7ffff"/><circle cx="154" cy="78" r="3" fill="#f7ffff"/>
-          <circle cx="177" cy="37" r="7" fill="#78e9fc" opacity=".6"/><circle cx="192" cy="23" r="4" fill="#e1ffff" opacity=".9"/>
-        </svg><span class="bubble bubble-a"></span><span class="bubble bubble-b"></span><span class="bubble bubble-c"></span></div>
+        <div class="gallery-science" aria-hidden="true"><svg class="gallery-float gallery-float-a" viewBox="0 0 100 125"><use href="#lab-flask"/></svg><svg class="gallery-float gallery-float-b" viewBox="0 0 65 130"><use href="#lab-test-tube"/></svg><span class="gallery-formula">CO₂</span></div>
         <figure class="photo-card"><a class="photo-frame" href="./assets/photos/guests.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фотографию участников шоу целиком"><img src="./assets/photos/guests.webp" alt="Дети и взрослые участвуют в программе у научного стола" width="1440" height="961" loading="lazy" decoding="async"></a><figcaption><span>Открытия — вместе с гостями</span><span class="photo-number" aria-hidden="true">02</span></figcaption></figure>
         <figure class="photo-card"><a class="photo-frame" href="./assets/photos/megafog.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фотографию Мегатумана целиком"><img src="./assets/photos/megafog.webp" alt="Белое облако Мегатумана во время научного шоу" width="1440" height="961" loading="lazy" decoding="async"></a><figcaption><span>Кульминация — «Мегатуман»</span><span class="photo-number" aria-hidden="true">03</span></figcaption></figure>
       </div>
       <p class="section-note">Нажмите на фотографию, чтобы открыть её целиком</p>
+      <div class="nucleon-transition" aria-hidden="true"><svg viewBox="0 0 140 95"><use href="#lab-atom"/></svg><span class="neutron neutron-a"></span><span class="neutron neutron-b"></span><span class="chem-formula">N₂</span></div>
     </section>
 
 <section id="packages" class="packages-section section" aria-labelledby="packages-title"><div class="page-width">
   <div class="section-heading"><div><p class="eyebrow">03 / Лаборатория впечатлений</p><h2 id="packages-title">От научного шоу<br>до большого праздника</h2></div><p>Выбирайте формат под вашу компанию — от одного яркого шоу до целого научного приключения! Цены для Калининграда, выезд за город согласуем отдельно</p></div>
-  <div class="packages-toolbar"><label for="guest-count">Сколько будет детей?</label><select id="guest-count"><option value="10">До 10 детей</option><option value="15">11–15 детей</option><option value="20">16–20 детей</option><option value="25">21–25 детей</option><option value="30">26–30 детей</option><option value="35">31–35 детей</option><option value="40">36–40 детей</option></select><p>Для «Научного переполоха» цена 29 900 ₽ утверждена на группу до 10 детей<br> Для больших компаний подготовим индивидуальный расчёт.</p></div>
+  <div class="packages-toolbar"><label for="guest-count">Сколько будет детей?</label><select id="guest-count"><option value="10">До 10 детей</option><option value="20">До 20 детей</option><option value="30">До 30 детей</option><option value="40">До 40 детей</option><option value="50">До 50 детей</option><option value="100">До 100 детей</option><option value="150">До 150 детей</option><option value="over150">Более 150 детей — по расчёту</option></select><p>В «Научном переполохе» мороженое включено<br> Сумма считается по верхней границе выбранной группы</p></div>
   <div class="package-grid">
     <article class="package-card lab-card lab-card-show" data-package="show">
       <div class="card-energy" aria-hidden="true"><span>✳</span><i></i><i></i><i></i></div>
       <div class="package-top"><span class="package-index">01 / Научное шоу на выбор</span><span class="duration">60 мин</span></div>
       <h3>Научное шоу</h3><p class="package-description">Эксперименты, участие гостей и праздничное награждение</p>
-      <p class="price">от <strong data-price="show">9 500</strong> ₽</p><p class="price-caption">В зависимости от выбранной программы</p>
+      <p class="price"><span class="price-prefix">от </span><strong data-price="show">9 500</strong><span class="price-currency"> ₽</span></p><p class="price-caption">В зависимости от выбранной программы</p>
       <div class="package-divider"></div>
       <ul class="check-list"><li>Одно научное шоу на выбор из каталога</li><li>Интерактивные эксперименты с ведущим</li><li>Награждение именинника или класса</li><li>Возрастная рекомендация зависит от шоу</li></ul>
       <details class="package-details" id="show-options"><summary>Посмотреть все шоу <span aria-hidden="true">+</span></summary><div class="package-details-content"><label for="show-choice">Выберите научную программу</label><select id="show-choice"><option value="dry">Открытия с сухим льдом — 9 500 ₽</option><option value="cryo">Большое Криошоу — 10 000 ₽</option><option value="science">Сумасшедшая наука — 11 000 ₽</option><option value="potter">Шоу в стиле Гарри Поттера — 11 000 ₽</option><option value="halloween">Научный Хеллоуин — 11 000 ₽</option><option value="graduate">Сумасшедший выпускной — 12 000 ₽</option><option value="snow">Научная Снегурочка — 12 000 ₽</option><option value="kitchen">Сумасшедшая кухня — цена индивидуально</option></select><div class="show-choice-info" aria-live="polite">
@@ -98,31 +96,31 @@
         <p id="show-choice-meta" class="show-meta">От 4 лет · 60 минут</p>
         <ul id="show-choice-highlights" class="show-highlights"><li>Ледяные облака</li><li>Мыльные пузыри</li><li>Яркие реакции</li></ul>
       </div></div></details>
-      <a class="button package-button" data-select-package="show" href="#planner">Подобрать шоу <span aria-hidden="true">↗</span></a>
+      <a class="button package-button" data-select-package="show" href="#planner">Подобрать шоу <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </article>
     <article class="package-card featured lab-card lab-card-party" data-package="party">
       <div class="card-energy" aria-hidden="true"><span>❄</span><i></i><i></i><i></i></div>
       <div class="recommended"><span aria-hidden="true">✳</span> Полный праздничный сценарий</div><div class="package-top"><span class="package-index">02 / Шоу + мастер-класс + дискотека</span><span class="duration">150 мин</span></div>
       <h3>Научный переполох</h3><p class="package-description">От научных экспериментов до серебряной дискотеки</p>
-      <p class="price"><strong data-price="party">29 900</strong> ₽</p><p class="price-caption" data-price-caption>До 10 детей · Большое Криошоу + крио-мороженое</p>
-      <div class="package-divider"></div><ul class="check-list"><li>Шоу на выбор: Криошоу, сухой лёд, «Сумасшедшая наука» или выпускной</li><li>Мастер-классы на выбор: крио-мороженое, лизуны или обе программы сразу</li><li>Три перерыва по 10 минут</li><li>Награждение именинника или класса</li><li>Фирменный номер «БУМ-ТОРТ» с разноцветным серпантином</li><li>Серебряная дискотека — 30 минут</li></ul>
-      <p class="package-caveat">29 900 ₽ — для Криошоу с мороженым на 10 детей. Второй мастер-класс, другие сочетания и группы — по расчёту, время уточняется отдельно. Реквизит «БУМ-ТОРТА» ещё готовится; настоящий торт предоставляют родители</p>
-      <a class="button button-primary package-button" data-select-package="party" href="#planner">Подобрать «Переполох» <span aria-hidden="true">↗</span></a>
+      <p class="price"><strong data-price="party">29 900</strong><span class="price-currency"> ₽</span></p><p class="price-caption" data-price-caption>До 10 детей · научное шоу и крио-мороженое</p>
+      <div class="package-divider"></div><ul class="check-list"><li>Научное шоу — 60 минут</li><li>Крио-мороженое включено, лизуны можно добавить отдельно</li><li>Три перерыва по 10 минут</li><li>Награждение именинника или класса</li><li>Фирменный номер «БУМ-ТОРТ»</li><li>Серебряная дискотека — 30 минут</li></ul>
+      <p class="package-caveat">29 900 ₽ — до 10 детей, мороженое включено. За каждые следующие 5 детей — +500 ₽ за мороженое. Лизуны оплачиваются отдельно, время дополнительного мастер-класса согласуем. Реквизит «БУМ-ТОРТА» готовится; настоящий торт предоставляют родители</p>
+      <a class="button button-primary package-button" data-select-package="party" href="#planner">Подобрать «Переполох» <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </article>
     <article class="package-card secret-lab" data-package="lab" aria-labelledby="secret-lab-title">
       <div class="secret-grid" aria-hidden="true"></div>
-      <div class="package-top"><span class="package-index">03 / Досье № X</span><span class="duration secret-level">TOP SECRET</span></div>
+      <div class="package-top"><span class="package-index">03 / Досье № Х</span><span class="duration secret-level">СЕКРЕТНО</span></div>
       <div class="secret-seal" aria-hidden="true"><svg viewBox="0 0 88 88" fill="none"><circle cx="44" cy="44" r="37" stroke="currentColor" stroke-width="2" stroke-dasharray="4 5"/><path d="M44 14 55 34 75 44 55 54 44 74 34 54 14 44 34 34Z" stroke="currentColor" stroke-width="1.8"/><circle cx="44" cy="44" r="10" fill="currentColor"/></svg></div>
       <p class="secret-eyebrow">Только для секретных агентов</p>
       <h3 id="secret-lab-title">Лаборатория <span>Х</span></h3><p class="package-description">Содержание операции строго засекречено</p>
-      <div class="secret-file" aria-label="Подробности программы пока засекречены"><span>ДОСЬЕ // X-001</span><i></i><i></i><i></i><strong>ДОСТУП ОГРАНИЧЕН</strong></div>
+      <div class="secret-file" aria-label="Подробности программы пока засекречены"><span>ДОСЬЕ // Х-001</span><i></i><i></i><i></i><strong>ДОСТУП ОГРАНИЧЕН</strong></div>
       <p class="price secret-price"><strong>59 900</strong> ₽</p><p class="price-caption">Предварительный ценовой ориентир</p>
       <div class="developing-label"><span class="secret-dot" aria-hidden="true"></span> Скоро рассекретим</div>
       <p class="package-caveat">Операция готовится · запись пока закрыта</p>
     </article>
   </div>
-  <div class="pricing-notes"><p><strong>Можно выбрать оба мастер-класса!</strong> При сочетании мороженого и лизунов отдельно согласуем стоимость и продолжительность программы</p><p>Для больших компаний и нестандартных сценариев подготовим индивидуальное предложение. Выезд за пределы Калининграда рассчитывается отдельно</p></div>
-  <div class="workshop-feature"><div class="workshop-copy"><span class="pill">Дополнения к большому празднику</span><h3>Ещё больше открытий!</h3><p>Добавьте мастер-класс по крио-мороженому, изготовлению лизунов или обе программы сразу</p><div class="workshop-badges"><span>❄ Крио-мороженое</span><span>✳ Лизуны</span></div><p>На фотографиях — приготовление и дегустация мороженого. Для двух мастер-классов время и стоимость согласуем отдельно</p><a class="text-link" href="#planner" data-select-package="party">Подобрать «Научный переполох» <span aria-hidden="true">↗</span></a></div><div class="workshop-photos"><figure><a href="./assets/photos/icecream-making.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фото приготовления мороженого"><img src="./assets/photos/icecream-making.webp" alt="Дети участвуют в приготовлении мороженого" width="960" height="1440" loading="lazy"></a><figcaption>Готовим вместе</figcaption></figure><figure><a href="./assets/photos/icecream-result.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фото мороженого"><img src="./assets/photos/icecream-result.webp" alt="Ребёнок с готовым мороженым" width="960" height="1440" loading="lazy"></a><figcaption>Пробуем результат</figcaption></figure></div></div>
+  <div class="pricing-notes"><p><strong>К отдельному шоу можно добавить оба мастер-класса!</strong> Калькулятор прибавит их стоимость к цене программы, общую продолжительность согласуем отдельно</p><p>Свыше 150 детей и для нестандартных сценариев подготовим индивидуальный расчёт. Выезд за пределы Калининграда согласуем отдельно</p></div>
+  <div class="workshop-feature"><div class="workshop-copy"><span class="pill">Дополнения к большому празднику</span><h3>Ещё больше открытий!</h3><p>Добавьте мастер-класс по крио-мороженому, изготовлению лизунов или обе программы сразу</p><div class="workshop-badges"><span>❄ Крио-мороженое</span><span>✳ Лизуны</span></div><p>На фотографиях — приготовление и дегустация мороженого. В «Научном переполохе» оно включено, лизуны можно добавить отдельно</p><a class="text-link" href="#planner" data-select-package="party">Подобрать «Научный переполох» <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div><div class="workshop-photos"><figure><a href="./assets/photos/icecream-making.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фото приготовления мороженого"><img src="./assets/photos/icecream-making.webp" alt="Дети участвуют в приготовлении мороженого" width="960" height="1440" loading="lazy"></a><figcaption>Готовим вместе</figcaption></figure><figure><a href="./assets/photos/icecream-result.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фото мороженого"><img src="./assets/photos/icecream-result.webp" alt="Ребёнок с готовым мороженым" width="960" height="1440" loading="lazy"></a><figcaption>Пробуем результат</figcaption></figure></div></div>
   <noscript><p class="notice">Для интерактивного подбора включите JavaScript. Утверждённые базовые цены приведены в карточках.</p></noscript>
 </div></section>
 
@@ -158,7 +156,7 @@
   <details><summary>Можно пригласить вас на выпускной, в школу или лагерь?<span aria-hidden="true">+</span></summary><p>Да. Проводим научные шоу не только для дней рождения, но и для выпускных и других мероприятий. Формат поздравления и награждения адаптируем.</p></details>
   <details><summary>Что входит в «Научный переполох»?<span aria-hidden="true">+</span></summary><p>60 минут научного шоу, 20 минут мастер-класса, награждение, фирменный «БУМ-ТОРТ», 30 минут серебряной дискотеки и три перерыва по 10 минут. Всего 150 минут. Номер «БУМ-ТОРТ» пока готовится.</p></details>
   <details><summary>Кто привозит настоящий торт?<span aria-hidden="true">+</span></summary><p>Для дня рождения настоящий праздничный торт предоставляют родители. Мы организуем его появление после фирменного сценического номера «БУМ-ТОРТ».</p></details>
-  <details><summary>Сколько стоит праздник для группы больше 10 детей?<span aria-hidden="true">+</span></summary><p>Цена 29 900 ₽ утверждена для «Научного переполоха» с Большим Криошоу и крио-мороженым на группу до 10 детей. Большие группы и другие комбинации рассчитываем индивидуально.</p></details>
+  <details><summary>Сколько стоит праздник для группы больше 10 детей?<span aria-hidden="true">+</span></summary><p>В «Научном переполохе» за 29 900 ₽ до 10 детей уже включены научное шоу и крио-мороженое. За каждые следующие 5 детей — +500 ₽ за мороженое. Лизуны: 1 500 ₽ до 10 детей, далее +500 ₽ за каждые 5 детей. Свыше 150 участников — индивидуальный расчёт.</p></details>
   <details><summary>Можно ли уже заказать «Лабораторию Х»?<span aria-hidden="true">+</span></summary><p>Пока нет. Это премиальный формат в разработке. 59 900 ₽ — выбранный предварительный ориентир; окончательные условия и сценарий ещё не утверждены.</p></details>
   <details><summary>Как подготовить площадку?<span aria-hidden="true">+</span></summary><p>Сообщите адрес, возраст и количество участников, особенности помещения. Условия проведения научных демонстраций, музыки и дискотеки согласуем заранее.</p></details>
 </div></section>
@@ -168,18 +166,20 @@
  <div class="planner-copy"><p class="eyebrow">06 / Подберите программу</p><h2 id="planner-title">Какой праздник<br><span>устроим?</span></h2><p>Соберите праздник под себя: выберите любимые научные эксперименты, добавьте мороженое, лизуны или оба мастер-класса и получите план для обсуждения</p><div class="test-mode"><span class="status-dot" aria-hidden="true"></span><p><strong>Подбор без обязательств</strong>Сохраните план, чтобы обсудить детали с организатором. Дата не бронируется автоматически</p></div></div>
  <div class="planner-card"><p class="planner-label">Ваш вариант праздника</p>
   <label for="plan-package">Пакет</label><select id="plan-package"><option value="show">Научное шоу · 60 минут</option><option value="party" selected>Научный переполох · 150 минут</option></select>
-  <label for="plan-show">Научное шоу</label><select id="plan-show"></select><p class="planner-show-info" id="plan-show-description" aria-live="polite">Выбирайте программу и знакомьтесь с её особенностями</p>
+  <label for="plan-show" id="plan-show-label">Научное шоу</label><select id="plan-show"></select><p class="planner-show-info" id="plan-show-description" aria-live="polite">Выбирайте программу и знакомьтесь с её особенностями</p>
   <div id="plan-workshop-wrap" class="workshop-selector" role="group" aria-labelledby="plan-workshop-label">
-    <p id="plan-workshop-label" class="selector-title">Дополнительные мастер-классы <span>можно выбрать оба в любом пакете</span></p>
+    <p id="plan-workshop-label" class="selector-title">Дополнительные мастер-классы <span id="plan-workshop-mode">мороженое включено в пакет</span></p>
+    <p id="plan-included-workshop" class="included-workshop-note">Крио-мороженое включено в программу</p>
     <div class="extra-options">
-      <label class="extra-option" for="plan-workshop-icecream"><input type="checkbox" id="plan-workshop-icecream" value="icecream" checked><span class="extra-icon" aria-hidden="true">❄</span><span class="extra-text"><strong>Крио-мороженое</strong><small>Вкусное научное открытие</small></span></label>
-      <label class="extra-option" for="plan-workshop-slime"><input type="checkbox" id="plan-workshop-slime" value="slime"><span class="extra-icon" aria-hidden="true">✳</span><span class="extra-text"><strong>Лизуны</strong><small>Создаём своими руками</small></span></label>
+      <label class="extra-option" for="plan-workshop-icecream"><input type="checkbox" id="plan-workshop-icecream" value="icecream" checked><span class="extra-icon" aria-hidden="true">❄</span><span class="extra-text"><strong>Крио-мороженое</strong><small id="workshop-price-icecream">Включено в пакет</small></span></label>
+      <label class="extra-option" for="plan-workshop-slime"><input type="checkbox" id="plan-workshop-slime" value="slime"><span class="extra-icon" aria-hidden="true">✳</span><span class="extra-text"><strong>Лизуны</strong><small id="workshop-price-slime">+1 500 ₽ до 10 детей</small></span></label>
     </div>
-    <p class="workshop-hint" id="plan-workshop-hint" aria-live="polite">Можно выбрать один или оба мастер-класса — дополнительные программы рассчитываем индивидуально</p>
+    <p class="workshop-hint" id="plan-workshop-hint" aria-live="polite">К отдельному шоу можно добавить один или оба мастер-класса; в «Переполохе» мороженое уже включено</p>
   </div>
-  <label for="plan-guests">Число детей</label><select id="plan-guests"><option value="10">До 10 детей</option><option value="15">11–15 детей</option><option value="20">16–20 детей</option><option value="25">21–25 детей</option><option value="30">26–30 детей</option><option value="35">31–35 детей</option><option value="40">36–40 детей</option></select>
+  <label for="plan-guests">Число детей</label><select id="plan-guests"><option value="10">До 10 детей</option><option value="20">До 20 детей</option><option value="30">До 30 детей</option><option value="40">До 40 детей</option><option value="50">До 50 детей</option><option value="100">До 100 детей</option><option value="150">До 150 детей</option><option value="over150">Более 150 детей — по расчёту</option></select>
   <div class="plan-total"><span>Стоимость<small id="plan-price-note">Выезд за город — отдельно</small></span><strong id="plan-price" aria-live="polite" aria-atomic="true">29 900 ₽</strong></div>
-  <label class="summary-label" for="plan-summary">План для обсуждения</label><textarea id="plan-summary" rows="7" readonly spellcheck="false"></textarea><button class="button button-primary copy-button" id="copy-plan" type="button">Скопировать план <span aria-hidden="true">↗</span></button><p id="copy-status" class="copy-status" role="status" aria-live="polite"></p><a class="official-link" href="https://sumnauka.ru" target="_blank" rel="noopener noreferrer">Связаться через действующий сайт <span aria-hidden="true">↗</span></a><p class="contact-note">План автоматически не передаётся организатору</p>
+  <p class="plan-price-breakdown" id="plan-price-breakdown" aria-live="polite"></p>
+  <label class="summary-label" for="plan-summary">План для обсуждения</label><textarea id="plan-summary" rows="7" readonly spellcheck="false"></textarea><button class="button button-primary discuss-button" id="discuss-plan" type="button">Хочу такой праздник <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="save-plan-button" id="copy-plan" type="button">Сохранить подбор</button><p id="copy-status" class="copy-status" role="status" aria-live="polite"></p><a class="official-link" href="https://sumnauka.ru" target="_blank" rel="noopener noreferrer">Связаться через действующий сайт <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a><p class="contact-note">План автоматически не передаётся организатору</p>
  </div></div></section>
 
       </main>

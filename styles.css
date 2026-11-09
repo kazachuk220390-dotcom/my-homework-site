@@ -145,3 +145,55 @@ button,select,textarea,input{font-family:inherit}
 @media(max-width:680px){.site-header{height:88px}.brand-logo{flex:0 0 76px;width:76px;height:76px}.brand-logo img{width:80px;height:80px}.hero{min-height:0}.hero h1{font-size:clamp(34px,8.4vw,46px)}.science-sky{opacity:.85;overflow:hidden}.dna-graphic{left:auto;right:0;top:2%;height:140px;width:44px;opacity:.38}.mol-a{left:auto;right:0;top:15%}.mol-b{left:71%;bottom:44%}.hero-explosion{top:35%;right:-10px;width:160px;height:140px;opacity:.7}.photo-gallery{display:flex;flex-direction:column;gap:15px}.gallery-science{width:100%;height:85px;flex:none}.gallery-science .science-glassware{width:100px;height:74px}.gallery-science .bubble-a{top:12%;left:20%}.gallery-science .bubble-b{top:20%;right:24%}.gallery-science .bubble-c{bottom:8%;left:36%}.show-flow.light-lab{padding:25px 23px}.site-footer{display:flex;flex-direction:column;align-items:flex-start;gap:20px}.footer-logo{width:120px;height:120px}.footer-meta h2{font-size:22px}.review-details{width:100%}.footer-identity{max-width:100%}}
 @media(max-width:365px){.brand-logo{width:68px;flex-basis:68px}.brand-logo img{width:70px;height:70px}.science-sky{opacity:.5}.review-details summary{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.hero-explosion span,.dna-graphic,.molecule-graphic,.gallery-science .science-glassware,.gallery-science .bubble,.lab-card .card-energy span,.lab-card .card-energy i{animation:none!important}}
+
+/* v0.6 — floating decoration without extra photo columns */
+.science-symbols{position:absolute;overflow:hidden;pointer-events:none}
+.hero-energy{left:0;right:0}
+#show{position:relative;isolation:isolate}
+.feature-icon.feature-sun{background:#fff5d8;color:#e9a527}
+.feature-sun svg{width:33px;height:33px}
+.lab-interlude{position:absolute;right:3%;bottom:5px;width:250px;height:75px;pointer-events:none;z-index:0;color:#238fbd}
+.lab-interlude .hero-explosion{top:auto;bottom:0;right:0;width:106px;height:80px;z-index:0;opacity:.42}
+.interlude-flask{position:absolute;left:12px;bottom:0;width:44px;height:63px;opacity:.65;animation:gentle-lab-drift 11s ease-in-out infinite}
+.chem-formula{font-family:"Exo 2","Trebuchet MS",sans-serif;font-weight:700;letter-spacing:.04em;color:#237ca8;line-height:1;pointer-events:none}
+.lab-interlude .chem-formula{position:absolute;left:87px;top:29px;font-size:18px;opacity:.55}
+.photo-gallery{position:relative;isolation:isolate;grid-template-columns:minmax(0,.8fr) minmax(0,1fr);grid-template-rows:auto auto;gap:20px}
+.photo-card-tall{grid-column:auto;grid-row:span 2}
+.photo-card:not(.photo-card-tall){grid-column:auto}
+.photo-card figcaption{position:relative;z-index:4}
+.gallery-science{position:absolute;inset:0;grid-column:auto;grid-row:auto;display:block;width:auto;height:auto;min-width:0;pointer-events:none;z-index:3;color:#b3f6ff;overflow:visible}
+.gallery-float{position:absolute;height:auto;filter:drop-shadow(0 2px 6px #10294455);animation:gentle-lab-drift 11s ease-in-out infinite;pointer-events:none}
+.gallery-float-a{left:4%;top:27%;width:68px}
+.gallery-float-b{left:43%;top:48%;width:49px;color:#169dc3;animation:seam-lab-drift 14s ease-in-out infinite}
+.gallery-formula{position:absolute;left:7%;top:17%;font-family:"Exo 2",sans-serif;font-size:18px;font-weight:700;color:#c7f6ff;opacity:.8;text-shadow:0 1px 6px #143654;animation:gentle-lab-drift 13s ease-in-out infinite reverse}
+#moments{position:relative;padding-bottom:32px}
+#packages{padding-top:48px}
+.nucleon-transition{position:absolute;right:4%;bottom:-18px;width:230px;height:66px;color:#238dc1;pointer-events:none;z-index:2;opacity:.7}
+.nucleon-transition svg{position:absolute;right:20px;bottom:0;width:120px;height:80px;animation:particle-lab-drift 14s ease-in-out infinite}
+.nucleon-transition .chem-formula{position:absolute;left:17px;top:27px;font-size:17px;opacity:.7}
+.neutron{position:absolute;width:9px;height:9px;border-radius:50%;background:#4bb9de;box-shadow:0 0 10px #81ddf2;animation:particle-lab-drift 10s ease-in-out infinite alternate}
+.neutron-a{left:69px;top:28px}.neutron-b{right:0;top:35px;background:#f3b65d;animation-delay:-5s}
+.planner-card .extra-option.included-workshop{cursor:default;background:#e6f4f9;border-color:#9ecddd;box-shadow:none}
+.included-workshop input{opacity:.8;cursor:default}
+.plan-price-breakdown{font-size:11px;line-height:1.75;color:var(--muted);margin:10px 0 5px;overflow-wrap:anywhere}
+.discuss-button{width:100%;margin-top:18px;padding:15px 17px}
+.discuss-button:disabled{opacity:.6;cursor:not-allowed;box-shadow:none;transform:none}
+.save-plan-button{display:block;margin:14px auto 0;padding:6px 12px;border:0;border-bottom:1px solid #b2cfdf;border-radius:0;background:transparent;color:#225e86;font-size:12px;font-weight:600}
+.save-plan-button:hover{color:#093e62;border-color:#267ca7}
+.save-plan-button:disabled{opacity:.55;cursor:not-allowed}
+.contact-plan-status{background:#edf8fe;border:1px solid #c8e4f2;border-radius:12px;padding:12px 15px;font-size:12px;line-height:1.7;color:var(--ink);max-width:460px}
+@keyframes gentle-lab-drift{0%,100%{transform:translate3d(0,0,0) rotate(-4deg)}50%{transform:translate3d(8px,-10px,0) rotate(4deg)}}
+@keyframes seam-lab-drift{0%,100%{transform:translate3d(-8px,-10px,0) rotate(-8deg)}50%{transform:translate3d(10px,10px,0) rotate(8deg)}}
+@keyframes particle-lab-drift{0%,100%{transform:translate3d(-5px,4px,0) rotate(-5deg)}50%{transform:translate3d(8px,-5px,0) rotate(6deg)}}
+@media(max-width:1100px){.photo-gallery{grid-template-columns:minmax(0,.8fr) minmax(0,1fr);gap:16px}.gallery-float-a{width:57px}.gallery-float-b{width:44px}#moments{padding-bottom:28px}#packages{padding-top:42px}.lab-interlude{bottom:0;width:220px;height:58px}.lab-interlude .hero-explosion{width:85px;height:62px}.interlude-flask{width:37px;height:54px}}
+@media(max-width:680px){.photo-gallery{display:flex;flex-direction:column;gap:16px}.gallery-science{position:absolute;inset:0;display:block;width:auto;height:auto;flex:none}.gallery-float-a{left:4%;top:12%;width:48px}.gallery-float-b{left:auto;right:2%;top:47%;width:37px}.gallery-formula{left:5%;top:24%;font-size:14px}.lab-interlude{right:0;bottom:2px;width:140px;height:42px;opacity:.75}.lab-interlude .hero-explosion{width:60px;height:45px}.interlude-flask{left:3px;width:29px;height:40px}.lab-interlude .chem-formula{left:45px;top:16px;font-size:13px}#moments{padding-bottom:24px}#packages{padding-top:36px}.nucleon-transition{width:128px;height:42px;right:0;bottom:-14px}.nucleon-transition svg{width:76px;height:48px;right:4px}.nucleon-transition .chem-formula{left:4px;top:17px;font-size:12px}.neutron-a{left:36px;top:19px}.neutron-b{width:6px;height:6px;top:22px}.discuss-button{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.gallery-float,.gallery-formula,.interlude-flask,.nucleon-transition svg,.neutron,.lab-interlude .hero-explosion span{animation:none!important}}
+
+/* Keep the keyboard-only link out of non-focused captures and normal layouts */
+.skip-link{top:12px;transform:translateY(calc(-100% - 24px));opacity:0;pointer-events:none}.skip-link:focus{top:12px;transform:none;opacity:1;pointer-events:auto}
+
+.included-workshop-note{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:#e8f6fb;color:#21617d;font-size:12px;line-height:1.6}.party-workshops .extra-options{grid-template-columns:1fr}
+
+#plan-price.price-pending{font-size:15px;line-height:1.35;white-space:normal;max-width:170px}.planner-card select{min-width:0;max-width:100%}.packages-toolbar select{max-width:100%}@media(max-width:680px){#plan-price.price-pending{font-size:14px;max-width:135px}}
+
+.price-custom .price-prefix,.price-custom .price-currency{display:none}
