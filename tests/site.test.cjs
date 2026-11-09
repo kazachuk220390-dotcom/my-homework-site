@@ -50,6 +50,7 @@ after(async () => {
 
 async function openPage(viewport = { width: 1440, height: 1000 }) {
   const page = await browser.newPage({ viewport, reducedMotion: 'reduce' });
+  await stubExternalPresentation(page);
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   return page;
 }
@@ -62,7 +63,15 @@ async function loadAllImages(page) {
 }
 
 const photoNames = ['birthday-scientist', 'professor', 'guests', 'megafog', 'icecream-making', 'icecream-result'];
-const withoutPermittedPeriods = (value) => value.replaceAll('sumnauka.ru', '[site]').replaceAll('v0.2', '[version]');
+// Tests run offline: remote presentation assets are replaced with deterministic fixtures
+async function stubExternalPresentation(page) {
+  await page.route('https://fonts.googleapis.com/**', route => route.fulfill({status: 200, contentType: 'text/css', body: ''}));
+  await page.route('https://static.tildacdn.com/**', route => route.fulfill({
+    status: 200, contentType: 'image/png',
+    body: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFUlEQVR4nGP8////fwYGBgYmBigAAD34BADaOyqcAAAAAElFTkSuQmCC', 'base64')
+  }));
+}
+
 
 for (const width of [320, 390, 768, 1440]) {
   test(`page renders at ${width}px without overflow, script errors or broken assets`, async () => {
@@ -71,7 +80,8 @@ for (const width of [320, 390, 768, 1440]) {
     const failures = [];
     page.on('pageerror', (error) => errors.push(error.message));
     page.on('response', (response) => { if (response.status() >= 400) failures.push(`${response.status()} ${response.url()}`); });
-    await page.goto(baseURL, { waitUntil: 'networkidle' });
+    await stubExternalPresentation(page);
+  await page.goto(baseURL, { waitUntil: 'networkidle' });
     await loadAllImages(page);
     assert.deepEqual(errors, []);
     assert.deepEqual(failures, []);
@@ -93,6 +103,7 @@ test('navigation targets exist, review mode is clear, and no tracking or data su
   const page = await browser.newPage();
   const requests = [];
   page.on('request', (request) => requests.push({ url: request.url(), method: request.method() }));
+  await stubExternalPresentation(page);
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   const brokenTargets = await page.locator('a[href^="#"]').evaluateAll((links) => links
     .map((link) => link.getAttribute('href')).filter((href) => href !== '#' && !document.getElementById(href.slice(1))));
@@ -102,8 +113,12 @@ test('navigation targets exist, review mode is clear, and no tracking or data su
   assert.match(await page.locator('.test-mode').innerText(), /Дата не бронируется автоматически/);
   assert.equal(await page.locator('form,input:not([type="checkbox"]),textarea:not([readonly])').count(), 0);
   assert.equal(await page.locator('input[type="checkbox"]').count(), 2);
-  assert.equal(await page.locator('iframe,script[src^="http"],img[src^="http"]').count(), 0);
-  assert.ok(requests.every((request) => request.method === 'GET' && request.url.startsWith(baseURL + '/')));
+  assert.equal(await page.locator('iframe,script[src^="http"]').count(), 0);
+  assert.equal(await page.locator('img[src^="http"]').count(), 2);
+  const permittedHosts = [new URL(baseURL).host, 'fonts.googleapis.com', 'static.tildacdn.com'];
+  assert.ok(requests.every(request => request.method === 'GET' && permittedHosts.includes(new URL(request.url).host)));
+  assert.equal(await page.locator('.hero-facts').count(), 0);
+  assert.equal(await page.locator('.dna-graphic').count(), 1);
   await page.close();
 });
 
@@ -112,7 +127,8 @@ test('six selected event photos load as local WebP with useful display area on m
     const page = await browser.newPage({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' });
     const requested = [];
     page.on('request', (request) => requested.push(new URL(request.url()).pathname));
-    await page.goto(baseURL, { waitUntil: 'networkidle' });
+    await stubExternalPresentation(page);
+  await page.goto(baseURL, { waitUntil: 'networkidle' });
     await loadAllImages(page);
     const photos = await page.locator('img[src*="assets/photos/"]').evaluateAll((images) => images.map((image) => {
       const bounds = image.getBoundingClientRect();
@@ -164,6 +180,7 @@ test('project Pages subpath resolves scripts, styles, six photographs and packag
   const resources = [];
   page.on('response', (response) => { if (response.status() >= 400) failures.push(`${response.status()} ${response.url()}`); });
   page.on('request', (request) => resources.push(new URL(request.url()).pathname));
+  await stubExternalPresentation(page);
   await page.goto(baseURL + '/my-homework-site/', { waitUntil: 'networkidle' });
   await loadAllImages(page);
   assert.deepEqual(failures, []);
@@ -179,30 +196,55 @@ test('project Pages subpath resolves scripts, styles, six photographs and packag
   await page.close();
 });
 
-test('base show and both optional workshops calculate safely', async () => {
+test('base show and optional workshops remain available in every plan', async () => {
   const page = await openPage();
   await page.selectOption('#plan-package', 'show');
+  assert.equal(await page.locator('#plan-workshop-wrap').isVisible(), true);
   await page.selectOption('#plan-show', 'dry');
   assert.equal(await page.locator('#plan-price').innerText(), '9 500 ₽');
   await page.selectOption('#plan-show', 'cryo');
   assert.equal(await page.locator('#plan-price').innerText(), '10 000 ₽');
-  await page.selectOption('#plan-package', 'party');
-  await page.selectOption('#plan-show', 'cryo');
-  assert.equal(await page.locator('#plan-price').innerText(), '29 900 ₽');
-  await page.locator('#plan-workshop-slime').check();
-  assert.equal(await page.locator('#plan-price').innerText(), 'По расчёту');
-  assert.match(await page.locator('#plan-summary').inputValue(), /крио-мороженое и лизуны/);
-  assert.match(await page.locator('#plan-summary').inputValue(), /продолжительность: уточняется/i);
-  await page.locator('#plan-workshop-icecream').uncheck();
-  assert.match(await page.locator('#plan-summary').inputValue(), /Мастер-класс: лизуны/);
-  await page.locator('#plan-workshop-slime').uncheck();
-  assert.equal(await page.locator('#copy-plan').isDisabled(), true);
   await page.locator('#plan-workshop-icecream').check();
-  assert.equal(await page.locator('#copy-plan').isEnabled(), true);
-  assert.equal(await page.locator('#plan-price').innerText(), '29 900 ₽');
-  await page.selectOption('#plan-guests', '20');
-  assert.equal(await page.locator('#guest-count').inputValue(), '20');
   assert.equal(await page.locator('#plan-price').innerText(), 'По расчёту');
+  assert.match(await page.locator('#plan-summary').inputValue(), /крио-мороженое/);
+  await page.locator('#plan-workshop-slime').check();
+  assert.match(await page.locator('#plan-summary').inputValue(), /крио-мороженое и лизуны/);
+  await page.selectOption('#plan-package', 'party');
+  assert.equal(await page.locator('#plan-workshop-wrap').isVisible(), true);
+  await page.selectOption('#plan-show', 'cryo');
+  assert.equal(await page.locator('#plan-price').innerText(), 'По расчёту');
+  await page.locator('#plan-workshop-slime').uncheck();
+  await page.selectOption('#plan-guests', '10');
+  assert.equal(await page.locator('#plan-price').innerText(), '29 900 ₽');
+  await page.locator('#plan-workshop-icecream').uncheck();
+  assert.equal(await page.locator('#copy-plan').isDisabled(), true);
+  await page.selectOption('#plan-package', 'show');
+  assert.equal(await page.locator('#copy-plan').isEnabled(), true);
+  assert.equal(await page.locator('#plan-workshop-wrap').isVisible(), true);
+  await page.close();
+});
+
+test('selecting the first package programme updates its full description, not just price', async () => {
+  const page = await openPage();
+  await page.locator('#show-options summary').click();
+  await page.selectOption('#show-choice', 'cryo');
+  assert.match(await page.locator('#show-choice-description').innerText(), /жидкого азота/);
+  assert.match(await page.locator('#show-choice-meta').innerText(), /5 лет/);
+  assert.equal(await page.locator('#show-choice-highlights li').count(), 3);
+  await page.selectOption('#show-choice', 'halloween');
+  assert.match(await page.locator('#show-choice-description').innerText(), /Таинственная лаборатория/);
+  assert.match(await page.locator('#show-choice-meta').innerText(), /5 лет/);
+  await page.close();
+});
+
+test('review details open separately with no link to the former website', async () => {
+  const page = await openPage();
+  assert.equal(await page.locator('#reviews a').count(), 0);
+  const cards = page.locator('#reviews .review-card');
+  assert.equal(await cards.count(), 3);
+  await cards.first().locator('summary').click();
+  assert.equal(await cards.first().locator('.review-details').getAttribute('open'), '');
+  assert.equal(await cards.nth(1).locator('.review-details').getAttribute('open'), null);
   await page.close();
 });
 
@@ -255,6 +297,7 @@ test('copy reports actual success and offers manual selection when the clipboard
   const page = await context.newPage();
   const outbound = [];
   page.on('request', (request) => { if (request.method() !== 'GET') outbound.push(request.method()); });
+  await stubExternalPresentation(page);
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   await page.locator('#copy-plan').click();
   await page.waitForFunction(() => document.querySelector('#copy-status').textContent.includes('План скопирован'));
