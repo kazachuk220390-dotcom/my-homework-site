@@ -52,3 +52,96 @@ h1,h2,h3,.brand strong,.price strong,.planner-label{font-family:"Arial Black","T
 @keyframes lab-float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(1deg)}}
 @media(max-width:680px){.science-glassware{width:115px;right:5%;bottom:91px;opacity:.7}}
 @media(prefers-reduced-motion:reduce){.science-glassware{animation:none!important}}
+
+
+/* v0.5 — expressive science UI, genuine fonts, atmospheric effects and accessible cards */
+:root {--blue:#1266aa;--ink:#102e4a;--muted:#476478;--ice:#f0faff;--yellow:#dcf980;--cyan:#39bfe7}
+body {font-family:"Manrope","Segoe UI",sans-serif;font-size:15px;color:#153451;background:#fff}
+h1,h2,h3,h4,.brand,.price strong,.planner-label,.footer-meta h2{font-family:"Exo 2","Trebuchet MS",sans-serif;font-weight:800;letter-spacing:-.027em}
+button,select,textarea,input{font-family:inherit}
+.hero h1{font-family:"Exo 2","Trebuchet MS",sans-serif;font-size:clamp(36px,4.4vw,66px);font-weight:900;letter-spacing:-.035em}
+.brand-logo{width:120px;height:94px;align-items:center;justify-content:center;flex:0 0 120px}
+.brand-logo img{display:block;width:112px;height:112px;object-fit:contain;filter:drop-shadow(0 7px 13px #21587a25)}
+.site-header{height:112px;gap:15px}
+.hero{isolation:isolate;overflow:visible;min-height:600px}
+.hero-copy{z-index:4}
+.hero-explosion{position:absolute;top:-14px;right:1%;width:260px;height:220px;pointer-events:none;z-index:-1}
+.hero-explosion span{display:block;width:100%;height:100%;background:repeating-conic-gradient(from 15deg,#ffbf54 0deg 7deg,#ff7b3c 7deg 12deg,transparent 12deg 23deg);clip-path:polygon(50% 0%,57% 31%,80% 13%,73% 40%,100% 30%,78% 53%,100% 78%,65% 70%,50% 100%,36% 69%,3% 82%,24% 55%,0% 32%,35% 40%);opacity:.82;animation:burst-breathe 5s ease-in-out infinite;filter:drop-shadow(0 0 20px #ffca88)}
+.science-sky{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:visible}
+.dna-graphic{position:absolute;width:72px;height:230px;left:46.8%;top:17%;opacity:.82;filter:drop-shadow(0 0 8px #56d4ee);animation:dna-float 8s ease-in-out infinite}
+.molecule-graphic{position:absolute;width:92px;height:84px;opacity:.75;filter:drop-shadow(0 0 12px #76daf6)}
+.mol-a{left:41%;top:-2%;animation:molecule-orbit 12s ease-in-out infinite alternate}
+.mol-b{left:48%;bottom:3%;width:60px;opacity:.65;animation:molecule-orbit 14s ease-in-out infinite alternate-reverse}
+.hero-photo{box-shadow:0 25px 66px #266aab30;border:2px solid #d4f5ff;z-index:1}
+.hero-fog{z-index:2;bottom:0;top:auto;height:53%;background:radial-gradient(ellipse at 45% 100%,#dffbff9c 4%,#79e6f352 43%,transparent 74%);mix-blend-mode:screen}
+.hero-fog i{bottom:-16%;height:65%;background:radial-gradient(ellipse at center,#e4ffffef,#b7f5fff5 30%,#a3e6f86a 58%,transparent 78%);filter:blur(24px);opacity:.72}
+.science-burst{top:6%;right:4%;width:120px;opacity:1;color:#f8d87f;filter:drop-shadow(0 0 8px #f6ba4b);animation:burst-breathe 6s ease-in-out infinite}
+.hero-photo .art-bottom{z-index:4}
+.hero-photo .art-label{z-index:4}
+.hero .button-primary{box-shadow:0 0 0 1px #bee977,0 0 25px #c8f67a91}
+.show-flow.light-lab{background:linear-gradient(135deg,#f5fcff 0%,#e4f6fc 54%,#eaf6ff 100%);border:1px solid #c7e8f8;color:#133653;box-shadow:0 15px 35px #1a72901b;position:relative;overflow:hidden}
+.show-flow.light-lab:before{content:"";position:absolute;right:-70px;top:-110px;width:260px;height:260px;background:radial-gradient(circle,#73d7f543,transparent 68%);pointer-events:none}
+.show-flow.light-lab h3,.show-flow.light-lab h4{color:#133653}
+.show-flow.light-lab .flow-intro>p,.show-flow.light-lab .flow-steps p{color:#486679}
+.show-flow.light-lab .pill{background:#fff;border-color:#96d2ec;color:#1262a2}
+.show-flow.light-lab .flow-steps li>span{border-color:#a6d5ed;background:white;color:#1269b6}
+.photo-gallery{grid-template-columns:minmax(0,.8fr) 105px minmax(0,1fr);gap:16px}
+.photo-card-tall{grid-column:1;grid-row:span 2}
+.photo-card:not(.photo-card-tall){grid-column:3}
+.gallery-science{grid-column:2;grid-row:1/span 2;position:relative;display:flex;align-items:center;justify-content:center;min-width:0}
+.gallery-science .science-glassware{position:static;width:100px;height:auto;opacity:.98;animation:lab-float 7s ease-in-out infinite;filter:drop-shadow(0 5px 13px #39bcebaa)}
+.gallery-science .bubble{position:absolute;border:2px solid #40c8e9;border-radius:50%;background:#b0f7ff9a;box-shadow:0 0 11px #77d9eb;height:13px;width:13px;animation:bubble-rise 9s linear infinite}
+.gallery-science .bubble-a{top:17%;left:5%}.gallery-science .bubble-b{top:56%;right:3%;width:20px;height:20px;animation-delay:-3s}.gallery-science .bubble-c{bottom:13%;left:13%;width:9px;height:9px;animation-delay:-6s}
+.package-card.lab-card{overflow:hidden;isolation:isolate;border-radius:22px}
+.package-card.lab-card:before{content:"";position:absolute;right:-50px;top:-60px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,#7df3ff6b,transparent 70%);z-index:-1;pointer-events:none}
+.lab-card .card-energy{position:absolute;top:72px;right:-13px;width:105px;height:105px;pointer-events:none;opacity:.64;z-index:-1}
+.lab-card .card-energy span{font-family:"Exo 2",sans-serif;font-size:95px;line-height:1;color:#72e0f2;display:block;animation:burst-breathe 6s infinite}
+.lab-card .card-energy i{position:absolute;border-radius:50%;width:13px;height:13px;border:2px solid currentColor;color:#4fd5e3;animation:bubble-rise 7s ease-in-out infinite}
+.lab-card .card-energy i:nth-of-type(1){top:-17px;right:40px}.lab-card .card-energy i:nth-of-type(2){bottom:0;right:8px;animation-delay:-3s}.lab-card .card-energy i:nth-of-type(3){bottom:16px;left:0;animation-delay:-5s}
+.package-card.lab-card-show{background:linear-gradient(146deg,#ffffff,#edfaff 57%,#e1f2ff);border:1px solid #b3ddf3;box-shadow:0 12px 26px #135e9120}
+.package-card.lab-card-party{background:linear-gradient(142deg,#235877,#2e6d87 47%,#27617c);border:1px solid #5899b2;color:#f7fcff;box-shadow:0 20px 44px #13395033}
+.package-card.lab-card-party .package-description,.package-card.lab-card-party .price-caption,.package-card.lab-card-party .package-caveat,.package-card.lab-card-party .check-list li{color:#edf8fe}
+.package-card.lab-card-party .package-index{color:#bfeffd}
+.package-card.lab-card-party .package-divider{background:#ffffff50}
+.package-card.lab-card-party .card-energy{opacity:.32}
+.lab-card .package-button{border:1px solid #76dbf5;border-radius:13px;background:linear-gradient(120deg,#edffff,#cbfaff);color:#0e557e;box-shadow:0 0 0 1px #bbecf7,0 0 18px #64dcef91;transition:transform .2s,box-shadow .2s}
+.lab-card .package-button:hover{background:#ebffff;color:#034e75;box-shadow:0 0 26px #51ddf4,0 6px 18px #195f8e42}
+.lab-card-party .package-button{background:linear-gradient(120deg,#d6fcf4,#a8f0e8);color:#13495d;box-shadow:0 0 21px #7ceded8f;border-color:#8df0e7}
+.lab-card-party .package-button:hover{background:#e4fffc;box-shadow:0 0 28px #8cebe7c2}
+.package-card.secret-lab{box-shadow:0 20px 44px #123c5873}
+.show-choice-info{padding:15px 14px;margin-top:12px;border:1px solid #d0e7f6;border-radius:12px;background:#fff}
+#show-choice-description{margin:0 0 10px!important;font-size:12px!important;line-height:1.7;color:#183f61!important}
+.show-meta{font-size:11px!important;color:#296e9f!important;font-weight:800;margin:0 0 8px!important}
+.show-highlights{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.show-highlights li{background:#e7f7fd;border:1px solid #c3e6f2;color:#225e83;border-radius:7px;padding:5px 7px;font-size:10px;font-weight:700}
+.review-card{display:flex;flex-direction:column;gap:6px}
+.review-details{margin:5px 0 20px!important;border:1px solid #b8dded;border-radius:12px;padding:0 12px;background:#f0faff;flex:0 0 auto}
+.review-details summary{list-style:none;cursor:pointer;color:#1264a6;font-weight:800;font-size:12px;padding:12px 2px!important;display:flex;justify-content:space-between;gap:10px}
+.review-details summary::-webkit-details-marker{display:none}
+.review-details summary>span{font-size:20px;transition:transform .2s}
+.review-details[open] summary>span{transform:rotate(45deg)}
+.review-details p{font-size:12px;color:#3c5a70;line-height:1.8;padding:0 3px 14px;margin:0}
+.review-author{margin-top:auto}
+.review-disclaimer{font-size:11px;color:#637689;margin-top:15px}
+.planner-show-info{font-size:12px;line-height:1.6;color:#276487;margin:-2px 0 16px;padding:12px;border-left:3px solid #37a7d8;background:#eaf8fc;border-radius:0 8px 8px 0}
+#plan-workshop-wrap{display:block!important}
+#plan-workshop-wrap[hidden]{display:block!important}
+.planner-card .selector-title{font-size:13px}
+.footer-logo{width:146px;height:146px;display:block}
+.footer-logo img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 7px 14px #1c719a29)}
+.site-footer{display:flex;align-items:center;justify-content:space-between;gap:38px;padding-block:45px}
+.footer-identity{max-width:400px}.footer-identity p{font-size:12px;line-height:1.9;color:#4a677c;max-width:380px}
+.footer-meta h2{font-size:22px;text-align:left;margin:0 0 10px}
+.site-footer .footer-meta{text-align:left;display:flex;flex-direction:column;gap:7px}
+.footer-meta .contact-link{font-size:17px;font-weight:800;color:#1165a1;text-decoration:none}
+.footer-meta .contact-link:hover{text-decoration:underline}
+.footer-meta p{font-size:11px;color:#647b8b}
+@keyframes dna-float{0%,100%{transform:translateY(0) rotate(-8deg) rotateY(0)}50%{transform:translateY(15px) rotate(4deg) rotateY(30deg)}}
+@keyframes molecule-orbit{0%{transform:translate(-6px,0) rotate(-20deg)}50%{transform:translate(11px,14px) rotate(18deg)}100%{transform:translate(0,-10px) rotate(-8deg)}}
+@keyframes burst-breathe{0%,100%{transform:scale(.92);opacity:.65}50%{transform:scale(1.1);opacity:1}}
+@keyframes bubble-rise{0%,100%{transform:translateY(10px);opacity:.45}45%{transform:translateY(-14px);opacity:.95}}
+@media(max-width:1100px){.dna-graphic{left:46%;width:52px}.photo-gallery{grid-template-columns:minmax(0,.8fr) 70px minmax(0,1fr);gap:12px}.gallery-science .science-glassware{width:70px}}
+@media(max-width:900px){.brand-logo{width:88px;height:86px;flex:0 0 88px}.brand-logo img{width:88px;height:88px}.dna-graphic{left:45%;width:44px;opacity:.65}.molecule-graphic{width:64px}.science-sky{opacity:.85}.site-header{height:96px}.hero-explosion{width:180px;height:160px}}
+@media(max-width:680px){.site-header{height:88px}.brand-logo{flex:0 0 76px;width:76px;height:76px}.brand-logo img{width:80px;height:80px}.hero{min-height:0}.hero h1{font-size:clamp(34px,8.4vw,46px)}.science-sky{opacity:.85;overflow:hidden}.dna-graphic{left:auto;right:0;top:2%;height:140px;width:44px;opacity:.38}.mol-a{left:auto;right:0;top:15%}.mol-b{left:71%;bottom:44%}.hero-explosion{top:35%;right:-10px;width:160px;height:140px;opacity:.7}.photo-gallery{display:flex;flex-direction:column;gap:15px}.gallery-science{width:100%;height:85px;flex:none}.gallery-science .science-glassware{width:100px;height:74px}.gallery-science .bubble-a{top:12%;left:20%}.gallery-science .bubble-b{top:20%;right:24%}.gallery-science .bubble-c{bottom:8%;left:36%}.show-flow.light-lab{padding:25px 23px}.site-footer{display:flex;flex-direction:column;align-items:flex-start;gap:20px}.footer-logo{width:120px;height:120px}.footer-meta h2{font-size:22px}.review-details{width:100%}.footer-identity{max-width:100%}}
+@media(max-width:365px){.brand-logo{width:68px;flex-basis:68px}.brand-logo img{width:70px;height:70px}.science-sky{opacity:.5}.review-details summary{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.hero-explosion span,.dna-graphic,.molecule-graphic,.gallery-science .science-glassware,.gallery-science .bubble,.lab-card .card-energy span,.lab-card .card-energy i{animation:none!important}}
