@@ -1,4 +1,4 @@
-> Архив отчёта v0.2 — текущие правила и проверка v0.6: [changes-v0.6.md](changes-v0.6.md) и [approved-pricing-v0.6.md](approved-pricing-v0.6.md)
+> Архив отчёта v0.2 — текущие изменения v0.6.1: [changes-v0.6.1.md](changes-v0.6.1.md) и [approved-pricing-v0.6.md](approved-pricing-v0.6.md)
 
 # Передача проверочной версии
 

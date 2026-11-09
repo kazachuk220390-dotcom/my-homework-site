@@ -63,6 +63,15 @@ async function loadAllImages(page) {
 }
 
 const photoNames = ['birthday-scientist', 'professor', 'guests', 'megafog', 'icecream-making', 'icecream-result'];
+// Verbatim owner input from 10 November 2026, independent of app.js.
+const approvedDescriptions = {
+  dry: 'Туман, "научная каша" и необычные свойства сухого льда — интерактивное путешествие для самых маленьких исследователей',
+  cryo: 'Ледяная магия жидкого азота, эффектные замораживания и большой научный финал, где удивляются даже искушенные зрители',
+  science: 'Для любопытных исследователей — сложные увлекательные химические и физические явления с обсуждением удивительных реакций',
+  potter: 'Школа чудесных открытий — наука встречается с атмосферой волшебства, а гости превращаются в юных волшебников',
+  graduate: 'Выпускной, где целый класс участвует в опытах, делает открытия и получает праздничное награждение, а в завершении праздника Профессор дарит подарок каждому выпускнику',
+  kitchen: 'Научная кухня, где привычные вещи открываются с неожиданной стороны — детали программы подбираем под формат праздника',
+};
 // Tests run offline: remote presentation assets are replaced with deterministic fixtures
 async function stubExternalPresentation(page) {
   await page.route('https://fonts.googleapis.com/**', route => route.fulfill({status: 200, contentType: 'text/css', body: ''}));
@@ -298,7 +307,7 @@ test('ordinary show prices add each selected workshop for every group of five af
     slime: [1500, 2500, 3500, 4500, 5500, 10500, 15500],
     both: [4000, 6000, 8000, 10000, 12000, 22000, 32000],
   };
-  const shows = { dry: 9500, cryo: 10000, science: 11000, potter: 11000, halloween: 11000, graduate: 12000, snow: 12000 };
+  const shows = { dry: 9500, cryo: 10000, science: 11000, potter: 11000, graduate: 12000 };
   const numeric = (text) => Number(text.replace(/\D/g, ''));
   for (const [show, base] of Object.entries(shows)) {
     await page.selectOption('#plan-show', show);
@@ -424,16 +433,48 @@ test('both group selectors expose approved upper bounds and over-150 plans remai
   await page.close();
 });
 
-test('selecting the first package programme updates its full description, not just price', async () => {
+test('all six active programmes show the owner’s exact descriptions in the catalogue and planner', async () => {
   const page = await openPage();
+  await page.selectOption('#plan-package', 'show');
   await page.locator('#show-options summary').click();
-  await page.selectOption('#show-choice', 'cryo');
-  assert.match(await page.locator('#show-choice-description').innerText(), /жидкого азота/);
-  assert.match(await page.locator('#show-choice-meta').innerText(), /5 лет/);
-  assert.equal(await page.locator('#show-choice-highlights li').count(), 3);
-  await page.selectOption('#show-choice', 'halloween');
-  assert.match(await page.locator('#show-choice-description').innerText(), /Таинственная лаборатория/);
-  assert.match(await page.locator('#show-choice-meta').innerText(), /5 лет/);
+  const activeCodes = Object.keys(approvedDescriptions);
+  for (const id of ['show-choice', 'plan-show']) {
+    assert.deepEqual(await page.locator(`#${id} option`).evaluateAll((options) => options.map((option) => option.value)), activeCodes);
+  }
+  for (const [code, description] of Object.entries(approvedDescriptions)) {
+    await page.selectOption('#show-choice', code);
+    assert.equal(await page.locator('#show-choice-description').textContent(), description);
+    assert.equal(await page.locator('#show-choice-highlights li').count(), 3);
+    assert.equal(await page.locator('#plan-show').inputValue(), code);
+    assert.ok((await page.locator('#plan-show-description').textContent()).startsWith(description + ' · '));
+    const summary = await page.locator('#plan-summary').inputValue();
+    assert.ok(summary.includes('Особенности: ' + description));
+    assert.doesNotMatch(summary, /halloween|snow|Хеллоуин|Снегурочк/iu);
+  }
+  for (const [code, description] of Object.entries(approvedDescriptions).reverse()) {
+    await page.selectOption('#plan-show', code);
+    assert.ok((await page.locator('#plan-show-description').textContent()).startsWith(description + ' · '));
+    assert.ok((await page.locator('#plan-summary').inputValue()).includes('Особенности: ' + description));
+  }
+  await page.close();
+});
+
+test('seasonal programmes are unavailable in both selectors and no seasonal placeholder is published', async () => {
+  const page = await openPage();
+  await page.selectOption('#plan-package', 'show');
+  for (const id of ['show-choice', 'plan-show']) {
+    for (const code of ['halloween', 'snow']) {
+      assert.equal(await page.locator(`#${id} option[value="${code}"]`).count(), 0);
+    }
+    const labels = await page.locator(`#${id} option`).allTextContents();
+    assert.doesNotMatch(labels.join('\n'), /Хеллоуин|Снегурочк/iu);
+  }
+  assert.equal(await page.locator('section[id*="season"],section[class*="season"],#seasonal-shows,.seasonal-shows').count(), 0);
+  assert.doesNotMatch(await page.locator('body').innerText(), /Хеллоуин|Снегурочк|сезонные\s+(программы|шоу)/iu);
+  await page.selectOption('#plan-package', 'party');
+  assert.doesNotMatch(await page.locator('#plan-summary').inputValue(), /halloween|snow|Хеллоуин|Снегурочк/iu);
+  await page.selectOption('#plan-package', 'show');
+  assert.doesNotMatch(await page.locator('#plan-summary').inputValue(), /halloween|snow|Хеллоуин|Снегурочк/iu);
   await page.close();
 });
 
