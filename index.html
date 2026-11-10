@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" data-site-version="0.8">
+<html lang="ru" data-site-version="0.9">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#edf6ff">
   <title>Сумасшедшая наука — взрываем привычное представление о праздниках!</title>
   <link rel="icon" href="https://static.tildacdn.com/tild6631-3463-4963-b039-383234303133/___128x128.png" type="image/png" sizes="128x128">
-  <link rel="stylesheet" href="./styles.css?v=0.8">
-  <script src="./app.js?v=0.8" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=0.9">
+  <script src="./app.js?v=0.9" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
@@ -95,9 +95,22 @@
       <div class="section-heading"><div><p class="eyebrow">02 / Наука в настоящем кадре</p><h2 id="moments-title">Вот так рождается<br>большое «вау»!</h2></div><p>Профессор, гости и научные открытия — фотографии проведённых мероприятий</p></div>
       <div class="photo-gallery">
         <figure class="photo-card photo-card-tall"><a class="photo-frame" href="./assets/photos/professor.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фотографию профессора за научным столом целиком"><img src="./assets/photos/professor.webp" alt="Профессор проводит демонстрацию за лабораторным столом" width="961" height="1440" loading="lazy" decoding="async"></a><figcaption><span>Профессор за научным столом</span><span class="photo-number" aria-hidden="true">01</span></figcaption></figure>
-        <div class="gallery-science" aria-hidden="true"><svg class="gallery-float gallery-float-a" viewBox="0 0 100 125"><use href="#lab-flask"/></svg><svg class="gallery-float gallery-float-b" viewBox="0 0 65 130"><use href="#lab-test-tube"/></svg><span class="gallery-formula">CO₂</span></div>
-        <figure class="photo-card"><a class="photo-frame" href="./assets/photos/guests.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фотографию участников шоу целиком"><img src="./assets/photos/guests.webp" alt="Дети и взрослые участвуют в программе у научного стола" width="1440" height="961" loading="lazy" decoding="async"></a><figcaption><span>Открытия — вместе с гостями</span><span class="photo-number" aria-hidden="true">02</span></figcaption></figure>
-        <figure class="photo-card"><a class="photo-frame" href="./assets/photos/megafog.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фотографию Мегатумана целиком"><img src="./assets/photos/megafog.webp" alt="Белое облако Мегатумана во время научного шоу" width="1440" height="961" loading="lazy" decoding="async"><svg class="photo-corner-visual" viewBox="0 0 95 140" fill="none" aria-hidden="true"><use href="#lab-test-tube" x="18" y="4" width="55" height="112"/><circle class="corner-fizz" cx="78" cy="17" r="4" fill="#71ddec"/><circle class="corner-fizz second" cx="17" cy="38" r="3" fill="#bde988"/></svg></a><figcaption><span>Кульминация — «Мегатуман»</span><span class="photo-number" aria-hidden="true">03</span></figcaption></figure>
+        <div class="gallery-science" aria-hidden="true">
+          <svg class="gallery-float gallery-float-a" viewBox="0 0 100 125"><use href="#lab-flask"/></svg>
+          <svg class="gallery-float gallery-float-b" viewBox="0 0 65 130"><use href="#lab-test-tube"/></svg>
+          <span class="gallery-formula">CO₂</span>
+          <span class="gallery-bubble gallery-bubble-a"></span><span class="gallery-bubble gallery-bubble-b"></span>
+        </div>
+        <div class="photo-stack">
+          <figure class="photo-card"><a class="photo-frame" href="./assets/photos/guests.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фотографию участников шоу целиком"><img src="./assets/photos/guests.webp" alt="Дети и взрослые участвуют в программе у научного стола" width="1440" height="961" loading="lazy" decoding="async"></a><figcaption><span>Открытия — вместе с гостями</span><span class="photo-number" aria-hidden="true">02</span></figcaption></figure>
+          <div class="gallery-science-divider" aria-hidden="true">
+            <svg class="gallery-divider-flask" viewBox="0 0 100 125"><use href="#lab-flask"/></svg>
+            <span class="gallery-divider-formula">H₂O</span>
+            <svg class="gallery-divider-testtube" viewBox="0 0 65 130"><use href="#lab-test-tube"/></svg>
+            <span class="gallery-divider-bubble gallery-divider-bubble-a"></span><span class="gallery-divider-bubble gallery-divider-bubble-b"></span>
+          </div>
+          <figure class="photo-card"><a class="photo-frame" href="./assets/photos/megafog.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фотографию Мегатумана целиком"><img src="./assets/photos/megafog.webp" alt="Белое облако Мегатумана во время научного шоу" width="1440" height="961" loading="lazy" decoding="async"></a><figcaption><span>Кульминация — «Мегатуман»</span><span class="photo-number" aria-hidden="true">03</span></figcaption></figure>
+        </div>
       </div>
       <p class="section-note">Нажмите на фотографию, чтобы открыть её целиком</p>
       <div class="nucleon-transition" aria-hidden="true"><svg viewBox="0 0 140 95"><use href="#lab-atom"/></svg><span class="neutron neutron-a"></span><span class="neutron neutron-b"></span><span class="chem-formula">N₂</span></div>
@@ -149,29 +162,65 @@
 
         <section id="reviews" class="section page-width" aria-labelledby="reviews-title"><div class="section-heading"><div><p class="eyebrow">04 / После научных открытий</p><h2 id="reviews-title">Впечатления, которыми<br>делятся родители</h2></div><p>Родители и организаторы делятся тем, что запомнилось после наших научных приключений</p></div>
       <div class="review-grid">
-        <article class="review-card"><span class="review-symbol" aria-hidden="true"><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-spark"></use></svg></span>
+        <article class="review-card">
+          <span class="review-symbol" aria-hidden="true"><svg class="ui-science-icon" viewBox="0 0 40 40" focusable="false"><use href="#science-spark"></use></svg></span>
           <h3>Интересно и детям, и взрослым</h3>
-          <p>Ирина приглашала научное шоу дважды — на каждом мероприятии было около 40 детей, ведущая справилась с большой компанией и подарила яркие эмоции</p>
-          <details class="review-details"><summary>Посмотреть весь отзыв <span aria-hidden="true">+</span></summary>
-          <p>В подробном отзыве Ирина отметила ответственность, пунктуальность и необыкновенную энергичность ведущей. Дети увлечённо наблюдали за опытами, а взрослые тоже с интересом включились в атмосферу шоу. Особенно запомнилось, как легко профессор удерживала внимание больших групп на обоих мероприятиях</p></details>
+          <p>Ирина пригласила шоу на два мероприятия, каждое — примерно для 40 детей. Особенно отметила энергичность ведущей и увлекательные эксперименты.</p>
+          <button type="button" class="review-open-button" data-review-open="irina" aria-haspopup="dialog" aria-controls="review-dialog-irina">Посмотреть весь отзыв <span aria-hidden="true">↗</span></button>
           <div class="review-author"><span class="avatar" aria-hidden="true">И</span><span><strong>Ирина</strong><small>Два научных выступления</small></span></div>
         </article>
-        <article class="review-card"><span class="review-symbol" aria-hidden="true"><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-spark"></use></svg></span>
+        <article class="review-card">
+          <span class="review-symbol" aria-hidden="true"><svg class="ui-science-icon" viewBox="0 0 40 40" focusable="false"><use href="#science-spark"></use></svg></span>
           <h3>Много интерактива и внимания к детям</h3>
-          <p>Семейный клуб «Апельсин» пригласил программу снова после знакомства на дне рождения — особенно понравились юмор и участие детей</p>
-          <details class="review-details"><summary>Посмотреть весь отзыв <span aria-hidden="true">+</span></summary>
-          <p>Администратор клуба рассказала, что впечатление от первого выступления оказалось настолько сильным, что сразу договорились о двух следующих праздниках. Детей разных возрастов увлекли эксперименты и шутки, внимание получили и родители. Клуб отдельно отметил профессионализм ведущей и желание пригласить новую программу</p></details>
+          <p>После знакомства с программой на дне рождения клуб пригласил шоу ещё на два выступления. Организаторы оценили юмор и внимание к гостям.</p>
+          <button type="button" class="review-open-button" data-review-open="apelsin" aria-haspopup="dialog" aria-controls="review-dialog-apelsin">Посмотреть весь отзыв <span aria-hidden="true">↗</span></button>
           <div class="review-author"><span class="avatar" aria-hidden="true">А</span><span><strong>Семейный клуб «Апельсин»</strong><small>Повторные приглашения</small></span></div>
         </article>
-        <article class="review-card"><span class="review-symbol" aria-hidden="true"><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-spark"></use></svg></span>
+        <article class="review-card">
+          <span class="review-symbol" aria-hidden="true"><svg class="ui-science-icon" viewBox="0 0 40 40" focusable="false"><use href="#science-spark"></use></svg></span>
           <h3>Особый праздник для пятилетнего сына</h3>
-          <p>Елена отметила яркие впечатления от шоу на пятилетии сына и умение ведущего находить общий язык с детьми</p>
-          <details class="review-details"><summary>Посмотреть весь отзыв <span aria-hidden="true">+</span></summary>
-          <p>Елена поблагодарила команду за выступление на дне рождения сына. Праздник оставил много радостных впечатлений, а ведение программы помогло детям чувствовать себя вовлечёнными и заинтересованными. В отзыве она особо выделила контакт профессора с ребятами и рекомендовала шоу знакомым</p></details>
+          <p>Елена поблагодарила команду за выступление на пятилетии сына. Ей понравились яркие впечатления и умение ведущего общаться с детьми.</p>
+          <button type="button" class="review-open-button" data-review-open="elena" aria-haspopup="dialog" aria-controls="review-dialog-elena">Посмотреть весь отзыв <span aria-hidden="true">↗</span></button>
           <div class="review-author"><span class="avatar" aria-hidden="true">Е</span><span><strong>Елена</strong><small>День рождения</small></span></div>
         </article>
       </div>
-      <p class="review-disclaimer">Подробные пересказы реальных отзывов · без дословного цитирования</p>
+      <dialog class="review-dialog" id="review-dialog-irina" aria-labelledby="review-dialog-title-irina" aria-describedby="review-dialog-text-irina">
+        <div class="review-dialog-content">
+          <div class="review-dialog-top">
+            <span class="review-dialog-kicker">Отзывы о «Сумасшедшей науке»</span>
+            <button type="button" class="review-dialog-close" aria-label="Закрыть отзыв">×</button>
+          </div>
+          <h3 id="review-dialog-title-irina">Интересно и детям, и взрослым</h3>
+          <p class="review-dialog-author">Ирина · Два научных выступления</p>
+          <p id="review-dialog-text-irina">Ирина рассказала о двух праздниках с большими детскими группами — около сорока участников на каждом. Ей запомнились ответственность и пунктуальность ведущей, её энергия и умение увлечь всех ребят. Опыты впечатлили не только детей, но и присутствовавших взрослых. После мероприятий остались очень яркие эмоции.</p>
+          <p class="review-dialog-note">Подробный пересказ опубликованного отзыва, не дословная цитата</p>
+        </div>
+      </dialog>
+      <dialog class="review-dialog" id="review-dialog-apelsin" aria-labelledby="review-dialog-title-apelsin" aria-describedby="review-dialog-text-apelsin">
+        <div class="review-dialog-content">
+          <div class="review-dialog-top">
+            <span class="review-dialog-kicker">Отзывы о «Сумасшедшей науке»</span>
+            <button type="button" class="review-dialog-close" aria-label="Закрыть отзыв">×</button>
+          </div>
+          <h3 id="review-dialog-title-apelsin">Много интерактива и внимания к детям</h3>
+          <p class="review-dialog-author">Семейный клуб «Апельсин» · Повторные приглашения</p>
+          <p id="review-dialog-text-apelsin">Администратор семейного клуба познакомилась с научным шоу на дне рождения и вскоре договорилась о двух выступлениях на своей площадке. В отзыве подчёркиваются активное участие детей, шутки и внимание ведущей к каждому гостю, в том числе к взрослым. Особенно ценным оказался формат для разновозрастной группы: от четырёх до четырнадцати лет. Клуб остался доволен профессиональной работой и заинтересовался новой программой.</p>
+          <p class="review-dialog-note">Подробный пересказ опубликованного отзыва, не дословная цитата</p>
+        </div>
+      </dialog>
+      <dialog class="review-dialog" id="review-dialog-elena" aria-labelledby="review-dialog-title-elena" aria-describedby="review-dialog-text-elena">
+        <div class="review-dialog-content">
+          <div class="review-dialog-top">
+            <span class="review-dialog-kicker">Отзывы о «Сумасшедшей науке»</span>
+            <button type="button" class="review-dialog-close" aria-label="Закрыть отзыв">×</button>
+          </div>
+          <h3 id="review-dialog-title-elena">Особый праздник для пятилетнего сына</h3>
+          <p class="review-dialog-author">Елена · День рождения</p>
+          <p id="review-dialog-text-elena">Елена поделилась впечатлениями от празднования пятого дня рождения сына. Научное выступление прошло увлекательно, оставило много радостных эмоций, а ведущий сумел найти подход к ребятам. В своём отзыве она поблагодарила команду и отметила, что готова рекомендовать такое шоу друзьям.</p>
+          <p class="review-dialog-note">Подробный пересказ опубликованного отзыва, не дословная цитата</p>
+        </div>
+      </dialog>
+<p class="review-disclaimer">Подробные пересказы реальных отзывов · без дословного цитирования</p>
     </section>
 
 <section class="faq-section section page-width" aria-labelledby="faq-title"><div class="faq-intro"><p class="eyebrow">05 / Важные детали</p><h2 id="faq-title">Частые вопросы</h2><span class="faq-doodle" aria-hidden="true">?</span></div><div class="faq-list">
