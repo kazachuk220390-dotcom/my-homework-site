@@ -578,3 +578,186 @@ html.motion-off .photo-gallery .gallery-bubble{animation-play-state:paused!impor
  .discovery-strip .molecule-5{grid-area:2 / 5}
 }
 @media(prefers-reduced-motion:reduce){.discovery-strip .strip-molecule{animation:none;transform:none}}
+
+/* v0.10 — scientific scenes have their own flow space and bounded, independent motion. */
+@keyframes science-drift-a{0%,100%{transform:translate(-2px,3px) rotate(-5deg)}50%{transform:translate(3px,-4px) rotate(5deg)}}
+@keyframes science-drift-b{0%,100%{transform:translate(3px,-2px) rotate(4deg)}50%{transform:translate(-3px,4px) rotate(-4deg)}}
+@keyframes scope-glimmer{0%,100%{opacity:.25;transform:translateY(2px)}50%{opacity:.9;transform:translateY(-5px)}}
+#show{padding-bottom:32px}
+.lab-interlude{position:relative;inset:auto;transform:none;display:grid;grid-template-columns:70px 1fr 54px 1fr;align-items:center;gap:10px;width:min(384px,100%);height:94px;margin:24px auto 0;opacity:.9}
+.lab-interlude .interlude-flask{position:static;width:54px;height:80px;opacity:.9;animation:science-drift-a 9.3s ease-in-out -2.1s infinite}
+.lab-interlude .interlude-test-tube{position:static;width:36px;height:77px;opacity:.9;animation:science-drift-b 12.1s ease-in-out -5.4s infinite reverse}
+.lab-interlude .chem-formula{position:static;font-size:24px;opacity:.8}
+.lab-interlude .formula-water{animation:science-drift-b 10.7s ease-in-out -3.6s infinite}
+.lab-interlude .formula-salt{font-size:22px;animation:science-drift-a 14.2s ease-in-out -7.8s infinite reverse}
+#moments{padding-bottom:24px}
+.photo-gallery{grid-template-columns:minmax(0,.85fr) minmax(0,1fr);gap:16px;isolation:isolate}
+.photo-gallery>.photo-card-tall{grid-column:1;grid-row:1}
+.photo-gallery .photo-stack{grid-column:2;grid-row:1;gap:0}
+.photo-gallery .photo-card-tall .photo-frame{max-height:none;aspect-ratio:961/1440}
+.photo-gallery .photo-card>.photo-frame{position:relative}
+/* Approved photo ROI: only the empty blue wall in the professor's upper-left corner. */
+.photo-gallery .gallery-science{position:absolute;inset:3% auto auto 3%;width:22%;height:16%;min-height:0;margin:0;border:0;border-radius:0;background:none;overflow:visible;z-index:2;pointer-events:none;color:#b1f2ff}
+.photo-gallery .gallery-float{filter:drop-shadow(0 0 4px #36b9e866);opacity:.9}
+.photo-gallery .gallery-float-a{inset:5% auto auto 4%;width:40%;height:65%;animation:science-drift-a 9.6s ease-in-out -2.4s infinite}
+.photo-gallery .gallery-float-b{inset:auto 7% 3% auto;width:25%;height:56%;animation:science-drift-b 12.8s ease-in-out -5.2s infinite}
+.photo-gallery .gallery-molecule{position:absolute;right:1%;top:0;width:29%;height:35%;animation:science-drift-a 11.3s ease-in-out -4.1s infinite reverse}
+.photo-gallery .gallery-bubble{width:5px;height:5px;border-width:1px;opacity:.65}
+.photo-gallery .gallery-bubble-a{top:6%;left:48%}
+.photo-gallery .gallery-bubble-b{bottom:6%;left:19%;width:6px;height:6px}
+.gallery-science-divider{flex:0 0 34px;height:34px;margin:3px 0;gap:18px;border:0;border-radius:0;background:none;overflow:visible;pointer-events:none}
+.gallery-divider-flask{width:22px;height:28px;animation:science-drift-b 8.7s ease-in-out -1.8s infinite}
+.gallery-divider-testtube{width:17px;height:28px;animation:science-drift-a 11.4s ease-in-out -5.8s infinite reverse}
+.gallery-divider-molecule{width:25px;height:25px;animation:science-drift-b 13.2s ease-in-out -6.5s infinite reverse}
+.gallery-divider-bubble{width:5px;height:5px;border-width:1px}
+.gallery-divider-bubble-a{left:30%;top:35%}.gallery-divider-bubble-b{right:30%;bottom:25%}
+.nucleon-transition{position:relative;inset:auto;width:min(320px,90%);height:112px;margin:24px auto 0;opacity:.9}
+.nucleon-transition .nucleon-atom{inset:0 auto auto 87px;width:168px;height:112px;animation:science-drift-a 11.3s ease-in-out -3.7s infinite}
+.nucleon-transition .nucleon-molecule{inset:25px 0 auto auto;width:56px;height:56px;animation:science-drift-b 14.9s ease-in-out -7.2s infinite reverse}
+.nucleon-transition .chem-formula{left:8px;top:37px;font-size:30px;animation:science-drift-b 17.1s ease-in-out -5.3s infinite}
+.nucleon-transition .neutron-a{left:88px;top:38px}.nucleon-transition .neutron-b{right:7px;top:12px}
+/* Identical content slots align headings, prices and actions across the three cards. */
+.package-grid{align-items:stretch}
+.package-card{display:grid;grid-template-rows:32px 66px 54px 50px 36px 1px minmax(0,1fr) 52px;gap:12px;padding:28px 24px 24px;min-height:0}
+.package-card>.package-top{height:32px;align-items:center}
+.package-card>h3,.secret-lab>h3{font-size:clamp(24px,2.2vw,29px);line-height:1.12;min-height:0;margin:0;align-self:center;letter-spacing:-.035em}
+.package-card>.package-description{min-height:0;max-width:none;margin:0;font-size:13px;line-height:1.5}
+.package-card>.price,.secret-lab>.secret-price{margin:0;align-self:end;line-height:1.2}
+.package-card>.price strong,.secret-lab>.secret-price strong{font-size:37px}
+.package-card>.price-caption{margin:0;font-size:11px;line-height:1.5}
+.package-card>.package-divider{margin:0}
+.package-card>.package-body{min-width:0}
+.package-body .check-list{margin:0 0 20px}
+.package-body .package-caveat{margin:14px 0 0}
+.package-card>.package-button{height:52px;min-height:52px;margin:0;align-self:end;gap:10px;font-size:12px;padding:12px 14px}
+.secret-lab .secret-seal{top:78px;right:14px;width:55px;height:55px;opacity:.24;pointer-events:none}
+.secret-lab h3 span{font-size:1em}
+.secret-lab .secret-eyebrow{margin:0 0 18px;max-width:none;font-size:10px}
+.secret-lab .secret-file{margin:0 0 20px;padding:17px;height:140px}
+.secret-lab .secret-teaser{color:#8cebe5;font-size:18px;font-weight:800;margin:18px 0 12px}
+.secret-lab .package-caveat{text-align:left;line-height:1.7;color:#c0dbe6}
+.secret-lab .package-divider{background:#4a7182}
+.secret-lab .secret-locked{display:flex;justify-content:center;background:#77f0e71a;border:1px solid #74ddd475;color:#abfff6;border-radius:9px;opacity:1}
+.secret-lab .secret-locked:hover{transform:none}
+#reviews{padding-bottom:22px}
+.review-dialog-top{position:sticky;top:0;z-index:2;background:#f9fdff;padding-block:6px}
+.review-dialog-close{min-width:44px;min-height:44px}
+.review-dialog [id^="review-dialog-text-"]{white-space:pre-line}
+.science-bridge{height:128px;display:flex;align-items:center;justify-content:center;gap:clamp(35px,6vw,85px);pointer-events:none;color:#248db5}
+.bridge-petri{width:155px;height:92px;filter:drop-shadow(0 3px 9px #67d9e94d);animation:science-drift-a 14.7s ease-in-out -5.4s infinite}
+.bridge-molecule-a{width:48px;height:48px;animation:science-drift-b 11.6s ease-in-out -3.8s infinite}
+.bridge-molecule-b{width:74px;height:62px;animation:science-drift-a 17.2s ease-in-out -9.4s infinite reverse}
+.faq-section{padding-top:26px;padding-bottom:34px;row-gap:16px}
+.faq-microscope{grid-column:1/-1;justify-self:center;position:relative;width:160px;height:165px;margin:6px auto 0;pointer-events:none}
+.faq-microscope>svg{width:100%;height:100%;filter:drop-shadow(0 0 9px #65dbea55);animation:science-drift-b 13.4s ease-in-out -5.1s infinite}
+.scope-particle{position:absolute;display:block;width:5px;height:5px;border-radius:50%;background:#41c9dc;box-shadow:0 0 8px #7deef1;animation:scope-glimmer 5.3s ease-in-out infinite}
+.scope-particle-a{left:18%;top:38%}.scope-particle-b{right:12%;top:20%;animation-duration:7.9s;animation-delay:-3.8s}
+/* Compact calculator: all space belongs to either a control or its result. */
+.planner-section{padding-block:48px}
+.planner-grid{display:block;max-width:1120px}
+.planner-copy{display:flex;align-items:flex-start;justify-content:space-between;gap:32px;margin-bottom:24px}
+.planner-copy .eyebrow{margin-bottom:10px}
+.planner-copy h2{font-size:clamp(30px,3.2vw,43px);line-height:1.12;max-width:550px}
+.planner-copy>p:not(.eyebrow){max-width:370px;margin:6px 0 0;font-size:14px;line-height:1.7;color:var(--muted)}
+.planner-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 32px;padding:24px 28px}
+.planner-label{grid-column:1/-1;margin:0 0 14px;font-size:18px;line-height:1.3}
+.planner-fields,.planner-result{min-width:0}
+.planner-card label{margin:12px 0 5px;font-size:12px}
+.planner-card select{min-height:44px;padding:10px 34px 10px 12px;font-size:14px}
+.planner-show-info{font-size:12px;line-height:1.55;margin:9px 0 12px;min-height:0}
+.planner-card .selector-title{font-size:12px;margin:12px 0 8px}
+.planner-card .selector-title span{display:block;width:fit-content;margin:4px 0 0;font-size:10px}
+.planner-card .extra-options{gap:8px}
+.planner-card label.extra-option{margin:0;padding:10px 9px;gap:7px;min-height:62px;align-items:center}
+.planner-card .extra-icon{width:27px;height:27px;min-width:27px}
+.planner-card .extra-text strong{font-size:12px;line-height:1.3}
+.planner-card .extra-text small{font-size:10px}
+.planner-card .workshop-hint{font-size:11px;line-height:1.5;margin:8px 0 12px;min-height:0}
+.planner-card .included-workshop-note{font-size:12px;margin:6px 0 8px;padding:8px 10px}
+.plan-total{margin:15px 0 8px;padding-top:15px;gap:12px}
+.plan-total>strong{font-size:28px;line-height:1.2}
+.plan-total>span{font-size:12px}
+.plan-price-breakdown{font-size:11px;line-height:1.5;margin:6px 0 14px}
+.planner-card .discuss-button{margin:0;min-height:48px;font-size:14px;padding:12px 16px;width:100%}
+.view-plan-button{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:44px;margin:8px 0 0;padding:9px 4px;background:none;border:0;color:#14668f;font-size:12px;font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.planner-card .contact-note{margin:7px 0 0;font-size:10px;line-height:1.5}
+.plan-dialog{width:min(660px,calc(100% - 28px));max-height:calc(100dvh - 28px);margin:auto;padding:0;border:1px solid #bce0ed;border-radius:20px;overflow:auto;background:#faffff;color:var(--ink);box-shadow:0 24px 70px #103a5e55;overscroll-behavior:contain}
+.plan-dialog::backdrop{background:#10283eaa;backdrop-filter:blur(3px)}
+.plan-dialog-top{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 22px;background:#edfaff;border-bottom:1px solid #d1e9f1}
+.plan-dialog-top .eyebrow{margin:0;font-size:9px}.plan-dialog-top h2{font-size:25px;margin-top:4px}
+.plan-dialog-close{display:grid;place-items:center;flex:none;width:44px;height:44px;border:1px solid #bcdeeb;border-radius:50%;background:#fff;color:#1d6082;font-size:28px;line-height:1}
+.plan-dialog-body{padding:20px 22px}
+.plan-dialog .summary-label{display:block;font-size:12px;font-weight:700;margin-bottom:9px}
+.plan-dialog #plan-summary{display:block;width:100%;height:285px;min-height:0;padding:13px;border:1px solid #c3dfea;border-radius:11px;background:#fff;font-family:inherit;font-size:13px;line-height:1.7;color:var(--ink);resize:vertical}
+.plan-dialog-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 6px}
+.plan-dialog-actions .button{flex:1;justify-content:center;font-size:13px;min-height:44px;padding:12px}
+.plan-download{background:#e8f8ff;color:#155d7a;border:1px solid #bdddeb}
+.plan-download:hover{background:#d0eff8;color:#155d7a}
+.plan-dialog .copy-status{min-height:20px;margin:8px 0;font-size:12px}
+.plan-dialog-note{font-size:11px;color:#567687;margin:10px 0 0}
+html:has(dialog[open]){overflow:hidden}
+@media(max-width:1000px){
+ .package-grid{grid-template-columns:1fr;max-width:620px;margin-inline:auto;gap:28px}
+ .package-card{grid-template-rows:auto auto auto auto auto 1px minmax(0,1fr) 52px;padding:26px;gap:12px}
+ .package-card>h3,.secret-lab>h3{font-size:29px;margin:8px 0 0;min-height:0}
+ .package-card>.package-description{min-height:0}.package-card>.price{margin-top:5px}
+ .package-card.featured{margin-top:22px}
+ .package-card>.package-top{height:auto;min-height:28px}
+ .planner-copy{gap:24px}.planner-copy>p:not(.eyebrow){max-width:310px;font-size:13px}
+ .planner-card{gap:0 22px;padding:22px}
+}
+@media(max-width:680px){
+ .lab-interlude{width:min(300px,100%);height:80px;grid-template-columns:48px 1fr 40px 1fr;gap:8px;margin-top:20px}
+ .lab-interlude .interlude-flask{width:43px;height:65px}.lab-interlude .interlude-test-tube{width:29px;height:63px}
+ .lab-interlude .chem-formula{font-size:20px}.lab-interlude .formula-salt{font-size:19px}
+ #show{padding-bottom:24px}
+ .photo-gallery{display:flex;gap:14px}
+ .photo-gallery .photo-card-tall .photo-frame{aspect-ratio:961/1440;max-height:none;flex:none}
+ .photo-gallery .photo-stack{gap:0}
+ .photo-gallery .gallery-science{inset:3% auto auto 3%;width:22%;height:16%;min-height:0;margin:0}
+ .gallery-science-divider{height:32px;flex-basis:32px;margin:2px 0;gap:22px}
+ .nucleon-transition{width:min(280px,95%);height:100px;margin-top:18px}
+ .nucleon-transition .nucleon-atom{left:70px;width:148px;height:99px}
+ .nucleon-transition .nucleon-molecule{top:25px;width:48px;height:48px}
+ .nucleon-transition .chem-formula{top:32px;left:3px;font-size:26px}
+ .nucleon-transition .neutron-a{left:66px}
+ .science-bridge{height:106px;gap:28px}.bridge-petri{width:120px;height:80px}.bridge-molecule-a{width:35px;height:35px}.bridge-molecule-b{width:55px;height:46px}
+ .faq-section{padding-bottom:26px}.faq-microscope{width:140px;height:146px;margin-top:24px}
+ .planner-section{padding-block:30px}
+ .planner-copy{display:block;margin-bottom:18px}.planner-copy h2{font-size:33px}
+ .planner-copy>p:not(.eyebrow){max-width:none;margin:13px 0 0;font-size:13px}
+ .planner-card{display:block;padding:20px 17px;border-radius:18px}
+ .planner-label{font-size:17px;margin-bottom:14px}
+ .planner-result{margin-top:17px;padding-top:2px;border-top:1px solid #deedf4}
+ .planner-card .selector-title span{display:inline-block;margin:3px 0 0 3px}
+ .plan-total>strong{font-size:27px}
+ .planner-card select{font-size:16px}
+ .planner-card .extra-options{grid-template-columns:1fr 1fr}
+ .planner-card .extra-text strong{font-size:11px}
+ .request-compact-copy p:last-child{font-size:13px}
+ .plan-dialog-top{padding:13px 16px}.plan-dialog-top h2{font-size:22px}
+ .plan-dialog-body{padding:16px}.plan-dialog #plan-summary{height:275px;font-size:13px}
+ .plan-dialog-actions .button{min-width:120px}
+}
+html.motion-off .gallery-scenery *,html.motion-off .gallery-divider-molecule,html.motion-off .science-bridge>*,html.motion-off .faq-microscope>*{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){
+ html .lab-interlude>*,html .nucleon-transition>*,html .science-bridge>*,html .faq-microscope>*,html .gallery-scenery *,html .photo-gallery .gallery-float,html .gallery-divider-flask,html .gallery-divider-testtube,html .gallery-divider-molecule,html .gallery-divider-bubble{animation:none!important;transform:none}
+}
+/* The quote and actions span the bottom row, leaving no empty calculator column. */
+.planner-extras,.planner-price,.planner-actions{min-width:0}
+.planner-footer{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 32px;align-items:center;margin-top:18px;padding-top:18px;border-top:1px solid #d8eaf2}
+.planner-price .plan-total{margin:0 0 8px;padding-top:0;border-top:0}
+.planner-show-info{padding:8px 10px}
+.planner-card .included-workshop-note{padding:6px 10px}
+.planner-card .party-workshops .extra-options{grid-template-columns:1fr}
+.planner-card .contact-note{font-size:11px}
+.secret-lab .secret-file{position:relative;padding-right:80px}
+.secret-lab .secret-file .secret-seal{top:38px;right:14px;width:44px;height:44px;opacity:.5}
+@media(max-width:680px){
+ .planner-extras{margin-top:14px}
+ .planner-footer{display:block;margin-top:14px;padding-top:14px}
+ .planner-actions{margin-top:14px}
+ .planner-copy h2{font-size:31px}
+ .planner-copy>p:not(.eyebrow){line-height:1.6}
+}
+.review-open-button .arrow-icon,.view-plan-button .arrow-icon{flex:none;width:17px;height:17px}

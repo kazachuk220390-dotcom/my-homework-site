@@ -78,7 +78,7 @@ function updatePlan() {
     icecreamOption.hidden=party;
   }
   const workshopMode=el('plan-workshop-mode');
-  if(workshopMode)workshopMode.textContent=party?'мороженое включено':'можно выбрать один или оба';
+  if(workshopMode){workshopMode.textContent=party?'':'можно выбрать один или оба';workshopMode.hidden=party;}
   const includedWorkshop=el('plan-included-workshop');
   if(includedWorkshop)includedWorkshop.hidden=!party;
   el('plan-workshop-wrap')?.classList.toggle('party-workshops',party);
@@ -115,6 +115,7 @@ function updatePlan() {
     missing?'Для «Научного переполоха» отметьте минимум один мастер-класс':
     chosen.length===0?'Дополнения не выбраны, можно оставить только шоу':
     'Выбрано: '+chosen.map(code=>workshopNames[code]).join(' и ')+(extrasTotal===null?' · мастер-классы по расчёту':' · мастер-классы '+fmt(extrasTotal)+' ₽');
+  hint.hidden=party;
   hint.classList.toggle('needs-selection',missing);
   copyButton.disabled=missing;
   copyButton.setAttribute('aria-disabled',String(missing));
@@ -168,13 +169,39 @@ copyButton.addEventListener('click',async()=>{
   try{
     if(!navigator.clipboard?.writeText)throw new Error('clipboard unavailable');
     await navigator.clipboard.writeText(planSummary.value);
-    copyStatus.textContent='Подбор скопирован — его можно сохранить или отправить при обсуждении праздника';
+    copyStatus.textContent='План скопирован — его можно сохранить или отправить при обсуждении праздника';
   }catch{
     planSummary.focus();planSummary.select();
     copyStatus.textContent='Текст выделен — скопируйте вручную';
   }
 });
-// Компактная заявка: выбор калькулятора передаётся в GET-параметрах формы.
+// Detailed plans live in a separate, keyboard-accessible dialog.
+const planDialog=el('plan-dialog');
+const viewPlanButton=el('view-plan');
+const closePlanButton=el('plan-dialog-close');
+function closePlan(){
+  if(planDialog.open)planDialog.close();
+  viewPlanButton.focus({preventScroll:true});
+}
+viewPlanButton.addEventListener('click',()=>{
+  updatePlan();
+  planDialog.showModal();
+  closePlanButton.focus({preventScroll:true});
+});
+closePlanButton.addEventListener('click',closePlan);
+planDialog.addEventListener('click',event=>{if(event.target===planDialog)closePlan()});
+planDialog.addEventListener('close',()=>viewPlanButton.focus({preventScroll:true}));
+el('download-plan').addEventListener('click',()=>{
+  const file=new Blob(['\ufeff'+planSummary.value],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(file);
+  const link=document.createElement('a');
+  link.href=url;link.download='plan-prazdnika.txt';
+  document.body.append(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+// Supported Yandex Forms GET fields. Persisting them in answers/mail additionally
+// requires the hidden questions and mail integration listed in docs/yandex-form-setup.md.
+
 // Для автоматического выбора варианта программы нужен ID вопроса из Яндекс Форм.
 const yandexFormBase='https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/';
 const yandexProgramQuestionId='answer_choices_9008993561263860'; // Подтверждено владельцем в Яндекс Формах.
@@ -186,35 +213,40 @@ const requestIframe=el('request-form-iframe');
 const requestLaunch=el('request-form-launch');
 const requestClose=el('request-dialog-close');
 let lastRequestTrigger=null;
+let requestIncludesPlan=false;
 function chosenProgramCode(){
   if(planPackage.value==='party')return 'party';
-  return Object.hasOwn(yandexProgramAnswerIds,planShow.value)?planShow.value:'help';
+  return Object.hasOwn(yandexProgramAnswerIds,planShow.value)?planShow.value:null;
 }
-function formLinkWithPlan(){
+function formLinkWithPlan(includePlan=true){
   const url=new URL(yandexFormBase);
   const sourceParams=new URLSearchParams(window.location.search);
   for(const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']){
     const val=sourceParams.get(key);
     if(val&&val.length<=200)url.searchParams.set(key,val);
   }
+  url.searchParams.set('request_origin',includePlan?'calculator':'site');
+  if(!includePlan)return url;
   const code=chosenProgramCode();
   const showName=planPackage.value==='party'?'Научный переполох':shows[planShow.value]?.name||'Подбор программы';
   const extras=selectedWorkshops().map(key=>workshopNames[key]).join(', ');
+  url.searchParams.set('plan_package',planPackage.value==='party'?'Научный переполох':'Научное шоу');
   url.searchParams.set('plan_program',showName);
+  url.searchParams.set('plan_show',planPackage.value==='party'?'Научное шоу — 60 минут интерактивных экспериментов':shows[planShow.value]?.name||'Подбор программы');
   url.searchParams.set('plan_format',planPackage.value==='party'?'Праздник':'Отдельное шоу');
   url.searchParams.set('plan_workshops',extras||'Без дополнительных мастер-классов');
   url.searchParams.set('plan_group',planGuests.selectedOptions[0].textContent);
   url.searchParams.set('plan_price',el('plan-price').textContent);
   // Яндекс выбирает вариант ответа по ID вопроса и ID ответа.
-  // Пока ID вопроса не предоставлен, параметры выбора доступны
-  // интеграциям как GET-параметры, но видимый ответ не предзаполняется.
+  // Unknown shows are never silently replaced with a different answer.
+  // Their exact names are passed through the plan_program and plan_show fields.
   if(yandexProgramQuestionId&&yandexProgramAnswerIds[code]){
     url.searchParams.set(yandexProgramQuestionId,yandexProgramAnswerIds[code]);
   }
   return url;
 }
-function syncRequestUrls(){
-  const link=formLinkWithPlan();
+function syncRequestUrls(includePlan){
+  const link=formLinkWithPlan(includePlan);
   for(const node of [el('request-form-open'),el('request-form-fallback')]){
     if(node)node.href=link.href;
   }
@@ -226,16 +258,20 @@ function syncRequestUrls(){
 function openRequestForm(trigger,fromCalculator){
   if(!requestDialog)return;
   lastRequestTrigger=trigger;
+  requestIncludesPlan=fromCalculator;
   const status=el('request-plan-status');
   if(status){
     status.hidden=!fromCalculator;
     if(fromCalculator){
       const title=planPackage.value==='party'?'Научный переполох':shows[planShow.value]?.name||'Научное шоу';
       status.textContent='Ваш подбор: '+title+' · '+el('plan-price').textContent+
-        '. Программа выбрана в форме автоматически. Пожалуйста, проверьте выбор перед отправкой.';
+        '. Мастер-классы: '+selectedWorkshops().map(key=>workshopNames[key]).join(', ')+
+        '. Группа: '+planGuests.selectedOptions[0].textContent+'.';
+      if(!selectedWorkshops().length)status.textContent='Ваш подбор: '+title+' · '+el('plan-price').textContent+
+        '. Без дополнительных мастер-классов. Группа: '+planGuests.selectedOptions[0].textContent+'.';
     }
   }
-  syncRequestUrls();
+  syncRequestUrls(requestIncludesPlan);
   if(typeof requestDialog.showModal==='function')requestDialog.showModal();
   else requestDialog.setAttribute('open','');
   requestClose?.focus({preventScroll:true});
@@ -257,7 +293,7 @@ requestDialog?.addEventListener('click',event=>{
 requestDialog?.addEventListener('close',()=>lastRequestTrigger?.focus({preventScroll:true}));
 // Прямые ссылки сохраняют рекламные метки даже до открытия окна.
 for(const node of [el('request-form-open'),el('request-form-fallback')]){
-  if(node)node.href=formLinkWithPlan().href;
+  if(node)node.href=formLinkWithPlan(false).href;
 }
 const menuButton=document.querySelector('.menu-toggle');
 const mobileNav=el('mobile-nav');

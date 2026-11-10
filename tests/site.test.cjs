@@ -126,7 +126,7 @@ test('navigation, consent links and embedded form exist without local data submi
   assert.deepEqual(brokenTargets, []);
   assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
   assert.equal(await page.locator('.review-bar').count(), 0);
-  assert.match(await page.locator('.test-mode').innerText(), /Дата не бронируется автоматически/);
+  assert.match(await page.locator('#request-title').innerText(), /Ваш праздник — наши научные открытия!/);
   assert.equal(await page.locator('form,input:not([type="checkbox"]),textarea:not([readonly])').count(), 0);
   assert.equal(await page.locator('input[type="checkbox"]').count(), 2);
   assert.equal(await page.locator('iframe#request-form-iframe').count(), 1);
@@ -261,54 +261,23 @@ test('updated laboratory decorations preserve links and remove the rejected labe
   await page.close();
 });
 
-test('gallery glassware stays in dedicated empty gaps on desktop and mobile', async () => {
+test('compact gallery decor stays inside the reviewed empty photo area and narrow inter-photo gap', async () => {
   for (const width of [320,390,768,1440]) {
     const page=await openPage({width,height:900});
     await loadAllImages(page);
-    const values=await page.evaluate(()=>{
-      const gallery=document.querySelector('.photo-gallery');
+    const geometry=await page.evaluate(()=>{
       const rect=e=>{const b=e.getBoundingClientRect();return{x:b.x,y:b.y,right:b.right,bottom:b.bottom,w:b.width,h:b.height}};
-      return {
-        display:getComputedStyle(gallery).display,
-        frames:[...gallery.querySelectorAll('.photo-frame')].map(rect),
-        gapVertical:rect(gallery.querySelector('.gallery-science')),
-        gapHorizontal:rect(gallery.querySelector('.gallery-science-divider')),
-        leftFlask:rect(gallery.querySelector('.gallery-float-a')),
-        rightTube:rect(gallery.querySelector('.gallery-divider-testtube')),
-        overlayCount:gallery.querySelectorAll('.photo-corner-visual').length,
-        stack:rect(gallery.querySelector('.photo-stack')),
-        momentsBottom:parseFloat(getComputedStyle(document.querySelector('#moments')).paddingBottom),
-        packagesTop:parseFloat(getComputedStyle(document.querySelector('#packages')).paddingTop)
-      };
+      const gallery=document.querySelector('.photo-gallery');
+      return {frames:[...gallery.querySelectorAll('.photo-frame')].map(rect),roi:rect(gallery.querySelector('.gallery-science')),gap:rect(gallery.querySelector('.gallery-science-divider')),effects:[...gallery.querySelectorAll('.gallery-science svg')].map(rect),grid:getComputedStyle(gallery).columnGap};
     });
-    assert.equal(values.overlayCount,0);
-    assert.equal(values.frames.length,3);
-    assert.ok(values.frames.every(p=>p.w>140&&p.h>140),'three genuine photos remain readable');
-    const contains=(outer,inner,tolerance=1)=>inner.x>=outer.x-tolerance&&inner.right<=outer.right+tolerance&&inner.y>=outer.y-tolerance&&inner.bottom<=outer.bottom+tolerance;
-    assert.ok(contains(values.gapVertical,values.leftFlask),'floating flask must remain inside own free space');
-    assert.ok(contains(values.gapHorizontal,values.rightTube),'test tube must remain inside its own free space');
-    const overlaps=(a,b)=>Math.min(a.right,b.right)-Math.max(a.x,b.x)>1&&Math.min(a.bottom,b.bottom)-Math.max(a.y,b.y)>1;
-    for(const frame of values.frames){
-      assert.equal(overlaps(frame,values.gapVertical),false,'primary gallery decoration must not overlay photos');
-      assert.equal(overlaps(frame,values.gapHorizontal),false,'secondary gallery decoration must not overlay photos');
-    }
-    if(width>680){
-      assert.equal(values.display,'grid');
-      assert.ok(values.frames[0].right<values.gapVertical.x+1);
-      assert.ok(values.gapVertical.right<values.frames[1].x+1);
-      assert.ok(values.frames[1].bottom<values.gapHorizontal.y+1);
-      assert.ok(values.gapHorizontal.bottom<values.frames[2].y+1);
-    }else{
-      assert.equal(values.display,'flex');
-      assert.ok(values.frames[0].bottom<values.gapVertical.y+1);
-      assert.ok(values.gapVertical.bottom<values.frames[1].y+1);
-      assert.ok(values.frames[1].bottom<values.gapHorizontal.y+1);
-      assert.ok(values.gapHorizontal.bottom<values.frames[2].y+1);
-    }
-    if(width===1440){
-      assert.ok(values.momentsBottom+values.packagesTop<=90);
-      assert.equal(await page.locator('#moments .nucleon-transition').count(),1);
-    }
+    assert.equal(geometry.frames.length,3);
+    assert.ok(geometry.frames.every(f=>f.w>140&&f.h>140));
+    const photo=geometry.frames[0],roi=geometry.roi;
+    assert.ok(roi.x>=photo.x && roi.right<=photo.x+photo.w*.27 && roi.y>=photo.y && roi.bottom<=photo.y+photo.h*.21, 'overlay only touches the approved upper-left empty wall');
+    for(const e of geometry.effects) assert.ok(e.x>=roi.x-1&&e.right<=roi.right+1&&e.y>=roi.y-1&&e.bottom<=roi.bottom+1,'effect stays in approved ROI');
+    assert.ok(geometry.gap.h<=36, 'no tall decorative spacer');
+    assert.ok(geometry.gap.y>=geometry.frames[1].bottom && geometry.gap.bottom<=geometry.frames[2].y, 'small separator never covers either landscape photograph');
+    if(width>680) assert.ok(parseFloat(geometry.grid)<=16, 'dense desktop layout');
     await page.close();
   }
 });
@@ -566,7 +535,7 @@ test('each review has a visible independent button and a closeable detailed revi
   await buttons.first().click();
   assert.equal(await page.locator('#review-dialog-irina').evaluate(e=>e.open),true);
   assert.equal(await page.locator('#review-dialog-apelsin').evaluate(e=>e.open),false);
-  assert.match(await page.locator('#review-dialog-irina').innerText(),/подробный пересказ/i);
+  assert.match(await page.locator('#review-dialog-irina').innerText(),/Юлия- настоящий профессионал своего дела!/);
   await page.locator('#review-dialog-irina .review-dialog-close').click();
   assert.equal(await page.locator('#review-dialog-irina').evaluate(e=>e.open),false);
   await buttons.nth(1).click();
@@ -681,7 +650,7 @@ test('holiday calculator opens compact modal with plan context and no accidental
   assert.equal(await page.locator('#request-dialog').getAttribute('open'), '');
   assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('id')), 'request-dialog-close');
   assert.match(await page.locator('#request-plan-status').innerText(), /Большое Криошоу/);
-  assert.match(await page.locator('#request-plan-status').innerText(), /Программа выбрана в форме автоматически\. Пожалуйста, проверьте выбор перед отправкой\./u);
+  assert.match(await page.locator('#request-plan-status').innerText(), /Мастер-классы:.*лизуны.*Группа: До 10 детей/u);
   const url = new URL(await page.locator('#request-form-open').getAttribute('href'));
   assert.equal(url.searchParams.get('plan_program'), 'Большое Криошоу');
   assert.equal(url.searchParams.get('answer_choices_9008993561263860'), '1794306569052');
@@ -716,10 +685,9 @@ test('UTM parameters are passed to Yandex Form iframe and separate link', async 
     assert.equal(u.searchParams.has('custom_parameter'), false);
   }
   assert.equal(link.searchParams.has('iframe'), false);
-  assert.ok(link.searchParams.has('plan_program'));
-  assert.equal(link.searchParams.get('answer_choices_9008993561263860'), '9008993561263870');
-  assert.ok(link.searchParams.has('plan_workshops'));
-  assert.ok(link.searchParams.has('plan_price'));
+  assert.equal(link.searchParams.get('request_origin'), 'site');
+  assert.equal(link.searchParams.has('plan_program'), false, 'general request must not invent a calculator selection');
+  assert.equal(link.searchParams.has('plan_price'), false);
   await page.locator('#request-dialog-close').click();
   assert.equal(await page.locator('#request-dialog').getAttribute('open'), null);
   await page.close();
@@ -735,7 +703,7 @@ test('all matching programs preselect correct Yandex answer IDs without changing
     await page.locator('#discuss-plan').click();
     const url = new URL(await page.locator('#request-form-open').getAttribute('href'));
     assert.equal(url.searchParams.get(questionId), answer, code);
-    assert.equal(url.searchParams.has('answer_one_answer_9008993561838393'), false, 'consent cannot be pre-selected');
+    assert.equal(url.searchParams.has('answer_one_answer_9008993561838392'), false, 'consent cannot be pre-selected');
     await page.locator('#request-dialog-close').click();
   }
   await page.close();
@@ -749,9 +717,11 @@ test('secondary save action really copies and offers manual selection when the c
   await stubExternalPresentation(page);
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   await page.evaluate(async () => { await document.fonts.ready; });
-  assert.match(await page.locator('#copy-plan').innerText(), /Сохранить подбор/);
+  assert.equal(await page.locator('#plan-summary').isVisible(), false);
+  await page.locator('#view-plan').click();
+  assert.match(await page.locator('#copy-plan').innerText(), /Скопировать план/);
   await page.locator('#copy-plan').click();
-  await page.waitForFunction(() => document.querySelector('#copy-status').textContent.includes('Подбор скопирован'));
+  await page.waitForFunction(() => document.querySelector('#copy-status').textContent.includes('План скопирован'));
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   assert.equal(copied, await page.locator('#plan-summary').inputValue());
   assert.match(await page.locator('#copy-status').innerText(), /можно сохранить или отправить при обсуждении праздника/);
@@ -760,7 +730,7 @@ test('secondary save action really copies and offers manual selection when the c
   await page.waitForFunction(() => document.querySelector('#copy-status').textContent.includes('вручную'));
   const selection = await page.locator('#plan-summary').evaluate((element) => ({ start: element.selectionStart, end: element.selectionEnd, length: element.value.length, focused: element === document.activeElement }));
   assert.deepEqual(selection, { start: 0, end: selection.length, length: selection.length, focused: true });
-  assert.doesNotMatch(await page.locator('#copy-status').innerText(), /Подбор скопирован/);
+  assert.doesNotMatch(await page.locator('#copy-status').innerText(), /План скопирован/);
   assert.deepEqual(outbound, []);
   await context.close();
 });
@@ -778,7 +748,7 @@ test('discovery strip preserves the four-word sequence and five decorative SVG m
     assert.ok(await svg.locator('circle').count() >= 4);
     assert.ok(await svg.locator('path').count() >= 1);
   }
-  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.9-molecules1$/);
+  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.10-layout1$/);
   await page.close();
 });
 
@@ -804,6 +774,128 @@ test('discovery strip words stay readable and molecules never overlap text on de
     await page.waitForTimeout(150);
     const moved = await page.locator('.strip-molecule').evaluateAll(nodes => nodes.map(e => getComputedStyle(e).transform));
     assert.ok(moved.some((transform, i) => transform !== motion[i].transform), 'animation actually moves');
+    await page.close();
+  }
+});
+
+test('all three review dialogs contain the verified originals verbatim and return focus on close', async () => {
+  const originals=JSON.parse(fs.readFileSync(path.join(root,'docs/reviews-originals.json'),'utf8'));
+  const normalize=s=>s.replace(/\s+/gu,' ').trim();
+  for(const width of [390,1440]) {
+    const page=await openPage({width,height:900});
+    for(const [slug,review] of Object.entries(originals)) {
+      const button=page.locator(`[data-review-open="${slug}"]`);
+      await button.click();
+      assert.equal(await page.locator('dialog.review-dialog[open]').count(),1);
+      assert.equal(normalize(await page.locator(`#review-dialog-text-${slug}`).innerText()),normalize(review.text),`original ${slug}`);
+      assert.equal(await page.locator(`#review-dialog-${slug} .review-dialog-close`).isVisible(),true);
+      await page.keyboard.press('Escape');
+      assert.equal(await page.locator(`#review-dialog-${slug}`).evaluate(e=>e.open),false);
+      assert.equal(await button.evaluate(e=>e===document.activeElement),true);
+    }
+    assert.doesNotMatch(await page.locator('#reviews').innerText(), /пересказ/iu);
+    await page.close();
+  }
+});
+
+test('the three programme cards align their content slots and the laboratory action is disabled', async () => {
+  const page=await openPage();
+  const rows=await page.locator('.package-card').evaluateAll(cards=>cards.map(card=>{
+    const top=card.getBoundingClientRect().top;
+    return {height:card.getBoundingClientRect().height,slots:['.package-top','h3','.package-description','.price','.price-caption','.package-divider','.package-button'].map(selector=>Math.round(card.querySelector(selector).getBoundingClientRect().top-top))};
+  }));
+  assert.equal(rows.length,3);
+  for(const row of rows.slice(1)) {assert.equal(row.height,rows[0].height);assert.deepEqual(row.slots,rows[0].slots);}
+  assert.equal(await page.locator('.secret-lab button.package-button').isDisabled(),true);
+  assert.match(await page.locator('.secret-lab').innerText(),/Программа готовится к запуску/);
+  await page.close();
+});
+
+test('detailed plans reflect the current choice, download as UTF-8 text and close accessibly', async () => {
+  for(const width of [320,1440]) {
+    const page=await openPage({width,height:900});
+    assert.equal(await page.locator('#plan-summary').isVisible(),false);
+    await page.selectOption('#plan-package','show');
+    await page.selectOption('#plan-show','cryo');
+    await page.selectOption('#plan-guests','20');
+    await page.locator('#plan-workshop-icecream').check();
+    await page.locator('#plan-workshop-slime').check();
+    await page.locator('#view-plan').click();
+    assert.equal(await page.locator('#plan-dialog').evaluate(e=>e.open),true);
+    const text=await page.locator('#plan-summary').inputValue();
+    assert.match(text,/Большое Криошоу/);assert.match(text,/Группа: до 20 детей/);assert.match(text,/крио-мороженое и лизуны/);assert.match(text,/Стоимость: 16 000 ₽/);
+    const pending=page.waitForEvent('download');
+    await page.locator('#download-plan').click();
+    const download=await pending;
+    assert.equal(download.suggestedFilename(),'plan-prazdnika.txt');
+    const downloaded=fs.readFileSync(await download.path(),'utf8').replace(/^\uFEFF/,'');
+    assert.equal(downloaded,text);
+    await page.locator('#plan-dialog-close').click();
+    assert.equal(await page.locator('#plan-summary').isVisible(),false);
+    assert.equal(await page.locator('#view-plan').evaluate(e=>e===document.activeElement),true);
+    await page.selectOption('#plan-package','party');
+    await page.locator('#view-plan').click();
+    assert.match(await page.locator('#plan-summary').inputValue(),/Формат: Научный переполох/);
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('#plan-dialog').evaluate(e=>e.open),false);
+    await page.close();
+  }
+});
+
+test('all calculator choices and allowed UTM tags travel together without false receipt confirmations', async () => {
+  const page=await browser.newPage({reducedMotion:'reduce'});
+  await stubExternalPresentation(page);
+  await page.goto(baseURL+'/?utm_source=vk&utm_medium=cpc&utm_campaign=science&utm_content=blue&utm_term=show&private_parameter=secret',{waitUntil:'networkidle'});
+  const expected=[['show','cryo','Большое Криошоу','16 000 ₽'],['show','potter','Шоу в стиле Гарри Поттера','17 000 ₽'],['show','graduate','Сумасшедший выпускной','18 000 ₽'],['show','kitchen','Сумасшедшая кухня','Цена шоу уточняется'],['party','cryo','Научный переполох','33 400 ₽']];
+  for(const [format,show,program,price] of expected) {
+    await page.selectOption('#plan-package',format);
+    if(format==='show')await page.selectOption('#plan-show',show);
+    await page.selectOption('#plan-guests','20');
+    if(format==='show')await page.locator('#plan-workshop-icecream').check();
+    await page.locator('#plan-workshop-slime').check();
+    await page.locator('#discuss-plan').click();
+    const link=new URL(await page.locator('#request-form-open').getAttribute('href'));
+    const frame=new URL(await page.locator('#request-form-iframe').getAttribute('src'));
+    for(const url of [link,frame]) {
+      assert.equal(url.searchParams.get('plan_program'),program);
+      assert.equal(url.searchParams.get('plan_package'),format==='party'?'Научный переполох':'Научное шоу');
+      assert.equal(url.searchParams.get('plan_group'),'До 20 детей');
+      assert.equal(url.searchParams.get('plan_price'),price);
+      assert.match(url.searchParams.get('plan_workshops'),/крио-мороженое, лизуны/);
+      assert.equal(url.searchParams.get('request_origin'),'calculator');
+      for(const [key,value] of Object.entries({utm_source:'vk',utm_medium:'cpc',utm_campaign:'science',utm_content:'blue',utm_term:'show'}))assert.equal(url.searchParams.get(key),value);
+      assert.equal(url.searchParams.has('private_parameter'),false);
+      assert.equal(url.searchParams.has('answer_one_answer_9008993561838392'),false);
+      if(['potter','graduate','kitchen'].includes(show)&&format==='show')assert.equal(url.searchParams.has('answer_choices_9008993561263860'),false,'unmapped show is not replaced with help or another programme');
+    }
+    assert.doesNotMatch(await page.locator('#request-plan-status').innerText(), /отправлен|получен|сохран[её]н|выбрана в форме автоматически/iu);
+    await page.keyboard.press('Escape');
+  }
+  await page.close();
+});
+
+test('new scientific scenes stay away from text and respect reduced motion on desktop and phones', async () => {
+  for(const width of [320,390,768,1440]) {
+    const page=await openPage({width,height:900});
+    await page.locator('.faq-list details').first().evaluate(e=>{e.open=true});
+    const layout=await page.evaluate(()=>{
+      const r=e=>{const b=e.getBoundingClientRect();return{x:b.x,right:b.right,y:b.y,bottom:b.bottom}};
+      const selectors=['.lab-interlude','.nucleon-transition','.science-bridge','.faq-microscope'];
+      const scenes=selectors.map(s=>document.querySelector(s));
+      const controls=[...document.querySelectorAll('#show .section-note,.photo-gallery,.faq-list,#packages .section-heading,#reviews .review-grid')];
+      return {scenes:scenes.map(e=>({rect:r(e),events:getComputedStyle(e).pointerEvents,moving:e.getAnimations({subtree:true}).filter(a=>a.playState==='running').length})),controls:controls.map(r),center:r(document.querySelector('.nucleon-transition')),width:innerWidth};
+    });
+    for(const scene of layout.scenes) {
+      assert.equal(scene.events,'none');assert.equal(scene.moving,0);
+      for(const control of layout.controls) assert.ok(scene.rect.right<=control.x||scene.rect.x>=control.right||scene.rect.bottom<=control.y||scene.rect.y>=control.bottom,'scientific scene never covers copy, gallery or FAQ');
+    }
+    assert.ok(Math.abs((layout.center.x+layout.center.right)/2-width/2)<2,'N₂ scene centred');
+    assert.equal(await page.locator('.science-bridge use[href="#science-petri"]').count(),1);
+    assert.equal(await page.locator('.faq-microscope use[href="#science-microscope"]').count(),1);
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    const timings=await page.locator('.lab-interlude>*').evaluateAll(nodes=>nodes.map(e=>{const s=getComputedStyle(e);return [s.animationName,s.animationDuration,s.animationDelay].join('/')}));
+    assert.equal(new Set(timings).size,4);
+    assert.ok(timings.every(t=>!t.startsWith('none/')));
     await page.close();
   }
 });
