@@ -482,3 +482,8 @@ html.motion-off .photo-gallery .gallery-bubble{animation-play-state:paused!impor
   .review-dialog-close{width:37px;height:37px}
 }
 @media(prefers-reduced-motion:reduce){.review-card .review-open-button{transition:none}}
+
+/* Policy and consent links in the footer */
+.footer-legal{flex-basis:100%;display:flex;justify-content:center;flex-wrap:wrap;gap:12px 24px;margin-top:15px;padding-top:18px;border-top:1px solid rgba(77,130,166,.25)}
+.footer-legal a{font-size:.89rem;line-height:1.5;text-decoration:underline;text-underline-offset:3px;color:#174f76;font-weight:700}
+.footer-legal a:hover,.footer-legal a:focus-visible{color:#0b83c4}
