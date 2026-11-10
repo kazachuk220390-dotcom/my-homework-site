@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#edf6ff">
   <title>Сумасшедшая наука — взрываем привычное представление о праздниках!</title>
   <link rel="icon" href="https://static.tildacdn.com/tild6631-3463-4963-b039-383234303133/___128x128.png" type="image/png" sizes="128x128">
-  <link rel="stylesheet" href="./styles.css?v=0.9-legal1">
-  <script src="./app.js?v=0.9" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=0.9-forms1">
+  <script src="./app.js?v=0.9-forms1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
@@ -251,8 +251,29 @@
   <label for="plan-guests">Число детей</label><select id="plan-guests"><option value="10">До 10 детей</option><option value="20">До 20 детей</option><option value="30">До 30 детей</option><option value="40">До 40 детей</option><option value="50">До 50 детей</option><option value="100">До 100 детей</option><option value="150">До 150 детей</option><option value="over150">Более 150 детей — по расчёту</option></select>
   <div class="plan-total"><span>Стоимость<small id="plan-price-note">Выезд за город — отдельно</small></span><strong id="plan-price" aria-live="polite" aria-atomic="true">29 900 ₽</strong></div>
   <p class="plan-price-breakdown" id="plan-price-breakdown" aria-live="polite"></p>
-  <label class="summary-label" for="plan-summary">План для обсуждения</label><textarea id="plan-summary" rows="7" readonly spellcheck="false"></textarea><button class="button button-primary discuss-button" id="discuss-plan" type="button">Хочу такой праздник <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="save-plan-button" id="copy-plan" type="button">Сохранить подбор</button><p id="copy-status" class="copy-status" role="status" aria-live="polite"></p><p class="contact-note">План автоматически не передаётся организатору</p>
+  <label class="summary-label" for="plan-summary">План для обсуждения</label><textarea id="plan-summary" rows="7" readonly spellcheck="false"></textarea><button class="button button-primary discuss-button" id="discuss-plan" type="button">Хочу такой праздник <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="save-plan-button" id="copy-plan" type="button">Сохранить подбор</button><p id="copy-status" class="copy-status" role="status" aria-live="polite"></p><p class="contact-note">Заявка отправится только после того, как вы заполните и отправите форму ниже. Подбор не передаётся автоматически</p>
  </div></div></section>
+
+
+    <section id="request" class="request-section section" aria-labelledby="request-title">
+      <div class="page-width request-layout">
+        <div class="request-heading">
+          <p class="eyebrow">07 / Ваш праздник начинается здесь</p>
+          <h2 id="request-title">Оставьте заявку<br><span>на научный праздник</span></h2>
+          <p class="request-lead">Укажите имя и телефон, выберите программу и при желании дату. Мы свяжемся с вами, чтобы обсудить детали. Отправка заявки не бронирует дату автоматически.</p>
+          <p class="request-choice-status" id="request-plan-status" role="status" aria-live="polite" hidden></p>
+        </div>
+        <div class="request-card">
+          <div class="request-card-bar">
+            <div><p class="request-card-eyebrow">Яндекс Формы</p><h3>Заявка на праздник</h3></div>
+            <a class="request-open-link" id="request-form-open" href="https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/" target="_blank" rel="noopener noreferrer">Открыть отдельно <span aria-hidden="true">↗</span></a>
+          </div>
+          <iframe class="request-form-frame" id="request-form-iframe" title="Форма заявки на научное шоу «Сумасшедшая наука»" src="https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/?iframe=1&amp;theme=light" width="100%" height="1170" loading="lazy"></iframe>
+          <p class="request-form-help">Не видите форму или не открываются ссылки на документы? <a id="request-form-fallback" href="https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/" target="_blank" rel="noopener noreferrer">Заполните заявку в отдельной вкладке</a>.</p>
+          <p class="request-privacy-hint">Перед отправкой ознакомьтесь с <a href="./privacy.html">политикой обработки данных</a> и <a href="./consent.html">согласием</a>. Контактные данные получим только после отправки вами формы.</p>
+        </div>
+      </div>
+    </section>
 
       </main>
   <footer class="page-width site-footer"><div class="footer-identity"><a class="footer-logo" href="#main" aria-label="Сумасшедшая наука — наверх"><img src="https://static.tildacdn.com/tild6631-3463-4963-b039-383234303133/___128x128.png" width="128" height="128" alt="Логотип Сумасшедшей науки"></a><p>Научные шоу, где каждый может удивляться, исследовать и участвовать<br>Калининград и Калининградская область</p></div>
