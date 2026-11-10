@@ -627,7 +627,7 @@ test('mobile effects play by default without reduced-motion preference', async (
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   assert.equal(await page.locator('#mobile-motion-toggle').getAttribute('aria-pressed'), 'true');
   const moving = await page.evaluate(() => {
-    const names = ['.dna-graphic','.mol-a','.snow-particle-a','.hero-fog i','.hero-explosion span'];
+    const names = ['.dna-graphic','.mol-a','.snow-particle-a','.hero-fog i','.reaction-bubble'];
     return names.map(name => ({name, animation: getComputedStyle(document.querySelector(name)).animationName}));
   });
   assert.ok(moving.every(a => a.animation !== 'none'), JSON.stringify(moving));
@@ -681,7 +681,7 @@ test('holiday calculator opens compact modal with plan context and no accidental
   assert.equal(await page.locator('#request-dialog').getAttribute('open'), '');
   assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('id')), 'request-dialog-close');
   assert.match(await page.locator('#request-plan-status').innerText(), /Большое Криошоу/);
-  assert.match(await page.locator('#request-plan-status').innerText(), /детали выбора добавлены/iu);
+  assert.match(await page.locator('#request-plan-status').innerText(), /Программа выбрана в форме автоматически\. Пожалуйста, проверьте выбор перед отправкой\./u);
   const url = new URL(await page.locator('#request-form-open').getAttribute('href'));
   assert.equal(url.searchParams.get('plan_program'), 'Большое Криошоу');
   assert.equal(url.searchParams.get('answer_choices_9008993561263860'), '1794306569052');
