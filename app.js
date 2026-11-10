@@ -243,3 +243,24 @@ if(motionToggle){
     renderMotionSetting();
   });
 }
+
+
+// v0.9 — each review opens independently; Escape, close button and backdrop close dialog
+document.querySelectorAll('[data-review-open]').forEach(button=>{
+  const dialog=document.getElementById('review-dialog-'+button.dataset.reviewOpen);
+  if(!dialog)return;
+  const closeButton=dialog.querySelector('.review-dialog-close');
+  const close=()=>{
+    if(typeof dialog.close==='function' && dialog.open)dialog.close();
+    else dialog.removeAttribute('open');
+    button.focus({preventScroll:true});
+  };
+  button.addEventListener('click',()=>{
+    if(typeof dialog.showModal==='function')dialog.showModal();
+    else dialog.setAttribute('open','');
+    closeButton?.focus({preventScroll:true});
+  });
+  closeButton?.addEventListener('click',close);
+  dialog.addEventListener('click',event=>{if(event.target===dialog)close()});
+  dialog.addEventListener('close',()=>button.focus({preventScroll:true}));
+});
