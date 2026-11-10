@@ -487,3 +487,24 @@ html.motion-off .photo-gallery .gallery-bubble{animation-play-state:paused!impor
 .footer-legal{flex-basis:100%;display:flex;justify-content:center;flex-wrap:wrap;gap:12px 24px;margin-top:15px;padding-top:18px;border-top:1px solid rgba(77,130,166,.25)}
 .footer-legal a{font-size:.89rem;line-height:1.5;text-decoration:underline;text-underline-offset:3px;color:#174f76;font-weight:700}
 .footer-legal a:hover,.footer-legal a:focus-visible{color:#0b83c4}
+
+/* v0.9 — Yandex Forms application section */
+.request-section{background:linear-gradient(150deg,#edf9ff 0%,#f7fcff 55%,#edf7fb 100%);padding-block:clamp(48px,6vw,86px)}
+.request-layout{max-width:950px;margin-inline:auto;display:flex;flex-direction:column;gap:25px;min-width:0}
+.request-heading{text-align:center;max-width:780px;margin-inline:auto}
+.request-heading h2{font-size:clamp(30px,4.5vw,49px);line-height:1.16;letter-spacing:-.035em;margin:10px 0 18px;color:#153c5f}
+.request-heading h2 span{color:#1680b4}
+.request-heading .eyebrow{font-weight:800;letter-spacing:.1em;color:#367ea8}
+.request-lead{font-size:clamp(15px,1.5vw,17px);line-height:1.75;max-width:700px;margin:0 auto;color:#375d76}
+.request-choice-status{background:#fff;border:1px solid #98d9ee;border-radius:13px;padding:13px 16px;color:#164766;font-weight:650;line-height:1.65;text-align:left;margin:20px auto 0;max-width:760px}
+.request-choice-status[hidden]{display:none}
+.request-card{width:100%;max-width:900px;margin:0 auto;border:1px solid #c3e2f0;border-radius:24px;background:#fff;box-shadow:0 22px 55px rgba(29,111,159,.1);min-width:0;padding:clamp(13px,3vw,26px);overflow:hidden}
+.request-card-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+.request-card h3{margin:2px 0;font-weight:850;font-size:clamp(19px,2.3vw,25px);line-height:1.25;color:#174262}
+.request-card-eyebrow{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#4f91b3;font-weight:900;margin:0}
+.request-open-link{font-size:13px;font-weight:850;color:#145985;padding:10px 14px;border:1px solid #b8dce9;border-radius:20px;background:#f3faff;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.request-open-link:hover,.request-open-link:focus-visible{background:#ddf5ff;border-color:#72bddd}
+.request-form-frame{display:block;min-width:0;width:100%;height:1170px;border:1px solid #d1e6f0;border-radius:13px;background:#fff}
+.request-form-help,.request-privacy-hint{font-size:13px;line-height:1.65;color:#4a6579;margin:14px 2px 0}
+.request-form-help a,.request-privacy-hint a{color:#155d89;text-decoration:underline;text-underline-offset:3px;font-weight:750}
+@media(max-width:680px){.request-section{padding-block:40px 55px}.request-layout{gap:18px}.request-heading{text-align:left}.request-card{border-radius:17px;padding:12px}.request-card-bar{align-items:start}.request-open-link{font-size:12px}.request-form-frame{height:1270px}.request-form-help,.request-privacy-hint{font-size:12px}}
