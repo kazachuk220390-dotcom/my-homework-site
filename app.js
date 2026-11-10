@@ -177,7 +177,7 @@ copyButton.addEventListener('click',async()=>{
 // Компактная заявка: выбор калькулятора передаётся в GET-параметрах формы.
 // Для автоматического выбора варианта программы нужен ID вопроса из Яндекс Форм.
 const yandexFormBase='https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/';
-const yandexProgramQuestionId=''; // Указать после получения ID вопроса.
+const yandexProgramQuestionId='answer_choices_9008993561263860'; // Подтверждено владельцем в Яндекс Формах.
 const yandexProgramAnswerIds={
   party:'9008993561263870',cryo:'1794306569052',dry:'1794306578311',science:'1794306586760',help:'1794306598248'
 };
@@ -232,7 +232,7 @@ function openRequestForm(trigger,fromCalculator){
     if(fromCalculator){
       const title=planPackage.value==='party'?'Научный переполох':shows[planShow.value]?.name||'Научное шоу';
       status.textContent='Ваш подбор: '+title+' · '+el('plan-price').textContent+
-        '. Детали выбора добавлены в ссылку на заявку. До завершения настройки предзаполнения программу в форме нужно выбрать вручную.';
+        '. Программа выбрана в форме автоматически. Пожалуйста, проверьте выбор перед отправкой.';
     }
   }
   syncRequestUrls();
