@@ -215,3 +215,31 @@ mobileNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu)
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!mobileNav.hidden){closeMenu();menuButton.focus()}});
 window.matchMedia('(min-width: 901px)').addEventListener('change',event=>{if(event.matches)closeMenu()});
 refresh();
+
+
+// v0.8: mobile visitor control, including opt-in when the phone requests reduced motion
+const motionToggle = document.getElementById('mobile-motion-toggle');
+if(motionToggle){
+  const reducedMotionQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
+  let manuallyChosen=false;
+  let motionOn=!reducedMotionQuery.matches;
+  function renderMotionSetting(){
+    const root=document.documentElement;
+    root.classList.toggle('motion-off',!motionOn);
+    root.classList.toggle('motion-override',motionOn && reducedMotionQuery.matches && manuallyChosen);
+    motionToggle.setAttribute('aria-pressed',String(motionOn));
+    motionToggle.setAttribute('aria-label',motionOn?'Выключить анимацию научных эффектов':'Включить анимацию научных эффектов');
+    const label=motionToggle.querySelector('.motion-label');
+    if(label)label.textContent=motionOn?'Эффекты: включены':'Эффекты: выключены';
+  }
+  renderMotionSetting();
+  motionToggle.addEventListener('click',()=>{
+    manuallyChosen=true;
+    motionOn=!motionOn;
+    renderMotionSetting();
+  });
+  reducedMotionQuery.addEventListener?.('change',()=>{
+    if(!manuallyChosen)motionOn=!reducedMotionQuery.matches;
+    renderMotionSetting();
+  });
+}
