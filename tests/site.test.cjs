@@ -684,6 +684,7 @@ test('holiday calculator opens compact modal with plan context and no accidental
   assert.match(await page.locator('#request-plan-status').innerText(), /детали выбора добавлены/iu);
   const url = new URL(await page.locator('#request-form-open').getAttribute('href'));
   assert.equal(url.searchParams.get('plan_program'), 'Большое Криошоу');
+  assert.equal(url.searchParams.get('answer_choices_9008993561263860'), '1794306569052');
   assert.match(url.searchParams.get('plan_workshops'), /лизуны/);
   assert.equal(url.searchParams.get('plan_price'), await page.locator('#plan-price').innerText());
   assert.equal(url.searchParams.get('plan_group'), 'До 10 детей');
@@ -716,10 +717,27 @@ test('UTM parameters are passed to Yandex Form iframe and separate link', async 
   }
   assert.equal(link.searchParams.has('iframe'), false);
   assert.ok(link.searchParams.has('plan_program'));
+  assert.equal(link.searchParams.get('answer_choices_9008993561263860'), '9008993561263870');
   assert.ok(link.searchParams.has('plan_workshops'));
   assert.ok(link.searchParams.has('plan_price'));
   await page.locator('#request-dialog-close').click();
   assert.equal(await page.locator('#request-dialog').getAttribute('open'), null);
+  await page.close();
+});
+
+test('all matching programs preselect correct Yandex answer IDs without changing consent', async () => {
+  const page = await openPage();
+  const questionId = 'answer_choices_9008993561263860';
+  const answers = { dry: '1794306578311', cryo: '1794306569052', science: '1794306586760' };
+  for (const [code, answer] of Object.entries(answers)) {
+    await page.selectOption('#plan-package', 'show');
+    await page.selectOption('#plan-show', code);
+    await page.locator('#discuss-plan').click();
+    const url = new URL(await page.locator('#request-form-open').getAttribute('href'));
+    assert.equal(url.searchParams.get(questionId), answer, code);
+    assert.equal(url.searchParams.has('answer_one_answer_9008993561838393'), false, 'consent cannot be pre-selected');
+    await page.locator('#request-dialog-close').click();
+  }
   await page.close();
 });
 
