@@ -558,6 +558,54 @@ test('package buttons choose their plans and scroll to planner', async () => {
   await page.close();
 });
 
+
+test('mobile science effects use SVG rather than emoji and can be enabled with reduced motion', async () => {
+  const page = await browser.newPage({
+    viewport: { width: 390, height: 844 },
+    reducedMotion: 'reduce'
+  });
+  await stubExternalPresentation(page);
+  await page.goto(baseURL, { waitUntil: 'networkidle' });
+  assert.equal(await page.locator('.mobile-motion-toggle').isVisible(), true);
+  assert.equal(await page.locator('.mobile-motion-toggle').getAttribute('aria-pressed'), 'false');
+  assert.equal(await page.locator('.snow-particle').count(), 4);
+  const symbols = await page.locator('body').innerText();
+  assert.doesNotMatch(symbols, /[✳❄]/);
+  assert.equal(await page.locator('[href="#science-snowflake"]').count() > 0, true);
+  assert.equal(await page.locator('[href="#science-molecule"]').count() > 0, true);
+  await page.locator('#mobile-motion-toggle').click();
+  assert.equal(await page.locator('.mobile-motion-toggle').getAttribute('aria-pressed'), 'true');
+  const animations = await page.evaluate(() => ({
+    snow: getComputedStyle(document.querySelector('.snow-particle-a')).animationName,
+    dna: getComputedStyle(document.querySelector('.dna-graphic')).animationName,
+    molecule: getComputedStyle(document.querySelector('.mol-a')).animationName,
+    fog: getComputedStyle(document.querySelector('.hero-fog i')).animationName,
+    reaction: getComputedStyle(document.querySelector('.reaction-bubble')).animationName
+  }));
+  for (const [label, name] of Object.entries(animations)) {
+    assert.notEqual(name, 'none', label + ' must animate after explicit opt-in');
+  }
+  await page.locator('#mobile-motion-toggle').click();
+  assert.equal(await page.locator('.mobile-motion-toggle').getAttribute('aria-pressed'), 'false');
+  await page.close();
+});
+
+test('mobile effects play by default without reduced-motion preference', async () => {
+  const page = await browser.newPage({
+    viewport: { width: 390, height: 844 },
+    reducedMotion: 'no-preference'
+  });
+  await stubExternalPresentation(page);
+  await page.goto(baseURL, { waitUntil: 'networkidle' });
+  assert.equal(await page.locator('#mobile-motion-toggle').getAttribute('aria-pressed'), 'true');
+  const moving = await page.evaluate(() => {
+    const names = ['.dna-graphic','.mol-a','.snow-particle-a','.hero-fog i','.hero-explosion span'];
+    return names.map(name => ({name, animation: getComputedStyle(document.querySelector(name)).animationName}));
+  });
+  assert.ok(moving.every(a => a.animation !== 'none'), JSON.stringify(moving));
+  await page.close();
+});
+
 test('mobile navigation opens, follows links, closes with Escape and resets on desktop', async () => {
   const page = await openPage({ width: 390, height: 844 });
   const button = page.locator('.menu-toggle');
