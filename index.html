@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" data-site-version="0.7">
+<html lang="ru" data-site-version="0.8">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#edf6ff">
   <title>Сумасшедшая наука — взрываем привычное представление о праздниках!</title>
   <link rel="icon" href="https://static.tildacdn.com/tild6631-3463-4963-b039-383234303133/___128x128.png" type="image/png" sizes="128x128">
-  <link rel="stylesheet" href="./styles.css?v=0.7">
-  <script src="./app.js?v=0.7" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=0.8">
+  <script src="./app.js?v=0.8" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
@@ -19,7 +19,26 @@
     <symbol id="lab-flask" viewBox="0 0 100 125"><path d="M36 7v40L10 103c-3 7 2 15 10 15h60c8 0 13-8 10-15L64 47V7M30 7h40" fill="#c9f5ff20" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><path d="m23 84-10 21c-2 5 1 9 7 9h60c6 0 9-4 7-9L77 84Z" fill="#68dff6" fill-opacity=".55"/><path d="M39 41h11M40 57h8M55 100h10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="37" cy="95" r="4" fill="#f5ffff"/><circle cx="58" cy="78" r="3" fill="#f5ffff"/></symbol>
     <symbol id="lab-test-tube" viewBox="0 0 65 130"><path d="M16 7h33M21 7v93a12 12 0 0 0 24 0V7" fill="#d2faff20" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M25 64v36a8 8 0 0 0 16 0V64Z" fill="#b2ee8c" fill-opacity=".7"/><path d="M33 28h10M33 43h10M33 58h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="32" cy="81" r="3" fill="#fff"/><circle cx="34" cy="96" r="2" fill="#fff"/></symbol>
     <symbol id="lab-atom" viewBox="0 0 140 95"><g fill="none" stroke="currentColor" stroke-width="1.4" opacity=".7"><ellipse cx="70" cy="47" rx="60" ry="21" transform="rotate(-27 70 47)"/><ellipse cx="70" cy="47" rx="60" ry="21" transform="rotate(27 70 47)"/></g><circle cx="64" cy="44" r="8" fill="#ffb85b"/><circle cx="76" cy="45" r="8" fill="#51bbdf"/><circle cx="70" cy="55" r="8" fill="#7dcde9"/><circle cx="60" cy="55" r="6" fill="#f7c06b"/><path d="M64 41v6M61 44h6" stroke="#fff" stroke-width="1.5"/><circle cx="116" cy="23" r="4" fill="currentColor"/><circle cx="22" cy="25" r="4" fill="#56cfe0"/></symbol>
-  </defs></svg>
+
+    <symbol id="science-snowflake" viewBox="0 0 40 40">
+      <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 3v34M5.3 11.5l29.4 17M5.3 28.5l29.4-17"/>
+        <path d="m15.5 7 4.5 4.5L24.5 7M15.5 33l4.5-4.5 4.5 4.5"/>
+        <path d="m8 9.8 6.2-.9.9-6.2" transform="translate(0 8)"/>
+        <path d="M30.7 16.2 25 16l-1.7-5M9.3 23.8 15 24l1.7 5M30.7 23.8l-5.7.2-1.7 5M9.3 16.2l5.7-.2 1.7-5"/>
+      </g><circle cx="20" cy="20" r="3" fill="#63d9f3" stroke="currentColor" stroke-width="1.3"/>
+    </symbol>
+    <symbol id="science-molecule" viewBox="0 0 40 40">
+      <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m10 28 11-17 11 14M10 28l21-3"/></g>
+      <circle cx="10" cy="28" r="5" fill="#7eddf1" stroke="currentColor" stroke-width="2"/>
+      <circle cx="21" cy="11" r="5" fill="#d3f9ff" stroke="currentColor" stroke-width="2"/>
+      <circle cx="32" cy="25" r="5" fill="#a6f0e9" stroke="currentColor" stroke-width="2"/>
+    </symbol>
+    <symbol id="science-spark" viewBox="0 0 40 40">
+      <path d="m20 2 4.3 13.7L38 20l-13.7 4.3L20 38l-4.3-13.7L2 20l13.7-4.3Z" fill="currentColor"/>
+      <circle cx="32" cy="7" r="3" fill="#64d9ed"/>
+    </symbol>
+    </defs></svg>
   <header class="site-header page-width">
     <a class="brand brand-logo" href="#main" aria-label="Сумасшедшая наука — на главную">
       <img src="https://static.tildacdn.com/tild6631-3463-4963-b039-383234303133/___128x128.png" alt="Логотип Сумасшедшей науки" width="128" height="128">
@@ -40,13 +59,20 @@
         </svg>
         <svg class="molecule-graphic mol-a" viewBox="0 0 120 110" fill="none"><g stroke="#17a5df" stroke-width="3"><path d="m19 58 33-24 32 17 14-29M84 51l13 34M19 58l12 34"/></g><g fill="#d5faff" stroke="#128ec7" stroke-width="3"><circle cx="19" cy="58" r="11"/><circle cx="52" cy="34" r="10"/><circle cx="84" cy="51" r="13"/><circle cx="98" cy="22" r="8"/><circle cx="97" cy="85" r="8"/><circle cx="31" cy="92" r="7"/></g></svg>
         <svg class="molecule-graphic mol-b" viewBox="0 0 120 110" fill="none"><g stroke="#17a5df" stroke-width="3"><path d="m19 58 33-24 32 17 14-29M84 51l13 34M19 58l12 34"/></g><g fill="#d5faff" stroke="#128ec7" stroke-width="3"><circle cx="19" cy="58" r="11"/><circle cx="52" cy="34" r="10"/><circle cx="84" cy="51" r="13"/><circle cx="98" cy="22" r="8"/><circle cx="97" cy="85" r="8"/><circle cx="31" cy="92" r="7"/></g></svg>
+        <div class="mobile-snow-scene" aria-hidden="true">
+          <svg class="snow-particle snow-particle-a" viewBox="0 0 40 40"><use href="#science-snowflake"/></svg>
+          <svg class="snow-particle snow-particle-b" viewBox="0 0 40 40"><use href="#science-snowflake"/></svg>
+          <svg class="snow-particle snow-particle-c" viewBox="0 0 40 40"><use href="#science-snowflake"/></svg>
+          <svg class="snow-particle snow-particle-d" viewBox="0 0 40 40"><use href="#science-snowflake"/></svg>
+        </div>
       </div>
       <div class="hero-copy">
-        <p class="eyebrow"><span class="tiny-spark" aria-hidden="true">✳</span> Калининград и область · научные приключения</p>
+        <p class="eyebrow"><span class="tiny-spark" aria-hidden="true"><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-snowflake"></use></svg></span> Калининград и область · научные приключения</p>
         <h1 id="hero-title">Взрываем привычное<br><span class="highlight">представление о праздниках!</span></h1>
         <p class="hero-description">Интерактивные научные шоу для дней рождения, выпускных, школ, лагерей и других событий<br> Гости не просто смотрят — они участвуют в удивительных открытиях!</p>
         <div class="hero-actions"><a class="button button-primary" href="#packages">Выбрать программу <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a><div class="hero-reaction" aria-hidden="true"><svg class="reactor-flask" viewBox="0 0 120 160" fill="none"><defs><clipPath id="reactor-glass"><path d="M43 12v48L14 130c-4 9 2 17 12 17h68c10 0 16-8 12-17L77 60V12Z"/></clipPath></defs><g clip-path="url(#reactor-glass)"><path class="reactor-liquid" d="M-4 101c13-10 26 10 39 0s26-10 39 0 26 10 39 0 26-10 39 0v61H-4Z" fill="#42cde8" fill-opacity=".62"/><path class="reactor-wave" d="M-4 108c14 10 28-10 42 0s28 10 42 0 28-10 42 0v54H-4Z" fill="#b4ed75" fill-opacity=".75"/><circle class="reaction-bubble bubble-one" cx="38" cy="132" r="5" fill="#efffff"/><circle class="reaction-bubble bubble-two" cx="63" cy="138" r="4" fill="#efffff"/><circle class="reaction-bubble bubble-three" cx="82" cy="126" r="6" fill="#efffff"/><circle class="reaction-bubble bubble-four" cx="54" cy="121" r="3" fill="#efffff"/></g><path d="M43 12v48L14 130c-4 9 2 17 12 17h68c10 0 16-8 12-17L77 60V12M36 12h48" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M48 48h13M48 63h10M48 78h7" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".6"/><path d="M27 128 47 81" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".8"/><circle class="reaction-fizz fizz-one" cx="52" cy="4" r="3" fill="#68d7e5"/><circle class="reaction-fizz fizz-two" cx="71" cy="2" r="2" fill="#9cd870"/></svg></div></div>
         
+        <button class="mobile-motion-toggle" type="button" id="mobile-motion-toggle" aria-pressed="true" aria-label="Выключить анимацию научных эффектов"><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-molecule"></use></svg> <span class="motion-label">Эффекты: включены</span></button>
       </div>
       <a class="hero-art hero-photo" href="./assets/photos/birthday-scientist.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фотографию профессора с ребёнком целиком">
         <div class="art-label"><span class="status-dot" aria-hidden="true"></span> Настоящие участники шоу</div>
@@ -82,7 +108,7 @@
   <div class="packages-toolbar"><label for="guest-count">Сколько будет детей?</label><select id="guest-count"><option value="10">До 10 детей</option><option value="20">До 20 детей</option><option value="30">До 30 детей</option><option value="40">До 40 детей</option><option value="50">До 50 детей</option><option value="100">До 100 детей</option><option value="150">До 150 детей</option><option value="over150">Более 150 детей — по расчёту</option></select><p>В «Научном переполохе» мороженое включено<br> Сумма считается по верхней границе выбранной группы</p></div>
   <div class="package-grid">
     <article class="package-card lab-card lab-card-show" data-package="show">
-      <div class="card-energy" aria-hidden="true"><span>✳</span><i></i><i></i><i></i></div>
+      <div class="card-energy" aria-hidden="true"><span><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-molecule"></use></svg></span><i></i><i></i><i></i></div>
       <div class="package-top"><span class="package-index">01 / Научное шоу на выбор</span><span class="duration">60 мин</span></div>
       <h3>Научное шоу</h3><p class="package-description">Эксперименты, участие гостей и праздничное награждение</p>
       <p class="price"><span class="price-prefix">от </span><strong data-price="show">9 500</strong><span class="price-currency"> ₽</span></p><p class="price-caption">В зависимости от выбранной программы</p>
@@ -96,8 +122,8 @@
       <a class="button package-button" data-select-package="show" href="#planner">Подобрать шоу <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </article>
     <article class="package-card featured lab-card lab-card-party" data-package="party">
-      <div class="card-energy" aria-hidden="true"><span>❄</span><i></i><i></i><i></i></div>
-      <div class="recommended"><span aria-hidden="true">✳</span> Полный праздничный сценарий</div><div class="package-top"><span class="package-index">02 / Шоу + мастер-класс + дискотека</span><span class="duration">150 мин</span></div>
+      <div class="card-energy" aria-hidden="true"><span><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-snowflake"></use></svg></span><i></i><i></i><i></i></div>
+      <div class="recommended"><span aria-hidden="true"><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-snowflake"></use></svg></span> Полный праздничный сценарий</div><div class="package-top"><span class="package-index">02 / Шоу + мастер-класс + дискотека</span><span class="duration">150 мин</span></div>
       <h3>Научный переполох</h3><p class="package-description">От научных экспериментов до серебряной дискотеки</p>
       <p class="price"><span class="price-prefix">от </span><strong data-price="party">29 900</strong><span class="price-currency"> ₽</span></p><p class="price-caption" data-price-caption>До 10 детей · научное шоу и мороженое</p>
       <div class="package-divider"></div><ul class="check-list"><li>Научное шоу — 60 минут</li><li>Крио-мороженое включено, лизуны можно добавить отдельно</li><li>Три перерыва по 10 минут</li><li>Награждение именинника или класса</li><li>Фирменный номер «БУМ-ТОРТ»</li><li>Серебряная дискотека — 30 минут</li></ul>
@@ -117,27 +143,27 @@
     </article>
   </div>
   <div class="pricing-notes"><p><strong>К отдельному шоу можно добавить оба мастер-класса!</strong> Калькулятор прибавит их стоимость к цене программы, общую продолжительность согласуем отдельно</p><p>Свыше 150 детей и для нестандартных сценариев подготовим индивидуальный расчёт. Выезд за пределы Калининграда согласуем отдельно</p></div>
-  <div class="workshop-feature"><div class="workshop-copy"><span class="pill">Дополнения к большому празднику</span><h3>Ещё больше открытий!</h3><p>Добавьте мастер-класс по крио-мороженому, изготовлению лизунов или обе программы сразу</p><div class="workshop-badges"><span>❄ Крио-мороженое</span><span>✳ Лизуны</span></div><p>На фотографиях — приготовление и дегустация мороженого. В «Научном переполохе» оно включено, лизуны можно добавить отдельно</p><a class="text-link" href="#planner" data-select-package="party">Подобрать «Научный переполох» <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div><div class="workshop-photos"><figure><a href="./assets/photos/icecream-making.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фото приготовления мороженого"><img src="./assets/photos/icecream-making.webp" alt="Дети участвуют в приготовлении мороженого" width="960" height="1440" loading="lazy"></a><figcaption>Готовим вместе</figcaption></figure><figure><a href="./assets/photos/icecream-result.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фото мороженого"><img src="./assets/photos/icecream-result.webp" alt="Ребёнок с готовым мороженым" width="960" height="1440" loading="lazy"></a><figcaption>Пробуем результат</figcaption></figure></div></div>
+  <div class="workshop-feature"><div class="workshop-copy"><span class="pill">Дополнения к большому празднику</span><h3>Ещё больше открытий!</h3><p>Добавьте мастер-класс по крио-мороженому, изготовлению лизунов или обе программы сразу</p><div class="workshop-badges"><span><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-snowflake"></use></svg> Крио-мороженое</span><span><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-molecule"></use></svg> Лизуны</span></div><p>На фотографиях — приготовление и дегустация мороженого. В «Научном переполохе» оно включено, лизуны можно добавить отдельно</p><a class="text-link" href="#planner" data-select-package="party">Подобрать «Научный переполох» <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div><div class="workshop-photos"><figure><a href="./assets/photos/icecream-making.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фото приготовления мороженого"><img src="./assets/photos/icecream-making.webp" alt="Дети участвуют в приготовлении мороженого" width="960" height="1440" loading="lazy"></a><figcaption>Готовим вместе</figcaption></figure><figure><a href="./assets/photos/icecream-result.webp" target="_blank" rel="noopener noreferrer" aria-label="Открыть фото мороженого"><img src="./assets/photos/icecream-result.webp" alt="Ребёнок с готовым мороженым" width="960" height="1440" loading="lazy"></a><figcaption>Пробуем результат</figcaption></figure></div></div>
   <noscript><p class="notice">Для интерактивного подбора включите JavaScript. Утверждённые базовые цены приведены в карточках.</p></noscript>
 </div></section>
 
         <section id="reviews" class="section page-width" aria-labelledby="reviews-title"><div class="section-heading"><div><p class="eyebrow">04 / После научных открытий</p><h2 id="reviews-title">Впечатления, которыми<br>делятся родители</h2></div><p>Родители и организаторы делятся тем, что запомнилось после наших научных приключений</p></div>
       <div class="review-grid">
-        <article class="review-card"><span class="review-symbol" aria-hidden="true">✳</span>
+        <article class="review-card"><span class="review-symbol" aria-hidden="true"><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-spark"></use></svg></span>
           <h3>Интересно и детям, и взрослым</h3>
           <p>Ирина приглашала научное шоу дважды — на каждом мероприятии было около 40 детей, ведущая справилась с большой компанией и подарила яркие эмоции</p>
           <details class="review-details"><summary>Посмотреть весь отзыв <span aria-hidden="true">+</span></summary>
           <p>В подробном отзыве Ирина отметила ответственность, пунктуальность и необыкновенную энергичность ведущей. Дети увлечённо наблюдали за опытами, а взрослые тоже с интересом включились в атмосферу шоу. Особенно запомнилось, как легко профессор удерживала внимание больших групп на обоих мероприятиях</p></details>
           <div class="review-author"><span class="avatar" aria-hidden="true">И</span><span><strong>Ирина</strong><small>Два научных выступления</small></span></div>
         </article>
-        <article class="review-card"><span class="review-symbol" aria-hidden="true">✳</span>
+        <article class="review-card"><span class="review-symbol" aria-hidden="true"><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-spark"></use></svg></span>
           <h3>Много интерактива и внимания к детям</h3>
           <p>Семейный клуб «Апельсин» пригласил программу снова после знакомства на дне рождения — особенно понравились юмор и участие детей</p>
           <details class="review-details"><summary>Посмотреть весь отзыв <span aria-hidden="true">+</span></summary>
           <p>Администратор клуба рассказала, что впечатление от первого выступления оказалось настолько сильным, что сразу договорились о двух следующих праздниках. Детей разных возрастов увлекли эксперименты и шутки, внимание получили и родители. Клуб отдельно отметил профессионализм ведущей и желание пригласить новую программу</p></details>
           <div class="review-author"><span class="avatar" aria-hidden="true">А</span><span><strong>Семейный клуб «Апельсин»</strong><small>Повторные приглашения</small></span></div>
         </article>
-        <article class="review-card"><span class="review-symbol" aria-hidden="true">✳</span>
+        <article class="review-card"><span class="review-symbol" aria-hidden="true"><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-spark"></use></svg></span>
           <h3>Особый праздник для пятилетнего сына</h3>
           <p>Елена отметила яркие впечатления от шоу на пятилетии сына и умение ведущего находить общий язык с детьми</p>
           <details class="review-details"><summary>Посмотреть весь отзыв <span aria-hidden="true">+</span></summary>
@@ -168,8 +194,8 @@
     <p id="plan-workshop-label" class="selector-title">Дополнительные мастер-классы <span id="plan-workshop-mode">мороженое включено в пакет</span></p>
     <p id="plan-included-workshop" class="included-workshop-note">Крио-мороженое включено в программу</p>
     <div class="extra-options">
-      <label class="extra-option" for="plan-workshop-icecream"><input type="checkbox" id="plan-workshop-icecream" value="icecream" checked><span class="extra-icon" aria-hidden="true">❄</span><span class="extra-text"><strong>Крио-мороженое</strong><small id="workshop-price-icecream">Включено в пакет</small></span></label>
-      <label class="extra-option" for="plan-workshop-slime"><input type="checkbox" id="plan-workshop-slime" value="slime"><span class="extra-icon" aria-hidden="true">✳</span><span class="extra-text"><strong>Лизуны</strong><small id="workshop-price-slime">+1 500 ₽ до 10 детей</small></span></label>
+      <label class="extra-option" for="plan-workshop-icecream"><input type="checkbox" id="plan-workshop-icecream" value="icecream" checked><span class="extra-icon" aria-hidden="true"><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-snowflake"></use></svg></span><span class="extra-text"><strong>Крио-мороженое</strong><small id="workshop-price-icecream">Включено в пакет</small></span></label>
+      <label class="extra-option" for="plan-workshop-slime"><input type="checkbox" id="plan-workshop-slime" value="slime"><span class="extra-icon" aria-hidden="true"><svg class="ui-science-icon " viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#science-molecule"></use></svg></span><span class="extra-text"><strong>Лизуны</strong><small id="workshop-price-slime">+1 500 ₽ до 10 детей</small></span></label>
     </div>
     <p class="workshop-hint" id="plan-workshop-hint" aria-live="polite">К отдельному шоу можно добавить один или оба мастер-класса; в «Переполохе» мороженое уже включено</p>
   </div>
