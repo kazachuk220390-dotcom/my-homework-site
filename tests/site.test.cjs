@@ -748,7 +748,7 @@ test('discovery strip preserves the four-word sequence and five decorative SVG m
     assert.ok(await svg.locator('circle').count() >= 4);
     assert.ok(await svg.locator('path').count() >= 1);
   }
-  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.10-layout1$/);
+  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.10-layout2$/);
   await page.close();
 });
 
@@ -892,6 +892,14 @@ test('new scientific scenes stay away from text and respect reduced motion on de
     assert.ok(Math.abs((layout.center.x+layout.center.right)/2-width/2)<2,'N₂ scene centred');
     assert.equal(await page.locator('.science-bridge use[href="#science-petri"]').count(),1);
     assert.equal(await page.locator('.faq-microscope use[href="#science-microscope"]').count(),1);
+    assert.equal(await page.locator('.faq-intro > .faq-microscope').count(),1,'microscope belongs directly under the FAQ heading');
+    assert.equal(await page.locator('.faq-doodle').count(),0);
+    const heading=await page.locator('#faq-title').boundingBox();
+    const microscope=await page.locator('.faq-microscope').boundingBox();
+    const questions=await page.locator('.faq-list').boundingBox();
+    assert.ok(microscope.y>=heading.y+heading.height+16&&microscope.y<=heading.y+heading.height+40,'microscope sits just below the heading');
+    if(width>680)assert.ok(microscope.x+microscope.width<questions.x&&microscope.y<questions.y+questions.height,'microscope fills the left column beside the questions');
+    else assert.ok(microscope.y+microscope.height<=questions.y,'mobile questions remain below the decoration');
     await page.emulateMedia({reducedMotion:'no-preference'});
     const timings=await page.locator('.lab-interlude>*').evaluateAll(nodes=>nodes.map(e=>{const s=getComputedStyle(e);return [s.animationName,s.animationDuration,s.animationDelay].join('/')}));
     assert.equal(new Set(timings).size,4);

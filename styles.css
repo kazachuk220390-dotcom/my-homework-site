@@ -648,7 +648,7 @@ html.motion-off .photo-gallery .gallery-bubble{animation-play-state:paused!impor
 .bridge-molecule-a{width:48px;height:48px;animation:science-drift-b 11.6s ease-in-out -3.8s infinite}
 .bridge-molecule-b{width:74px;height:62px;animation:science-drift-a 17.2s ease-in-out -9.4s infinite reverse}
 .faq-section{padding-top:26px;padding-bottom:34px;row-gap:16px}
-.faq-microscope{grid-column:1/-1;justify-self:center;position:relative;width:160px;height:165px;margin:6px auto 0;pointer-events:none}
+.faq-microscope{position:relative;width:190px;height:196px;margin:28px 0 0;pointer-events:none}
 .faq-microscope>svg{width:100%;height:100%;filter:drop-shadow(0 0 9px #65dbea55);animation:science-drift-b 13.4s ease-in-out -5.1s infinite}
 .scope-particle{position:absolute;display:block;width:5px;height:5px;border-radius:50%;background:#41c9dc;box-shadow:0 0 8px #7deef1;animation:scope-glimmer 5.3s ease-in-out infinite}
 .scope-particle-a{left:18%;top:38%}.scope-particle-b{right:12%;top:20%;animation-duration:7.9s;animation-delay:-3.8s}
@@ -722,7 +722,7 @@ html:has(dialog[open]){overflow:hidden}
  .nucleon-transition .chem-formula{top:32px;left:3px;font-size:26px}
  .nucleon-transition .neutron-a{left:66px}
  .science-bridge{height:106px;gap:28px}.bridge-petri{width:120px;height:80px}.bridge-molecule-a{width:35px;height:35px}.bridge-molecule-b{width:55px;height:46px}
- .faq-section{padding-bottom:26px}.faq-microscope{width:140px;height:146px;margin-top:24px}
+ .faq-section{padding-bottom:26px}.faq-microscope{width:140px;height:146px;margin:20px 0 0}
  .planner-section{padding-block:30px}
  .planner-copy{display:block;margin-bottom:18px}.planner-copy h2{font-size:33px}
  .planner-copy>p:not(.eyebrow){max-width:none;margin:13px 0 0;font-size:13px}
