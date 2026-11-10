@@ -73,11 +73,15 @@ const approvedDescriptions = {
   graduate: 'Выпускной, где целый класс участвует в опытах, делает открытия и принимает поздравления, а в завершении праздника Профессор дарит подарок каждому выпускнику',
   kitchen: 'Научная кухня, где привычные вещи открываются с неожиданной стороны — детали программы подбираем под формат праздника',
 };
-// Only the remote Tilda logo uses a fixture; local fonts are loaded and verified normally.
+// Remote logo and embedded Yandex Form use offline fixtures; local fonts remain real.
 async function stubExternalPresentation(page) {
   await page.route('https://static.tildacdn.com/**', route => route.fulfill({
     status: 200, contentType: 'image/png',
     body: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFUlEQVR4nGP8////fwYGBgYmBigAAD34BADaOyqcAAAAAElFTkSuQmCC', 'base64')
+  }));
+  await page.route('https://forms.yandex.ru/**', route => route.fulfill({
+    status: 200, contentType: 'text/html; charset=utf-8',
+    body: '<!doctype html><html lang="ru"><head><title>Тестовая Яндекс Форма</title></head><body>Встроенная форма для проверки вёрстки</body></html>'
   }));
 }
 
@@ -110,7 +114,7 @@ for (const width of [320, 390, 768, 1440]) {
   });
 }
 
-test('navigation targets exist, review mode is clear, and no tracking or data submission occurs', async () => {
+test('navigation, consent links and embedded form exist without local data submission', async () => {
   const page = await browser.newPage();
   const requests = [];
   page.on('request', (request) => requests.push({ url: request.url(), method: request.method() }));
@@ -125,9 +129,13 @@ test('navigation targets exist, review mode is clear, and no tracking or data su
   assert.match(await page.locator('.test-mode').innerText(), /Дата не бронируется автоматически/);
   assert.equal(await page.locator('form,input:not([type="checkbox"]),textarea:not([readonly])').count(), 0);
   assert.equal(await page.locator('input[type="checkbox"]').count(), 2);
-  assert.equal(await page.locator('iframe,script[src^="http"]').count(), 0);
+  assert.equal(await page.locator('iframe#request-form-iframe').count(), 1);
+  assert.equal(await page.locator('script[src^="http"]').count(), 0);
+  assert.match(await page.locator('#request-form-iframe').getAttribute('src'), /^https:\/\/forms\.yandex\.ru\/u\/6af2edf32c4f89fce97e11a8\//);
+  assert.equal(await page.locator('#request-form-open[target="_blank"]').count(), 1);
+  assert.equal(await page.locator('a[href="./privacy.html"],a[href="./consent.html"]').count(), 4);
   assert.equal(await page.locator('img[src^="http"]').count(), 2);
-  const permittedHosts = [new URL(baseURL).host, 'static.tildacdn.com'];
+  const permittedHosts = [new URL(baseURL).host, 'static.tildacdn.com', 'forms.yandex.ru'];
   assert.ok(requests.every(request => request.method === 'GET' && permittedHosts.includes(new URL(request.url).host)));
   assert.equal(await page.locator('.hero-facts').count(), 0);
   assert.equal(await page.locator('.dna-graphic').count(), 1);
@@ -657,7 +665,7 @@ test('FAQ can be opened and closed using the keyboard', async () => {
   await page.close();
 });
 
-test('primary holiday action reaches contacts and focuses the phone without copying or sending a request', async () => {
+test('primary holiday action opens the request section without claiming a submitted application', async () => {
   const page = await openPage();
   await page.selectOption('#plan-package', 'show');
   await page.selectOption('#plan-show', 'cryo');
@@ -667,15 +675,36 @@ test('primary holiday action reaches contacts and focuses the phone without copy
   page.on('request', (request) => requests.push({ url: request.url(), method: request.method() }));
   assert.match(await page.locator('#discuss-plan').innerText(), /Хочу такой праздник/);
   await page.locator('#discuss-plan').click();
-  assert.equal(new URL(page.url()).hash, '#contacts');
-  assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('href')), 'tel:+79118757385');
-  assert.match(await page.locator('#contact-plan-status').innerText(), /Большое Криошоу/);
-  assert.match(await page.locator('#contact-plan-status').innerText(), /лизуны/);
+  assert.equal(new URL(page.url()).hash, '#request');
+  assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('id')), 'request-form-open');
+  assert.match(await page.locator('#request-plan-status').innerText(), /Большое Криошоу/);
+  assert.match(await page.locator('#request-plan-status').innerText(), /лизуны/);
+  assert.match(await page.locator('#request-plan-status').innerText(), /не отправляется/);
   assert.equal(await page.evaluate(() => window.clipboardCalls || 0), 0);
   assert.doesNotMatch(await page.locator('#copy-status').innerText(), /скопирован|сохран[её]н|отправлен/iu);
-  assert.ok(requests.every((request) => request.method === 'GET'), 'contact navigation must not submit the plan');
-  const contactBounds = await page.locator('#contacts').boundingBox();
-  assert.ok(contactBounds.y < 1000 && contactBounds.y + contactBounds.height > 0, 'contacts should be in view');
+  assert.ok(requests.every((request) => request.method === 'GET'), 'request navigation must not submit a plan');
+  const formBounds = await page.locator('#request').boundingBox();
+  assert.ok(formBounds.y < 1000 && formBounds.y + formBounds.height > 0, 'request form area should be in view');
+  await page.close();
+});
+
+
+test('UTM parameters are passed to Yandex Form iframe and separate link', async () => {
+  const page = await browser.newPage();
+  await stubExternalPresentation(page);
+  await page.goto(baseURL + '/?utm_source=vk&utm_medium=cpc&utm_campaign=autumn-test&custom_parameter=private', { waitUntil: 'networkidle' });
+  const embed = new URL(await page.locator('#request-form-iframe').getAttribute('src'));
+  const link = new URL(await page.locator('#request-form-open').getAttribute('href'));
+  const fallback = new URL(await page.locator('#request-form-fallback').getAttribute('href'));
+  assert.equal(embed.searchParams.get('iframe'), '1');
+  assert.equal(embed.searchParams.get('theme'), 'light');
+  for (const u of [embed, link, fallback]) {
+    assert.equal(u.searchParams.get('utm_source'), 'vk');
+    assert.equal(u.searchParams.get('utm_medium'), 'cpc');
+    assert.equal(u.searchParams.get('utm_campaign'), 'autumn-test');
+    assert.equal(u.searchParams.has('custom_parameter'), false);
+  }
+  assert.equal(link.searchParams.has('iframe'), false);
   await page.close();
 });
 
