@@ -770,7 +770,7 @@ test('discovery strip preserves the four-word sequence and five decorative SVG m
   const strip = page.locator('.discovery-strip');
   assert.notEqual(await strip.getAttribute('aria-hidden'), 'true');
   assert.deepEqual(await strip.locator('.page-width > *').evaluateAll(nodes => nodes.map(n => n.tagName.toLowerCase() === 'svg' ? 'molecule' : n.textContent)), [
-    'molecule', 'Исследуем', 'molecule', 'Экспериментируем', 'molecule', 'Удивляемся', 'molecule', 'Празднуем!', 'molecule'
+    'molecule', 'Исследуем', 'molecule', 'Экспериментируем', 'molecule', 'Удивляемся', 'molecule', 'Празднуем', 'molecule'
   ]);
   assert.equal(await strip.locator('use[href="#lab-flask"],.strip-flask').count(), 0);
   for (const svg of await strip.locator('svg').all()) {
