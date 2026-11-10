@@ -174,43 +174,91 @@ copyButton.addEventListener('click',async()=>{
     copyStatus.textContent='Текст выделен — скопируйте вручную';
   }
 });
-// Открываем форму заявки из калькулятора, не утверждая, что подбор был отправлен.
-discussButton?.addEventListener('click',()=>{
-  if(discussButton.disabled)return;
-  const request=el('request');
-  const status=el('request-plan-status');
-  if(!request||!status)return;
-  const format=planPackage.value==='party'?'Научный переполох':shows[planShow.value].name;
-  const additions=selectedWorkshops().filter(code=>!(planPackage.value==='party'&&code==='icecream')).map(code=>workshopNames[code]);
-  status.hidden=false;
-  status.textContent='Ваш подбор: '+format+
-    (additions.length?' + '+additions.join(' и '):'')+
-    '. В форме ниже выберите эту же программу и укажите контакты. Подбор автоматически не отправляется.';
-  history.replaceState(null,'','#request');
-  request.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
-  const open=el('request-form-open');
-  if(open)open.focus({preventScroll:true});
-});
-// Передаём рекламные UTM-метки из адреса страницы в адрес Яндекс Форм.
-// Чтобы они сохранялись в ответах и приходили по почте, в Яндекс Формах
-// нужно отдельно добавить скрытые вопросы с такими же идентификаторами.
-(function configureYandexFormLinks(){
-  const iframe=el('request-form-iframe');
-  const links=[el('request-form-open'),el('request-form-fallback')].filter(Boolean);
-  if(!iframe||!links.length)return;
-  const original='https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/';
-  const external=new URL(original);
-  const incoming=new URLSearchParams(window.location.search);
+// Компактная заявка: выбор калькулятора передаётся в GET-параметрах формы.
+// Для автоматического выбора варианта программы нужен ID вопроса из Яндекс Форм.
+const yandexFormBase='https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/';
+const yandexProgramQuestionId=''; // Указать после получения ID вопроса.
+const yandexProgramAnswerIds={
+  party:'9008993561263870',cryo:'1794306569052',dry:'1794306578311',science:'1794306586760',help:'1794306598248'
+};
+const requestDialog=el('request-dialog');
+const requestIframe=el('request-form-iframe');
+const requestLaunch=el('request-form-launch');
+const requestClose=el('request-dialog-close');
+let lastRequestTrigger=null;
+function chosenProgramCode(){
+  if(planPackage.value==='party')return 'party';
+  return Object.hasOwn(yandexProgramAnswerIds,planShow.value)?planShow.value:'help';
+}
+function formLinkWithPlan(){
+  const url=new URL(yandexFormBase);
+  const sourceParams=new URLSearchParams(window.location.search);
   for(const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']){
-    const value=incoming.get(key);
-    if(value&&value.length<=200)external.searchParams.set(key,value);
+    const val=sourceParams.get(key);
+    if(val&&val.length<=200)url.searchParams.set(key,val);
   }
-  links.forEach(link=>link.href=external.href);
-  const embedded=new URL(external.href);
+  const code=chosenProgramCode();
+  const showName=planPackage.value==='party'?'Научный переполох':shows[planShow.value]?.name||'Подбор программы';
+  const extras=selectedWorkshops().map(key=>workshopNames[key]).join(', ');
+  url.searchParams.set('plan_program',showName);
+  url.searchParams.set('plan_format',planPackage.value==='party'?'Праздник':'Отдельное шоу');
+  url.searchParams.set('plan_workshops',extras||'Без дополнительных мастер-классов');
+  url.searchParams.set('plan_group',planGuests.selectedOptions[0].textContent);
+  url.searchParams.set('plan_price',el('plan-price').textContent);
+  // Яндекс выбирает вариант ответа по ID вопроса и ID ответа.
+  // Пока ID вопроса не предоставлен, параметры выбора доступны
+  // интеграциям как GET-параметры, но видимый ответ не предзаполняется.
+  if(yandexProgramQuestionId&&yandexProgramAnswerIds[code]){
+    url.searchParams.set(yandexProgramQuestionId,yandexProgramAnswerIds[code]);
+  }
+  return url;
+}
+function syncRequestUrls(){
+  const link=formLinkWithPlan();
+  for(const node of [el('request-form-open'),el('request-form-fallback')]){
+    if(node)node.href=link.href;
+  }
+  const embedded=new URL(link.href);
   embedded.searchParams.set('iframe','1');
   embedded.searchParams.set('theme','light');
-  iframe.src=embedded.href;
-})();
+  if(requestIframe&&requestIframe.src!==embedded.href)requestIframe.src=embedded.href;
+}
+function openRequestForm(trigger,fromCalculator){
+  if(!requestDialog)return;
+  lastRequestTrigger=trigger;
+  const status=el('request-plan-status');
+  if(status){
+    status.hidden=!fromCalculator;
+    if(fromCalculator){
+      const title=planPackage.value==='party'?'Научный переполох':shows[planShow.value]?.name||'Научное шоу';
+      status.textContent='Ваш подбор: '+title+' · '+el('plan-price').textContent+
+        '. Детали выбора добавлены в ссылку на заявку. До завершения настройки предзаполнения программу в форме нужно выбрать вручную.';
+    }
+  }
+  syncRequestUrls();
+  if(typeof requestDialog.showModal==='function')requestDialog.showModal();
+  else requestDialog.setAttribute('open','');
+  requestClose?.focus({preventScroll:true});
+}
+function closeRequestForm(){
+  if(!requestDialog)return;
+  if(typeof requestDialog.close==='function'&&requestDialog.open)requestDialog.close();
+  else requestDialog.removeAttribute('open');
+  lastRequestTrigger?.focus({preventScroll:true});
+}
+discussButton?.addEventListener('click',()=>{
+  if(!discussButton.disabled)openRequestForm(discussButton,true);
+});
+requestLaunch?.addEventListener('click',()=>openRequestForm(requestLaunch,false));
+requestClose?.addEventListener('click',closeRequestForm);
+requestDialog?.addEventListener('click',event=>{
+  if(event.target===requestDialog)closeRequestForm();
+});
+requestDialog?.addEventListener('close',()=>lastRequestTrigger?.focus({preventScroll:true}));
+// Прямые ссылки сохраняют рекламные метки даже до открытия окна.
+for(const node of [el('request-form-open'),el('request-form-fallback')]){
+  if(node)node.href=formLinkWithPlan().href;
+}
 const menuButton=document.querySelector('.menu-toggle');
 const mobileNav=el('mobile-nav');
 function closeMenu(){
