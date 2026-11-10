@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#edf6ff">
   <title>Сумасшедшая наука — взрываем привычное представление о праздниках!</title>
   <link rel="icon" href="https://static.tildacdn.com/tild6631-3463-4963-b039-383234303133/___128x128.png" type="image/png" sizes="128x128">
-  <link rel="stylesheet" href="./styles.css?v=0.9-forms1">
-  <script src="./app.js?v=0.9-forms1" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=0.9-forms2">
+  <script src="./app.js?v=0.9-forms2" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
@@ -256,25 +256,36 @@
 
 
     <section id="request" class="request-section section" aria-labelledby="request-title">
-      <div class="page-width request-layout">
-        <div class="request-heading">
-          <p class="eyebrow">07 / Ваш праздник начинается здесь</p>
-          <h2 id="request-title">Оставьте заявку<br><span>на научный праздник</span></h2>
-          <p class="request-lead">Укажите имя и телефон, выберите программу и при желании дату. Мы свяжемся с вами, чтобы обсудить детали. Отправка заявки не бронирует дату автоматически.</p>
-          <p class="request-choice-status" id="request-plan-status" role="status" aria-live="polite" hidden></p>
+      <div class="page-width request-compact">
+        <div class="request-compact-copy">
+          <p class="eyebrow">07 / Заявка на праздник</p>
+          <h2 id="request-title">Готовы к научным <span>открытиям?</span></h2>
+          <p>Укажите имя, телефон и удобную дату — мы свяжемся с вами и обсудим праздник. Без лишних вопросов и автоматической брони.</p>
         </div>
-        <div class="request-card">
-          <div class="request-card-bar">
-            <div><p class="request-card-eyebrow">Яндекс Формы</p><h3>Заявка на праздник</h3></div>
-            <a class="request-open-link" id="request-form-open" href="https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/" target="_blank" rel="noopener noreferrer">Открыть отдельно <span aria-hidden="true">↗</span></a>
-          </div>
-          <p class="request-privacy-hint">Перед заполнением можно открыть <a href="./privacy.html" target="_blank" rel="noopener noreferrer">политику обработки данных</a> и <a href="./consent.html" target="_blank" rel="noopener noreferrer">текст согласия</a> в отдельных вкладках. Заявка поступит нам только после её отправки.</p>
-          <iframe class="request-form-frame" id="request-form-iframe" title="Форма заявки на научное шоу «Сумасшедшая наука»" src="https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/?iframe=1&amp;theme=light" width="100%" height="1170" loading="lazy"></iframe>
-          <p class="request-form-help">Не видите форму или не открываются ссылки на документы? <a id="request-form-fallback" href="https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/" target="_blank" rel="noopener noreferrer">Заполните заявку в отдельной вкладке</a>.</p>
-          
+        <div class="request-compact-action">
+          <button class="button button-primary request-launch" id="request-form-launch" type="button" aria-haspopup="dialog" aria-controls="request-dialog">Оставить заявку <span aria-hidden="true">↗</span></button>
+          <p>Удобная короткая форма · без обязательств</p>
         </div>
       </div>
     </section>
+    <dialog class="request-dialog" id="request-dialog" aria-labelledby="request-dialog-title">
+      <div class="request-dialog-shell">
+        <div class="request-dialog-top">
+          <div><p class="eyebrow">Сумасшедшая наука</p><h2 id="request-dialog-title">Заявка на праздник</h2></div>
+          <button class="request-dialog-close" id="request-dialog-close" type="button" aria-label="Закрыть форму заявки">×</button>
+        </div>
+        <p id="request-plan-status" class="request-choice-status" role="status" aria-live="polite" hidden></p>
+        <p class="request-dialog-privacy">Ознакомьтесь с <a href="./privacy.html" target="_blank" rel="noopener noreferrer">политикой обработки данных</a> и <a href="./consent.html" target="_blank" rel="noopener noreferrer">текстом согласия</a>.</p>
+        <div class="request-dialog-scroller">
+          <iframe class="request-form-frame" id="request-form-iframe" title="Яндекс Форма заявки на научное шоу «Сумасшедшая наука»" src="about:blank" width="100%" height="1150" loading="lazy"></iframe>
+        </div>
+        <div class="request-dialog-foot">
+          <span>Если форма не загружается:</span>
+          <a class="request-open-link" id="request-form-open" href="https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/" target="_blank" rel="noopener noreferrer">Открыть отдельно ↗</a>
+          <a class="request-dialog-secondary" id="request-form-fallback" href="https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/" target="_blank" rel="noopener noreferrer">Ссылка на форму</a>
+        </div>
+      </div>
+    </dialog>
 
       </main>
   <footer class="page-width site-footer"><div class="footer-identity"><a class="footer-logo" href="#main" aria-label="Сумасшедшая наука — наверх"><img src="https://static.tildacdn.com/tild6631-3463-4963-b039-383234303133/___128x128.png" width="128" height="128" alt="Логотип Сумасшедшей науки"></a><p>Научные шоу, где каждый может удивляться, исследовать и участвовать<br>Калининград и Калининградская область</p></div>
