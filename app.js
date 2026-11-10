@@ -174,30 +174,43 @@ copyButton.addEventListener('click',async()=>{
     copyStatus.textContent='Текст выделен — скопируйте вручную';
   }
 });
+// Открываем форму заявки из калькулятора, не утверждая, что подбор был отправлен.
 discussButton?.addEventListener('click',()=>{
   if(discussButton.disabled)return;
-  const contacts=el('contacts');
-  if(!contacts)return;
-  let status=el('contact-plan-status');
-  if(!status){
-    status=document.createElement('p');
-    status.id='contact-plan-status';
-    status.className='contact-plan-status';
-    status.setAttribute('role','status');
-    const heading=contacts.querySelector('h2');
-    if(heading)heading.after(status);else contacts.prepend(status);
-  }
-  const format=planPackage.value==='party'?'Научный переполох':'Научное шоу';
-  const additions=selectedWorkshops().map(code=>workshopNames[code]);
-  status.textContent='Ваш выбор: '+format+' — '+(planPackage.value==='party'?'Научное шоу':shows[planShow.value].name)+
+  const request=el('request');
+  const status=el('request-plan-status');
+  if(!request||!status)return;
+  const format=planPackage.value==='party'?'Научный переполох':shows[planShow.value].name;
+  const additions=selectedWorkshops().filter(code=>!(planPackage.value==='party'&&code==='icecream')).map(code=>workshopNames[code]);
+  status.hidden=false;
+  status.textContent='Ваш подбор: '+format+
     (additions.length?' + '+additions.join(' и '):'')+
-    ' · '+planGuests.selectedOptions[0].textContent.toLowerCase()+
-    ' — позвоните или напишите нам, чтобы обсудить дату и детали';
-  history.replaceState(null,'','#contacts');
-  contacts.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
-  const phone=contacts.querySelector('a[href^="tel:"]');
-  if(phone)phone.focus({preventScroll:true});
+    '. В форме ниже выберите эту же программу и укажите контакты. Подбор автоматически не отправляется.';
+  history.replaceState(null,'','#request');
+  request.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+  const open=el('request-form-open');
+  if(open)open.focus({preventScroll:true});
 });
+// Передаём рекламные UTM-метки из адреса страницы в адрес Яндекс Форм.
+// Чтобы они сохранялись в ответах и приходили по почте, в Яндекс Формах
+// нужно отдельно добавить скрытые вопросы с такими же идентификаторами.
+(function configureYandexFormLinks(){
+  const iframe=el('request-form-iframe');
+  const links=[el('request-form-open'),el('request-form-fallback')].filter(Boolean);
+  if(!iframe||!links.length)return;
+  const original='https://forms.yandex.ru/u/6af2edf32c4f89fce97e11a8/';
+  const external=new URL(original);
+  const incoming=new URLSearchParams(window.location.search);
+  for(const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']){
+    const value=incoming.get(key);
+    if(value&&value.length<=200)external.searchParams.set(key,value);
+  }
+  links.forEach(link=>link.href=external.href);
+  const embedded=new URL(external.href);
+  embedded.searchParams.set('iframe','1');
+  embedded.searchParams.set('theme','light');
+  iframe.src=embedded.href;
+})();
 const menuButton=document.querySelector('.menu-toggle');
 const mobileNav=el('mobile-nav');
 function closeMenu(){
