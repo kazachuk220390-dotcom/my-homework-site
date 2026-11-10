@@ -223,7 +223,7 @@ test('updated laboratory decorations preserve links and remove the rejected labe
   const interludeBounds = await interlude.boundingBox();
   const showBounds = await page.locator('#show').boundingBox();
   assert.ok(Math.abs(interludeBounds.x + interludeBounds.width / 2 - (showBounds.x + showBounds.width / 2)) < 25, 'laboratory interlude should be centred');
-  assert.equal(await page.locator('.discovery-strip svg').count(), 3);
+  assert.equal(await page.locator('.discovery-strip svg').count(), 5);
   assert.doesNotMatch(await page.locator('.discovery-strip').textContent(), /✳|❄/u);
   assert.equal(await page.locator('svg.feature-hand,.feature-hand svg').count(), 1);
   const secondFeature = page.locator('.feature-grid article').nth(1);
@@ -763,4 +763,47 @@ test('secondary save action really copies and offers manual selection when the c
   assert.doesNotMatch(await page.locator('#copy-status').innerText(), /Подбор скопирован/);
   assert.deepEqual(outbound, []);
   await context.close();
+});
+
+test('discovery strip preserves the four-word sequence and five decorative SVG molecules', async () => {
+  const page = await openPage();
+  const strip = page.locator('.discovery-strip');
+  assert.notEqual(await strip.getAttribute('aria-hidden'), 'true');
+  assert.deepEqual(await strip.locator('.page-width > *').evaluateAll(nodes => nodes.map(n => n.tagName.toLowerCase() === 'svg' ? 'molecule' : n.textContent)), [
+    'molecule', 'Исследуем', 'molecule', 'Экспериментируем', 'molecule', 'Удивляемся', 'molecule', 'Празднуем!', 'molecule'
+  ]);
+  assert.equal(await strip.locator('use[href="#lab-flask"],.strip-flask').count(), 0);
+  for (const svg of await strip.locator('svg').all()) {
+    assert.equal(await svg.getAttribute('aria-hidden'), 'true');
+    assert.ok(await svg.locator('circle').count() >= 4);
+    assert.ok(await svg.locator('path').count() >= 1);
+  }
+  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.9-molecules1$/);
+  await page.close();
+});
+
+test('discovery strip words stay readable and molecules never overlap text on desktop and phones', async () => {
+  for (const width of [320, 360, 390, 760, 768, 1000, 1440]) {
+    const page = await openPage({ width, height: 1000 });
+    await page.locator('.discovery-strip').scrollIntoViewIfNeeded();
+    const geometry = await page.locator('.discovery-strip').evaluate(strip => {
+      const rect = e => { const r = e.getBoundingClientRect(); return {left:r.left,right:r.right,top:r.top,bottom:r.bottom}; };
+      return { words: [...strip.querySelectorAll('.strip-word')].map(e => ({...rect(e), font:parseFloat(getComputedStyle(e).fontSize), clipped:e.scrollWidth > e.clientWidth + 1})), molecules:[...strip.querySelectorAll('.strip-molecule')].map(rect), viewport:innerWidth, overflow:document.documentElement.scrollWidth > innerWidth };
+    });
+    assert.equal(geometry.overflow, false, `page overflow at ${width}`);
+    for (const word of geometry.words) {
+      assert.ok(word.font >= 13 && !word.clipped && word.left >= 0 && word.right <= width, `word must fit at ${width}: ${JSON.stringify(word)}`);
+      for (const mol of geometry.molecules) assert.ok(mol.right <= word.left || mol.left >= word.right || mol.bottom <= word.top || mol.top >= word.bottom, `molecule overlaps text at ${width}`);
+    }
+    const names = await page.locator('.strip-molecule').evaluateAll(nodes => nodes.map(e => getComputedStyle(e).animationName));
+    assert.ok(names.every(n => n === 'none'), 'system reduced motion stops the molecules');
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    const motion = await page.locator('.strip-molecule').evaluateAll(nodes => nodes.map(e => {const s=getComputedStyle(e); return {name:s.animationName,timing:s.animationDuration+'/'+s.animationDelay,transform:s.transform};}));
+    assert.ok(motion.every(m => m.name === 'strip-molecule-drift'));
+    assert.equal(new Set(motion.map(m => m.timing)).size, 5, 'independent timing');
+    await page.waitForTimeout(150);
+    const moved = await page.locator('.strip-molecule').evaluateAll(nodes => nodes.map(e => getComputedStyle(e).transform));
+    assert.ok(moved.some((transform, i) => transform !== motion[i].transform), 'animation actually moves');
+    await page.close();
+  }
 });
