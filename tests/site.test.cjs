@@ -239,10 +239,8 @@ test('updated laboratory decorations preserve links and remove the rejected labe
   assert.match(popup.url(), /\/assets\/photos\/birthday-scientist\.webp$/);
   await popup.close();
   const fogImageLink = page.locator('a.photo-frame[href$="megafog.webp"]');
-  assert.equal(await fogImageLink.locator('svg.photo-corner-visual').count(), 1);
-  const corner = await fogImageLink.locator('.photo-corner-visual').boundingBox();
-  const frame = await fogImageLink.boundingBox();
-  assert.ok(corner.x + corner.width / 2 > frame.x + frame.width / 2 && corner.y + corner.height / 2 < frame.y + frame.height / 2, 'photo laboratory visual belongs in the upper right corner');
+  assert.equal(await fogImageLink.locator('svg.photo-corner-visual').count(), 0, 'glassware must not cover photographs');
+  assert.equal(await page.locator('.gallery-science-divider').count(), 1, 'glassware should occupy its own inter-photo gap');
   const galleryPopupPromise = page.waitForEvent('popup');
   await fogImageLink.click();
   const galleryPopup = await galleryPopupPromise;
@@ -252,47 +250,53 @@ test('updated laboratory decorations preserve links and remove the rejected labe
   await page.close();
 });
 
-test('photo gallery retains its photo columns and compact separation with decorative overlays', async () => {
-  for (const width of [390, 768, 1440]) {
-    const page = await openPage({ width, height: 1000 });
+test('gallery glassware stays in dedicated empty gaps on desktop and mobile', async () => {
+  for (const width of [320,390,768,1440]) {
+    const page=await openPage({width,height:900});
     await loadAllImages(page);
-    const geometry = await page.evaluate(() => {
-      const gallery = document.querySelector('.photo-gallery');
-      const decoration = gallery.querySelector('.gallery-science');
-      const photos = [...gallery.querySelectorAll('.photo-card')].map((element) => {
-        const { x, y, width, height } = element.getBoundingClientRect();
-        return { x, y, width, height };
-      });
+    const values=await page.evaluate(()=>{
+      const gallery=document.querySelector('.photo-gallery');
+      const rect=e=>{const b=e.getBoundingClientRect();return{x:b.x,y:b.y,right:b.right,bottom:b.bottom,w:b.width,h:b.height}};
       return {
-        display: getComputedStyle(gallery).display,
-        columns: getComputedStyle(gallery).gridTemplateColumns.split(' ').map(Number.parseFloat),
-        gap: parseFloat(getComputedStyle(gallery).gap),
-        decorationPosition: getComputedStyle(decoration).position,
-        decorationPointerEvents: getComputedStyle(decoration).pointerEvents,
-        photos,
-        momentsBottom: parseFloat(getComputedStyle(document.querySelector('#moments')).paddingBottom),
-        packagesTop: parseFloat(getComputedStyle(document.querySelector('#packages')).paddingTop),
+        display:getComputedStyle(gallery).display,
+        frames:[...gallery.querySelectorAll('.photo-frame')].map(rect),
+        gapVertical:rect(gallery.querySelector('.gallery-science')),
+        gapHorizontal:rect(gallery.querySelector('.gallery-science-divider')),
+        leftFlask:rect(gallery.querySelector('.gallery-float-a')),
+        rightTube:rect(gallery.querySelector('.gallery-divider-testtube')),
+        overlayCount:gallery.querySelectorAll('.photo-corner-visual').length,
+        stack:rect(gallery.querySelector('.photo-stack')),
+        momentsBottom:parseFloat(getComputedStyle(document.querySelector('#moments')).paddingBottom),
+        packagesTop:parseFloat(getComputedStyle(document.querySelector('#packages')).paddingTop)
       };
     });
-    assert.equal(geometry.decorationPosition, 'absolute');
-    assert.equal(geometry.decorationPointerEvents, 'none');
-    assert.equal(geometry.gap, width > 1100 ? 20 : 16);
-    if (width > 680) {
-      assert.equal(geometry.display, 'grid');
-      assert.equal(geometry.columns.length, 2);
-      assert.ok(Math.abs(geometry.columns[0] / geometry.columns[1] - 0.8) < 0.02);
-      assert.ok(geometry.photos[0].x < geometry.photos[1].x);
-      assert.equal(geometry.photos[1].x, geometry.photos[2].x);
-    } else {
-      const photos = [...geometry.photos].sort((a, b) => a.y - b.y);
-      for (let index = 1; index < photos.length; index++) {
-        const gap = photos[index].y - (photos[index - 1].y + photos[index - 1].height);
-        assert.ok(Math.abs(gap - 16) < 2, `mobile photographs should be 16px apart, got ${gap}`);
-      }
+    assert.equal(values.overlayCount,0);
+    assert.equal(values.frames.length,3);
+    assert.ok(values.frames.every(p=>p.w>140&&p.h>140),'three genuine photos remain readable');
+    const contains=(outer,inner,tolerance=1)=>inner.x>=outer.x-tolerance&&inner.right<=outer.right+tolerance&&inner.y>=outer.y-tolerance&&inner.bottom<=outer.bottom+tolerance;
+    assert.ok(contains(values.gapVertical,values.leftFlask),'floating flask must remain inside own free space');
+    assert.ok(contains(values.gapHorizontal,values.rightTube),'test tube must remain inside its own free space');
+    const overlaps=(a,b)=>Math.min(a.right,b.right)-Math.max(a.x,b.x)>1&&Math.min(a.bottom,b.bottom)-Math.max(a.y,b.y)>1;
+    for(const frame of values.frames){
+      assert.equal(overlaps(frame,values.gapVertical),false,'primary gallery decoration must not overlay photos');
+      assert.equal(overlaps(frame,values.gapHorizontal),false,'secondary gallery decoration must not overlay photos');
     }
-    if (width === 1440) {
-      assert.ok(geometry.momentsBottom + geometry.packagesTop <= 90, 'space between photo block and packages should be compact');
-      assert.equal(await page.locator('#moments .nucleon-transition').count(), 1);
+    if(width>680){
+      assert.equal(values.display,'grid');
+      assert.ok(values.frames[0].right<values.gapVertical.x+1);
+      assert.ok(values.gapVertical.right<values.frames[1].x+1);
+      assert.ok(values.frames[1].bottom<values.gapHorizontal.y+1);
+      assert.ok(values.gapHorizontal.bottom<values.frames[2].y+1);
+    }else{
+      assert.equal(values.display,'flex');
+      assert.ok(values.frames[0].bottom<values.gapVertical.y+1);
+      assert.ok(values.gapVertical.bottom<values.frames[1].y+1);
+      assert.ok(values.frames[1].bottom<values.gapHorizontal.y+1);
+      assert.ok(values.gapHorizontal.bottom<values.frames[2].y+1);
+    }
+    if(width===1440){
+      assert.ok(values.momentsBottom+values.packagesTop<=90);
+      assert.equal(await page.locator('#moments .nucleon-transition').count(),1);
     }
     await page.close();
   }
@@ -300,7 +304,7 @@ test('photo gallery retains its photo columns and compact separation with decora
 
 test('laboratory decoration does not intercept clicks and respects reduced motion', async () => {
   const page = await openPage();
-  const decoration = await page.locator('.science-sky, .lab-interlude, .gallery-science, .nucleon-transition, .hero-reaction, .photo-corner-visual').evaluateAll((elements) => elements.map((element) => ({
+  const decoration = await page.locator('.science-sky, .lab-interlude, .gallery-science, .gallery-science-divider, .nucleon-transition, .hero-reaction').evaluateAll((elements) => elements.map((element) => ({
     pointerEvents: getComputedStyle(element).pointerEvents,
     svgCount: element.querySelectorAll('svg').length,
     text: element.textContent,
@@ -537,14 +541,27 @@ test('seasonal programmes are unavailable in both selectors and no seasonal plac
   await page.close();
 });
 
-test('review details open separately with no link to the former website', async () => {
-  const page = await openPage();
-  assert.equal(await page.locator('#reviews a').count(), 0);
-  const cards = page.locator('#reviews .review-card');
-  assert.equal(await cards.count(), 3);
-  await cards.first().locator('summary').click();
-  assert.equal(await cards.first().locator('.review-details').getAttribute('open'), '');
-  assert.equal(await cards.nth(1).locator('.review-details').getAttribute('open'), null);
+test('each review has a visible independent button and a closeable detailed review dialog', async () => {
+  const page=await openPage({width:390,height:844});
+  assert.equal(await page.locator('#reviews a').count(),0,'no external review links');
+  const cards=page.locator('#reviews .review-card');
+  assert.equal(await cards.count(),3);
+  const buttons=page.locator('#reviews .review-open-button');
+  assert.equal(await buttons.count(),3);
+  const dialogs=page.locator('#reviews dialog.review-dialog');
+  assert.equal(await dialogs.count(),3);
+  assert.ok(await buttons.first().isVisible());
+  assert.match(await buttons.first().innerText(),/Посмотреть весь отзыв/);
+  await buttons.first().click();
+  assert.equal(await page.locator('#review-dialog-irina').evaluate(e=>e.open),true);
+  assert.equal(await page.locator('#review-dialog-apelsin').evaluate(e=>e.open),false);
+  assert.match(await page.locator('#review-dialog-irina').innerText(),/подробный пересказ/i);
+  await page.locator('#review-dialog-irina .review-dialog-close').click();
+  assert.equal(await page.locator('#review-dialog-irina').evaluate(e=>e.open),false);
+  await buttons.nth(1).click();
+  assert.equal(await page.locator('#review-dialog-apelsin').evaluate(e=>e.open),true);
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('#review-dialog-apelsin').evaluate(e=>e.open),false);
   await page.close();
 });
 
