@@ -72,6 +72,7 @@ const approvedDescriptions = {
   potter: 'Школа чудесных открытий — наука встречается с атмосферой волшебства, а гости превращаются в юных волшебников',
   graduate: 'Выпускной, где целый класс участвует в опытах, делает открытия и принимает поздравления, а в завершении праздника Профессор дарит подарок каждому выпускнику',
   kitchen: 'Научная кухня, где привычные вещи открываются с неожиданной стороны — детали программы подбираем под формат праздника',
+  all: 'Эксперименты с сухим льдом и жидким азотом, затем мастер-класс на выбор — крио-мороженое или лизуны. Программа рассчитана примерно на 120 минут и иногда может немного продлиться, если детям особенно интересно.',
 };
 // Remote logo and embedded Yandex Form use offline fixtures; local fonts remain real.
 async function stubExternalPresentation(page) {
@@ -481,7 +482,30 @@ test('both group selectors expose approved upper bounds and over-150 plans remai
   await page.close();
 });
 
-test('all six active programmes show the owner’s exact descriptions in the catalogue and planner', async () => {
+test('all-inclusive programme is in first package with one workshop included and no double charge', async () => {
+  const page = await openPage();
+  await page.selectOption('#plan-package', 'show');
+  await page.locator('#show-options summary').click();
+  await page.selectOption('#show-choice', 'all');
+  assert.equal(await page.locator('#plan-show').inputValue(), 'all');
+  assert.equal(await page.locator('[data-package="show"] [data-price="show"]').innerText(), '15 500');
+  assert.equal(await page.locator('#plan-price').innerText(), '15 500 ₽');
+  assert.match(await page.locator('#plan-included-workshop').innerText(), /мороженое или лизуны.*включ[её]н/iu);
+  assert.equal(await page.locator('label[for="plan-workshop-icecream"]').isVisible(), false);
+  assert.equal(await page.locator('label[for="plan-workshop-slime"]').isVisible(), false);
+  assert.match(await page.locator('#plan-summary').inputValue(), /Мастер-классы: один на выбор/);
+  assert.match(await page.locator('#plan-summary').inputValue(), /Общая продолжительность: около 120 минут/);
+  await page.selectOption('#plan-guests', '20');
+  assert.match(await page.locator('#plan-price').innerText(), /уточн/iu);
+  assert.match(await page.locator('#plan-summary').inputValue(), /Стоимость «Всё включено» для этой группы уточняется/);
+  await page.selectOption('#plan-show', 'dry');
+  assert.equal(await page.locator('label[for="plan-workshop-icecream"]').isVisible(), true);
+  assert.equal(await page.locator('label[for="plan-workshop-slime"]').isVisible(), true);
+  assert.equal(await page.locator('#plan-price').innerText(), '9 500 ₽');
+  await page.close();
+});
+
+test('all seven active programmes show the owner’s exact descriptions in the catalogue and planner', async () => {
   const page = await openPage();
   await page.selectOption('#plan-package', 'show');
   await page.locator('#show-options summary').click();

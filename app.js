@@ -5,6 +5,7 @@ const shows = {
  science: { name:'Сумасшедшая наука', price:11000, age:'от 9 лет', minutes:'60 минут', description:"Для любопытных исследователей — сложные увлекательные химические и физические явления с обсуждением удивительных реакций", highlights:['Интерактив с профессором','Необычные реакции','Наука в действии'] },
  potter: { name:'Шоу в стиле Гарри Поттера', price:11000, age:'от 5 лет', minutes:'60 минут', description:"Школа чудесных открытий — наука встречается с атмосферой волшебства, а гости превращаются в юных волшебников", highlights:['Тематическая атмосфера','Секреты превращений','Вовлечение гостей'] },
  graduate: { name:'Сумасшедший выпускной', price:12000, age:'от 6 лет', minutes:'60 минут', description:"Выпускной, где целый класс участвует в опытах, делает открытия и принимает поздравления, а в завершении праздника Профессор дарит подарок каждому выпускнику", highlights:['Для целого класса','Групповой интерактив','Праздничный финал'] },
+ all: { name:'Всё включено', price:15500, age:'по согласованию', minutes:'около 120 минут', description:"Эксперименты с сухим льдом и жидким азотом, затем мастер-класс на выбор — крио-мороженое или лизуны. Программа рассчитана примерно на 120 минут и иногда может немного продлиться, если детям особенно интересно.", highlights:['Сухой лёд и жидкий азот','Мастер-класс на выбор включён','Около двух часов открытий'] },
  kitchen: { name:'Сумасшедшая кухня', price:null, age:'по согласованию', minutes:'по согласованию', description:"Научная кухня, где привычные вещи открываются с неожиданной стороны — детали программы подбираем под формат праздника", highlights:['Необычный формат','Вовлечение гостей','Индивидуальные условия'] }
 };
 const fmt = value => new Intl.NumberFormat('ru-RU').format(value).replace(/\u00a0/g, ' ');
@@ -33,14 +34,15 @@ function workshopPrice(code, guests) {
 }
 function quotePlan({format,showCode,guests,chosen}) {
   const party=format==='party';
+  const allIncluded=!party&&showCode==='all';
   const count=knownGuestCount(guests);
-  const selection=[...new Set(party?chosen.filter(code=>code!=='icecream'):chosen)];
+  const selection=[...new Set(allIncluded?[]:party?chosen.filter(code=>code!=='icecream'):chosen)];
   const extras=selection.map(code=>({code,name:workshopNames[code],price:workshopPrice(code,guests)}));
   const extrasTotal=count===null||extras.some(workshop=>workshop.price===null)?null:extras.reduce((sum,workshop)=>sum+workshop.price,0);
   const groupSupplement=count===null?null:Math.ceil(Math.max(count-10,0)/5)*500;
   const partyBasePrice=groupSupplement===null?null:29900+groupSupplement;
   const showPrice=shows[showCode]?.price??null;
-  const price=count===null||extrasTotal===null?null:party?partyBasePrice+extrasTotal:showPrice===null?null:showPrice+extrasTotal;
+  const price=count===null||extrasTotal===null||(allIncluded&&count>10)?null:party?partyBasePrice+extrasTotal:showPrice===null?null:showPrice+extrasTotal;
   const baseParty=party&&!selection.includes('slime');
   const baseShow=!party&&selection.length===0&&showPrice!==null;
   return {price,extras,extrasTotal,missing:false,baseParty,baseShow,groupSupplement,partyBasePrice,count};
@@ -69,18 +71,23 @@ function setShowOptions() {
 }
 function updatePlan() {
   const party=planPackage.value==='party';
-  workshops.icecream.disabled=party;
+  const allIncluded=!party&&planShow.value==='all';
+  if(allIncluded){workshops.icecream.checked=false;workshops.slime.checked=false}
+  workshops.icecream.disabled=party||allIncluded;
+  workshops.slime.disabled=allIncluded;
   workshops.icecream.setAttribute('aria-disabled',String(party));
   if(party)workshops.icecream.checked=true;
   const icecreamOption=workshops.icecream.closest('label');
   if(icecreamOption){
     icecreamOption.classList.toggle('included-workshop',party);
-    icecreamOption.hidden=party;
+    icecreamOption.hidden=party||allIncluded;
   }
+  const slimeOption=workshops.slime.closest('label');
+  if(slimeOption)slimeOption.hidden=allIncluded;
   const workshopMode=el('plan-workshop-mode');
-  if(workshopMode){workshopMode.textContent=party?'':'можно выбрать один или оба';workshopMode.hidden=party;}
+  if(workshopMode){workshopMode.textContent=allIncluded?'один на выбор входит в программу':party?'':'можно выбрать один или оба';workshopMode.hidden=party;}
   const includedWorkshop=el('plan-included-workshop');
-  if(includedWorkshop)includedWorkshop.hidden=!party;
+  if(includedWorkshop){includedWorkshop.textContent=allIncluded?'Крио-мороженое или лизуны — один мастер-класс на выбор включён в стоимость':'Крио-мороженое включено в программу';includedWorkshop.hidden=!(party||allIncluded);}
   el('plan-workshop-wrap')?.classList.toggle('party-workshops',party);
   const chosen=selectedWorkshops();
   const show=party?{name:'Научное шоу',minutes:'60 минут',description:'60 минут интерактивных экспериментов'}:shows[planShow.value];
@@ -88,10 +95,11 @@ function updatePlan() {
   const guests=planGuests.value;
   const {price,extras,extrasTotal,missing,baseParty,baseShow,groupSupplement,count}=quotePlan({format:planPackage.value,showCode:planShow.value,guests,chosen});
   const groupLabel=planGuests.selectedOptions[0].textContent.toLowerCase();
-  const unknownPrice=count===null?'По расчёту':'Цена шоу уточняется';
+  const unknownPrice=count===null?'По расчёту':allIncluded?'Стоимость уточняется для этой группы':'Цена шоу уточняется';
   el('plan-price').textContent=missing?'Выберите мастер-класс':price===null?unknownPrice:fmt(price)+' ₽';
   el('plan-price').classList.toggle('price-pending',price===null||missing);
   el('plan-price-note').textContent=count===null?'Для группы более 150 детей подготовим индивидуальное предложение':
+    allIncluded&&count>10?'Для этой группы уточним стоимость и формат':
     price!==null?'Расчёт на '+count+' детей, выезд отдельно':'Стоимость «'+show.name+'» уточняется · группа до '+count+' детей';
   for(const code of Object.keys(workshops)){
     const workshopPriceLabel=el('workshop-price-'+code);
@@ -99,7 +107,7 @@ function updatePlan() {
     if(workshopPriceLabel)workshopPriceLabel.textContent=amount===null?'По расчёту':party&&code==='icecream'?'Включено в пакет':fmt(amount)+' ₽';
   }
   const breakdown=el('plan-price-breakdown');
-  const showBreakdown=!party?(count===null?'Стоимость шоу и дополнений для группы более 150 детей — по расчёту':
+  const showBreakdown=!party?(allIncluded?(count!==null&&count<=10?'Всё включено — 15 500 ₽ (один мастер-класс на выбор входит в цену)':'Стоимость «Всё включено» для этой группы уточняется'):count===null?'Стоимость шоу и дополнений для группы более 150 детей — по расчёту':
     [show.price===null?'Стоимость шоу уточняется':show.name+' — '+fmt(show.price)+' ₽',...extras.map(workshop=>workshop.name+' — '+fmt(workshop.price)+' ₽')].join(' + ')):'';
   const partyBreakdown=party?(count===null?'Научное шоу и крио-мороженое включены в программу; итог для группы более 150 детей — по расчёту':
     'Научное шоу с крио-мороженым и праздничным сценарием — 29 900 ₽'+
@@ -111,7 +119,7 @@ function updatePlan() {
   }
   el('plan-show-description').textContent=party?'Научное шоу — 60 минут интерактивных экспериментов':show.description+' · '+show.age+' · '+show.minutes;
   const hint=el('plan-workshop-hint');
-  hint.textContent=party?'Крио-мороженое уже включено в пакет'+(chosen.includes('slime')?' · добавлены лизуны':' · при желании добавьте лизуны'):
+  hint.textContent=allIncluded?'Один мастер-класс на выбор уже включён в цену; выбор уточним при заказе':party?'Крио-мороженое уже включено в пакет'+(chosen.includes('slime')?' · добавлены лизуны':' · при желании добавьте лизуны'):
     missing?'Для «Научного переполоха» отметьте минимум один мастер-класс':
     chosen.length===0?'Дополнения не выбраны, можно оставить только шоу':
     'Выбрано: '+chosen.map(code=>workshopNames[code]).join(' и ')+(extrasTotal===null?' · мастер-классы по расчёту':' · мастер-классы '+fmt(extrasTotal)+' ₽');
@@ -125,10 +133,10 @@ function updatePlan() {
   }
   const lines=[
     'Сумасшедшая наука · Калининград и область',
-    'Формат: '+(party?'Научный переполох':'Научное шоу'),
+    'Формат: '+(party?'Научный переполох':allIncluded?'Всё включено':'Научное шоу'),
     'Основная программа: '+(party?'Научное шоу — 60 минут интерактивных экспериментов':show.name+' · '+show.age+' · '+show.minutes),
     'Группа: '+groupLabel,
-    'Мастер-классы: '+(chosen.length?chosen.map(code=>workshopNames[code]).join(' и '):'без дополнений')
+    'Мастер-классы: '+(allIncluded?'один на выбор — крио-мороженое или лизуны (включено в цену)':chosen.length?chosen.map(code=>workshopNames[code]).join(' и '):'без дополнений')
   ];
   if(!party)lines.push('Особенности: '+show.description);
   if(count!==null)lines.push('Расчёт по верхней границе группы: '+count+' детей');
@@ -234,7 +242,7 @@ function formLinkWithPlan(includePlan=true){
   url.searchParams.set('plan_program',showName);
   url.searchParams.set('plan_show',planPackage.value==='party'?'Научное шоу — 60 минут интерактивных экспериментов':shows[planShow.value]?.name||'Подбор программы');
   url.searchParams.set('plan_format',planPackage.value==='party'?'Праздник':'Отдельное шоу');
-  url.searchParams.set('plan_workshops',extras||'Без дополнительных мастер-классов');
+  url.searchParams.set('plan_workshops',planPackage.value==='show'&&planShow.value==='all'?'Один на выбор: крио-мороженое или лизуны (включено в цену)':extras||'Без дополнительных мастер-классов');
   url.searchParams.set('plan_group',planGuests.selectedOptions[0].textContent);
   url.searchParams.set('plan_price',el('plan-price').textContent);
   // Яндекс выбирает вариант ответа по ID вопроса и ID ответа.
