@@ -264,11 +264,7 @@ function openRequestForm(trigger,fromCalculator){
     status.hidden=!fromCalculator;
     if(fromCalculator){
       const title=planPackage.value==='party'?'Научный переполох':shows[planShow.value]?.name||'Научное шоу';
-      status.textContent='Ваш подбор: '+title+' · '+el('plan-price').textContent+
-        '. Мастер-классы: '+selectedWorkshops().map(key=>workshopNames[key]).join(', ')+
-        '. Группа: '+planGuests.selectedOptions[0].textContent+'.';
-      if(!selectedWorkshops().length)status.textContent='Ваш подбор: '+title+' · '+el('plan-price').textContent+
-        '. Без дополнительных мастер-классов. Группа: '+planGuests.selectedOptions[0].textContent+'.';
+      status.textContent='Из калькулятора: '+title+' · '+el('plan-price').textContent+'. Детали обсудим при звонке.';
     }
   }
   syncRequestUrls(requestIncludesPlan);
