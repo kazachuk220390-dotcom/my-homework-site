@@ -75,6 +75,7 @@ const approvedDescriptions = {
 };
 // Remote logo and embedded Yandex Form use offline fixtures; local fonts remain real.
 async function stubExternalPresentation(page) {
+  await page.route('https://mc.yandex.ru/**', route => route.fulfill({status:200,contentType:'application/javascript',body:''}));
   await page.route('https://static.tildacdn.com/**', route => route.fulfill({
     status: 200, contentType: 'image/png',
     body: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFUlEQVR4nGP8////fwYGBgYmBigAAD34BADaOyqcAAAAAElFTkSuQmCC', 'base64')
@@ -668,28 +669,45 @@ test('holiday calculator opens compact modal with plan context and no accidental
 });
 
 
-test('UTM parameters are passed to Yandex Form iframe and separate link', async () => {
-  const page = await browser.newPage();
+test('both general request buttons open the same form and preserve UTM on desktop and phones', async () => {
+  const page = await browser.newPage({reducedMotion:'reduce'});
   await stubExternalPresentation(page);
   await page.goto(baseURL + '/?utm_source=vk&utm_medium=cpc&utm_campaign=autumn-test&custom_parameter=private', { waitUntil: 'networkidle' });
   assert.equal(await page.locator('#request-form-iframe').getAttribute('src'), 'about:blank');
-  await page.locator('#request-form-launch').click();
-  const embed = new URL(await page.locator('#request-form-iframe').getAttribute('src'));
-  const link = new URL(await page.locator('#request-form-open').getAttribute('href'));
-  assert.equal(embed.searchParams.get('iframe'), '1');
-  assert.equal(embed.searchParams.get('theme'), 'light');
-  for (const u of [embed, link]) {
-    assert.equal(u.searchParams.get('utm_source'), 'vk');
-    assert.equal(u.searchParams.get('utm_medium'), 'cpc');
-    assert.equal(u.searchParams.get('utm_campaign'), 'autumn-test');
-    assert.equal(u.searchParams.has('custom_parameter'), false);
+  for(const width of [320,390,1440]) {
+    await page.setViewportSize({width,height:900});
+    const cta=page.locator('#workshop-request-launch');
+    assert.equal((await cta.innerText()).trim(),'Уже хочу праздник!');
+    const workshops=await page.locator('.workshop-feature').boundingBox();
+    const button=await cta.boundingBox();
+    const reviews=await page.locator('#reviews').boundingBox();
+    assert.ok(button.y>=workshops.y+workshops.height && button.y+button.height<=reviews.y,'CTA is immediately after workshops, before reviews');
+    assert.ok(button.x>=0 && button.x+button.width<=width && button.height>=44,'button fits phone and desktop');
+    for(const id of ['workshop-request-launch','request-form-launch']) {
+      await page.locator('#'+id).click();
+      assert.equal(await page.locator('#request-dialog').evaluate(e=>e.open),true);
+      assert.equal(await page.locator('#request-dialog-close').evaluate(e=>e===document.activeElement),true);
+      assert.equal(await page.locator('#request-plan-status').isVisible(),false);
+      const embed=new URL(await page.locator('#request-form-iframe').getAttribute('src'));
+      const link=new URL(await page.locator('#request-form-open').getAttribute('href'));
+      assert.equal(embed.searchParams.get('iframe'),'1');
+      assert.equal(embed.searchParams.get('theme'),'light');
+      for(const url of [embed,link]) {
+        assert.equal(url.searchParams.get('utm_source'),'vk');
+        assert.equal(url.searchParams.get('utm_medium'),'cpc');
+        assert.equal(url.searchParams.get('utm_campaign'),'autumn-test');
+        assert.equal(url.searchParams.has('custom_parameter'),false);
+        assert.equal(url.searchParams.get('request_origin'),'site');
+        assert.equal(url.searchParams.has('plan_program'),false,'general request must not invent a calculator selection');
+        assert.equal(url.searchParams.has('plan_price'),false);
+      }
+      if(id==='workshop-request-launch')await page.keyboard.press('Escape');
+      else await page.locator('#request-dialog-close').click();
+      assert.equal(await page.locator('#request-dialog').evaluate(e=>e.open),false);
+      assert.equal(await page.locator('#'+id).evaluate(e=>e===document.activeElement),true);
+    }
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');
   }
-  assert.equal(link.searchParams.has('iframe'), false);
-  assert.equal(link.searchParams.get('request_origin'), 'site');
-  assert.equal(link.searchParams.has('plan_program'), false, 'general request must not invent a calculator selection');
-  assert.equal(link.searchParams.has('plan_price'), false);
-  await page.locator('#request-dialog-close').click();
-  assert.equal(await page.locator('#request-dialog').getAttribute('open'), null);
   await page.close();
 });
 
@@ -748,7 +766,7 @@ test('discovery strip preserves the four-word sequence and five decorative SVG m
     assert.ok(await svg.locator('circle').count() >= 4);
     assert.ok(await svg.locator('path').count() >= 1);
   }
-  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.10-layout2$/);
+  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.10-workshop-cta$/);
   await page.close();
 });
 

@@ -282,6 +282,8 @@ discussButton?.addEventListener('click',()=>{
   if(!discussButton.disabled)openRequestForm(discussButton,true);
 });
 requestLaunch?.addEventListener('click',()=>openRequestForm(requestLaunch,false));
+const workshopRequestLaunch=el('workshop-request-launch');
+workshopRequestLaunch?.addEventListener('click',()=>openRequestForm(workshopRequestLaunch,false));
 requestClose?.addEventListener('click',closeRequestForm);
 requestDialog?.addEventListener('click',event=>{
   if(event.target===requestDialog)closeRequestForm();

@@ -761,3 +761,8 @@ html.motion-off .gallery-scenery *,html.motion-off .gallery-divider-molecule,htm
  .planner-copy>p:not(.eyebrow){line-height:1.6}
 }
 .review-open-button .arrow-icon,.view-plan-button .arrow-icon{flex:none;width:17px;height:17px}
+
+/* Application action immediately after the workshop photos. */
+.workshop-request-cta{display:flex;justify-content:center;margin-top:26px}
+.workshop-request-cta>.button{justify-content:center;gap:24px;min-height:54px;padding:15px 28px;font-size:16px;font-weight:800;border-radius:14px}
+@media(max-width:680px){.workshop-request-cta{margin-top:22px}.workshop-request-cta>.button{width:100%;max-width:360px}}
