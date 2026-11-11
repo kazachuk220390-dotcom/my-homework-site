@@ -917,10 +917,14 @@ test('new scientific scenes stay away from text and respect reduced motion on de
     assert.equal(await page.locator('.faq-intro > .faq-microscope').count(),1,'microscope belongs directly under the FAQ heading');
     assert.equal(await page.locator('.faq-doodle').count(),0);
     const heading=await page.locator('#faq-title').boundingBox();
+    const intro=await page.locator('.faq-intro').boundingBox();
     const microscope=await page.locator('.faq-microscope').boundingBox();
     const questions=await page.locator('.faq-list').boundingBox();
-    assert.ok(microscope.y>=heading.y+heading.height+16&&microscope.y<=heading.y+heading.height+40,'microscope sits just below the heading');
-    if(width>680)assert.ok(microscope.x+microscope.width<questions.x&&microscope.y<questions.y+questions.height,'microscope fills the left column beside the questions');
+    const verticalGap=microscope.y-(heading.y+heading.height);
+    const expectedGap=width>680?52:30;
+    assert.ok(Math.abs(verticalGap-expectedGap)<4,'microscope is slightly lower below the heading');
+    assert.ok(Math.abs((microscope.x+microscope.width/2)-(intro.x+intro.width/2))<3,'microscope is horizontally centered in the available FAQ intro space');
+    if(width>680)assert.ok(microscope.x+microscope.width<questions.x&&microscope.y<questions.y+questions.height,'microscope stays in the left column beside the questions');
     else assert.ok(microscope.y+microscope.height<=questions.y,'mobile questions remain below the decoration');
     await page.emulateMedia({reducedMotion:'no-preference'});
     const timings=await page.locator('.lab-interlude>*').evaluateAll(nodes=>nodes.map(e=>{const s=getComputedStyle(e);return [s.animationName,s.animationDuration,s.animationDelay].join('/')}));
