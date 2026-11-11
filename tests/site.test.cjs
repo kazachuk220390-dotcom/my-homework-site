@@ -136,6 +136,7 @@ test('navigation, consent links and embedded form exist without local data submi
   assert.ok((await page.locator('#request').boundingBox()).height < 500, 'request section should remain compact');
   assert.equal(await page.locator('#request-dialog').getAttribute('open'), null);
   assert.equal(await page.locator('#request-form-open[target="_blank"]').count(), 1);
+  assert.equal(await page.locator('#request-form-fallback').count(), 0, 'do not duplicate the external form link');
   assert.equal(await page.locator('a[href="./privacy.html"],a[href="./consent.html"]').count(), 4);
   assert.equal(await page.locator('img[src^="http"]').count(), 2);
   const permittedHosts = [new URL(baseURL).host, 'static.tildacdn.com', 'forms.yandex.ru'];
@@ -650,7 +651,7 @@ test('holiday calculator opens compact modal with plan context and no accidental
   assert.equal(await page.locator('#request-dialog').getAttribute('open'), '');
   assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('id')), 'request-dialog-close');
   assert.match(await page.locator('#request-plan-status').innerText(), /Большое Криошоу/);
-  assert.match(await page.locator('#request-plan-status').innerText(), /Мастер-классы:.*лизуны.*Группа: До 10 детей/u);
+  assert.match(await page.locator('#request-plan-status').innerText(), /Из калькулятора:.*Большое Криошоу/u);
   const url = new URL(await page.locator('#request-form-open').getAttribute('href'));
   assert.equal(url.searchParams.get('plan_program'), 'Большое Криошоу');
   assert.equal(url.searchParams.get('answer_choices_9008993561263860'), '1794306569052');
@@ -675,10 +676,9 @@ test('UTM parameters are passed to Yandex Form iframe and separate link', async 
   await page.locator('#request-form-launch').click();
   const embed = new URL(await page.locator('#request-form-iframe').getAttribute('src'));
   const link = new URL(await page.locator('#request-form-open').getAttribute('href'));
-  const fallback = new URL(await page.locator('#request-form-fallback').getAttribute('href'));
   assert.equal(embed.searchParams.get('iframe'), '1');
   assert.equal(embed.searchParams.get('theme'), 'light');
-  for (const u of [embed, link, fallback]) {
+  for (const u of [embed, link]) {
     assert.equal(u.searchParams.get('utm_source'), 'vk');
     assert.equal(u.searchParams.get('utm_medium'), 'cpc');
     assert.equal(u.searchParams.get('utm_campaign'), 'autumn-test');
