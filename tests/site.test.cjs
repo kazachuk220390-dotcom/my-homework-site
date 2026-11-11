@@ -682,6 +682,10 @@ test('both general request buttons open the same form and preserve UTM on deskto
     const button=await cta.boundingBox();
     const reviews=await page.locator('#reviews').boundingBox();
     assert.ok(button.y>=workshops.y+workshops.height && button.y+button.height<=reviews.y,'CTA is immediately after workshops, before reviews');
+    const reviewHeading=await page.locator('#reviews .section-heading').boundingBox();
+    assert.ok(button.y-(workshops.y+workshops.height)<=12.5,'minimal space above CTA');
+    const gap=reviewHeading.y-(button.y+button.height);
+    assert.ok(gap>=12 && gap<=24,'only a compact 20px transition to the fourth block, got '+gap);
     assert.ok(button.x>=0 && button.x+button.width<=width && button.height>=44,'button fits phone and desktop');
     for(const id of ['workshop-request-launch','request-form-launch']) {
       await page.locator('#'+id).click();
@@ -766,7 +770,7 @@ test('discovery strip preserves the four-word sequence and five decorative SVG m
     assert.ok(await svg.locator('circle').count() >= 4);
     assert.ok(await svg.locator('path').count() >= 1);
   }
-  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.10-workshop-cta$/);
+  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.10-workshop-tight$/);
   await page.close();
 });
 
