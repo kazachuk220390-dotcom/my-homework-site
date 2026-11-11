@@ -767,3 +767,73 @@ html.motion-off .gallery-scenery *,html.motion-off .gallery-divider-molecule,htm
 .workshop-request-cta{display:flex;justify-content:center;margin-top:12px}
 .workshop-request-cta>.button{justify-content:center;gap:24px;min-height:54px;padding:15px 28px;font-size:16px;font-weight:800;border-radius:14px}
 @media(max-width:680px){.workshop-request-cta{margin-top:10px}.workshop-request-cta>.button{width:100%;max-width:360px}}
+
+/* Compact persistent header shared by the home page and programme pages. */
+:root{--header-height:76px}
+html{scroll-padding-top:calc(var(--header-height) + 16px)}
+.skip-link{z-index:80}
+.site-header-wrap{position:sticky;top:0;z-index:40;background:#fffffff5;backdrop-filter:blur(10px);border-bottom:1px solid #dcebf4;box-shadow:0 3px 15px #194b6b0a}
+.site-header-wrap .site-header{height:var(--header-height);gap:20px}
+.site-header-wrap .brand-logo{width:72px;height:72px;flex:0 0 72px}
+.site-header-wrap .brand-logo img{width:72px;height:72px;filter:none}
+.site-header-wrap .mobile-nav{top:100%}
+.site-header-wrap .desktop-nav a[aria-current="page"]{color:#087aad}
+/* New Year is a separate programme page; the regular package calculator is unchanged. */
+.new-year-main{background:linear-gradient(150deg,#f5fcff 0%,#fff 48%,#effbff 100%);padding-bottom:36px}
+.winter-hero{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);align-items:center;gap:40px;padding-block:32px 30px}
+.winter-copy{min-width:0}
+.winter-back{display:inline-flex;font-size:12px;font-weight:700;color:#367794;margin-bottom:25px}
+.winter-back:hover{text-decoration:underline}
+.winter-copy .eyebrow{margin-bottom:17px}
+.winter-copy h1{font-size:clamp(40px,4.6vw,65px);line-height:1.06;letter-spacing:-.045em;margin:0 0 20px;color:#103b62}
+.winter-copy h1 span{color:#0789b0}
+.winter-lead{font-size:15px;line-height:1.75;color:#42647a;margin:0 0 18px;max-width:460px}
+.winter-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.winter-tags span{font-size:11px;font-weight:800;line-height:1.4;padding:7px 10px;border-radius:30px;background:#e3f8fc;color:#18708d;border:1px solid #c5eaf1}
+.winter-request{font-size:14px;padding:16px 20px;min-height:50px;gap:16px}
+.winter-personal{font-size:11px;line-height:1.65;color:#54778b;margin:12px 0 0;max-width:340px}
+.winter-poster{margin:0;min-width:0}
+.winter-poster>a{display:block;border-radius:22px;overflow:hidden;border:1px solid #cde6f2;box-shadow:0 15px 45px #164d7d16;background:#e9f8ff}
+.winter-poster img{display:block;width:100%;height:auto}
+.winter-poster figcaption{text-align:center;font-size:11px;color:#5c7c91;margin-top:12px}
+.winter-program{padding-block:28px 32px}
+.winter-heading{margin-bottom:22px}
+.winter-heading .eyebrow{margin-bottom:10px}
+.winter-heading h2{font-size:clamp(28px,3vw,39px)}
+.winter-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.winter-features article{padding:24px;background:#fff;border:1px solid #d6eaf3;border-radius:18px;min-width:0}
+.winter-index{display:grid;place-items:center;width:34px;height:34px;background:#e8f9fc;color:#1687a8;border:1px solid #bee4ee;border-radius:50%;font-size:11px;font-weight:800;margin-bottom:15px}
+.winter-features h3{font-size:18px;line-height:1.25;margin:0 0 10px;color:#174b6c}
+.winter-features p{font-size:13px;line-height:1.7;color:#4d6e82;margin:0}
+.winter-details{display:flex;align-items:center;justify-content:space-between;gap:30px;margin-top:4px;padding:28px;border:1px solid #c8e6ee;border-radius:20px;background:#eaf8fc}
+.winter-details>div{min-width:0;max-width:740px}
+.winter-details .eyebrow{margin-bottom:10px}
+.winter-details h2{font-size:clamp(25px,2.6vw,34px)}
+.winter-details p:last-child{font-size:13px;line-height:1.7;margin:13px 0 0;color:#496c81;max-width:640px}
+.winter-details>.button{flex:none;min-height:48px}
+@media(max-width:1000px){.winter-hero{gap:25px}.winter-copy h1{font-size:44px}.winter-lead{font-size:14px}.winter-features article{padding:20px}}
+@media(max-width:680px){
+ :root{--header-height:66px}
+ .site-header-wrap .site-header{gap:10px}
+ .site-header-wrap .brand-logo{width:62px;height:62px;flex-basis:62px}
+ .site-header-wrap .brand-logo img{width:62px;height:62px}
+ .winter-hero{grid-template-columns:1fr;gap:24px;padding-block:18px 22px}
+ .winter-back{margin-bottom:19px;font-size:11px}
+ .winter-copy h1{font-size:clamp(40px,11vw,55px);margin-bottom:16px}
+ .winter-copy .eyebrow{font-size:9px;margin-bottom:14px}
+ .winter-lead{font-size:14px}
+ .winter-tags{gap:6px;margin-bottom:18px}.winter-tags span{font-size:10px;padding:6px 8px}
+ .winter-request{font-size:13px;width:100%;justify-content:space-between;padding:14px 17px}
+ .winter-personal{max-width:none}
+ .winter-poster>a{border-radius:17px}
+ .winter-program{padding-block:24px}
+ .winter-heading h2{font-size:29px}
+ .winter-features{grid-template-columns:1fr;gap:12px}
+ .winter-features article{position:relative;padding:19px 18px 19px 66px}
+ .winter-index{position:absolute;left:18px;top:20px;margin:0;width:30px;height:30px}
+ .winter-features h3{font-size:17px;margin-bottom:8px}
+ .winter-details{display:block;padding:21px 18px;margin-top:3px}
+ .winter-details h2{font-size:27px}.winter-details>.button{margin-top:18px;width:100%;justify-content:space-between}
+ .new-year-main{padding-bottom:24px}
+}
+#show .feature-grid{margin-bottom:18px}

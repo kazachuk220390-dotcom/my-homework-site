@@ -293,22 +293,6 @@ requestDialog?.addEventListener('close',()=>lastRequestTrigger?.focus({preventSc
 for(const node of [el('request-form-open'),el('request-form-fallback')]){
   if(node)node.href=formLinkWithPlan(false).href;
 }
-const menuButton=document.querySelector('.menu-toggle');
-const mobileNav=el('mobile-nav');
-function closeMenu(){
-  menuButton.setAttribute('aria-expanded','false');
-  menuButton.setAttribute('aria-label','Открыть меню');
-  mobileNav.hidden=true;
-}
-menuButton.addEventListener('click',()=>{
-  const opened=menuButton.getAttribute('aria-expanded')!=='true';
-  menuButton.setAttribute('aria-expanded',String(opened));
-  menuButton.setAttribute('aria-label',opened?'Закрыть меню':'Открыть меню');
-  mobileNav.hidden=!opened;
-});
-mobileNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
-document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!mobileNav.hidden){closeMenu();menuButton.focus()}});
-window.matchMedia('(min-width: 901px)').addEventListener('change',event=>{if(event.matches)closeMenu()});
 refresh();
 
 

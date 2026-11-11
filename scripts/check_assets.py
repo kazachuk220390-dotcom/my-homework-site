@@ -7,7 +7,7 @@ import json
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
-PUBLIC_FILES = ("index.html", "styles.css", "app.js", "robots.txt", ".nojekyll")
+PUBLIC_FILES = ("index.html", "new-year.html", "styles.css", "app.js", "navigation.js", "new-year.js", "privacy.html", "consent.html", "thanks.html", "legal.css", "robots.txt", ".nojekyll")
 MAX_IMAGE_BYTES = 400 * 1024
 MAX_SITE_BYTES = 3_000_000
 TEXT_TYPES = {".html", ".css", ".js", ".svg", ".txt"}

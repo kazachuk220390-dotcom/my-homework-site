@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" data-site-version="0.10">
+<html lang="ru" data-site-version="0.11">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,8 +8,9 @@
   <meta name="theme-color" content="#edf6ff">
   <title>Сумасшедшая наука — взрываем привычное представление о праздниках!</title>
   <link rel="icon" href="https://static.tildacdn.com/tild6631-3463-4963-b039-383234303133/___128x128.png" type="image/png" sizes="128x128">
-  <link rel="stylesheet" href="./styles.css?v=0.10-faq-scope-center1">
-  <script src="./app.js?v=0.10-workshop-cta" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=0.11-header-new-year1">
+  <script src="./navigation.js?v=0.11-header1" defer></script>
+  <script src="./app.js?v=0.11-header1" defer></script>
   <!-- Yandex.Metrika: traffic analytics only; session recording disabled. -->
   <script>
     (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -18,7 +19,7 @@
     ym(114172740,"init",{ssr:true,webvisor:false,clickmap:false,ecommerce:false,trackLinks:true,accurateTrackBounce:true});
   </script>
 </head>
-<body>
+<body id="top">
   <a class="skip-link" href="#main">Перейти к содержанию</a>
 
 
@@ -49,15 +50,15 @@
     <symbol id="science-petri" viewBox="0 0 180 100"><ellipse cx="90" cy="58" rx="73" ry="27" fill="#b8f2fa" fill-opacity=".7" stroke="#369ec3" stroke-width="2.5"/><path d="M17 48v12c0 16 33 29 73 29s73-13 73-29V48" fill="#c9f6ff" fill-opacity=".6" stroke="#369ec3" stroke-width="2.5"/><ellipse cx="90" cy="47" rx="73" ry="27" fill="#effdff" fill-opacity=".85" stroke="#69cbd8" stroke-width="2.5"/><ellipse cx="90" cy="47" rx="60" ry="20" fill="#a1e8ee" fill-opacity=".6"/><g fill="#3bbdcc" stroke="#f4ffff" stroke-width="2"><circle cx="63" cy="43" r="7"/><circle cx="112" cy="49" r="9"/><circle cx="89" cy="55" r="5"/><circle cx="91" cy="34" r="4"/></g><path d="M38 34c12-8 28-11 43-11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></symbol>
     <symbol id="science-microscope" viewBox="0 0 190 190"><defs><linearGradient id="scope-metal" x1="0" x2="1" y2="1"><stop stop-color="#e9fdff"/><stop offset=".5" stop-color="#60d1e3"/><stop offset="1" stop-color="#138ab9"/></linearGradient></defs><path d="M125 65c42 28 35 76-13 92" fill="none" stroke="#2c99b9" stroke-width="16" stroke-linecap="round"/><path d="M125 65c35 27 28 63-9 77" fill="none" stroke="#a2edf0" stroke-width="5" stroke-linecap="round"/><path d="m74 22 36 20-33 58-36-20z" fill="url(#scope-metal)" stroke="#238bb1" stroke-width="3"/><path d="m76 17 39 22-7 12-39-22zM43 81l23 13-8 14-23-13z" fill="#176e9d" stroke="#135b8b" stroke-width="2"/><path d="M54 117h71" stroke="#166890" stroke-width="8" stroke-linecap="round"/><path d="m64 106 30 6-3 7-30-6z" fill="#b0f9f2" stroke="#389fbc" stroke-width="2"/><circle cx="125" cy="76" r="13" fill="#e6fdff" stroke="#197ca4" stroke-width="4"/><circle cx="125" cy="76" r="5" fill="#35bbd0"/><path d="M93 137v22M49 169h103l8 10H39Z" fill="url(#scope-metal)" stroke="#2789ac" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="90" cy="134" rx="15" ry="5" fill="#64e0ea" fill-opacity=".65"/><path d="m59 110 6 16M72 108l10 19" stroke="#7ceaf0" stroke-width="2" stroke-linecap="round"/></symbol>
     </defs></svg>
-  <header class="site-header page-width">
-    <a class="brand brand-logo" href="#main" aria-label="Сумасшедшая наука — на главную">
+  <div class="site-header-wrap"><header class="site-header page-width">
+    <a class="brand brand-logo" href="#top" aria-label="Сумасшедшая наука — наверх страницы">
       <img src="https://static.tildacdn.com/tild6631-3463-4963-b039-383234303133/___128x128.png" alt="Логотип Сумасшедшей науки" width="128" height="128">
     </a>
-    <nav class="desktop-nav" aria-label="Основная навигация"><a href="#show">Как проходит шоу</a><a href="#packages">Пакеты</a><a href="#reviews">Отзывы</a></nav>
+    <nav class="desktop-nav" aria-label="Основная навигация"><a href="./new-year.html" data-preserve-campaign>Новый год</a><a href="#packages">Пакеты</a><a href="#reviews">Отзывы</a></nav>
     <a class="button button-small header-cta" href="#planner">Подобрать праздник <svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Открыть меню"><span></span><span></span></button>
-    <nav id="mobile-nav" class="mobile-nav" aria-label="Мобильная навигация" hidden><a href="#show">Как проходит шоу</a><a href="#packages">Пакеты</a><a href="#reviews">Отзывы</a><a href="#planner">Подобрать праздник</a></nav>
-  </header>
+    <nav id="mobile-nav" class="mobile-nav" aria-label="Мобильная навигация" hidden><a href="./new-year.html" data-preserve-campaign>Новый год</a><a href="#packages">Пакеты</a><a href="#reviews">Отзывы</a><a href="#planner">Подобрать праздник</a></nav>
+  </header></div>
   <main id="main">
     <section class="hero page-width" aria-labelledby="hero-title">
       <div class="hero-energy" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -97,7 +98,7 @@
     <section id="show" class="section page-width" aria-labelledby="show-title">
       <div class="section-heading"><div><p class="eyebrow">01 / Больше, чем наблюдать</p><h2 id="show-title">Научное шоу,<br>где каждый — исследователь</h2></div><p>Для дней рождения, выпускных и других событий. Эксперименты, которые можно увидеть вблизи и обсудить с профессором.</p></div>
       <div class="feature-grid"><article><span class="feature-icon feature-hand" aria-hidden="true"><svg viewBox="0 0 40 42" fill="none"><path d="M12 23V12a3 3 0 0 1 6 0v9V8a3 3 0 0 1 6 0v13-11a3 3 0 0 1 6 0v14-8a3 3 0 0 1 6 0v12c0 7-4 11-11 11h-3c-4 0-6-2-8-5L7 25c-2-3 2-6 4-3l4 4" fill="#daf5ff" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10 2 7M8 5 7 1M2 15h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><h3>Гости участвуют</h3><p>Профессор вовлекает участников в задания и демонстрации. Для дня рождения — особая роль именинника; для выпускного — награждение класса.</p></article><article><span class="feature-icon" aria-hidden="true"><svg class="arrow-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>Понятно о сложном</h3><p>Профессор объясняет научные явления простым языком — за необычными превращениями открываются законы физики и химии</p></article><article><span class="feature-icon feature-sun" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="8" fill="#ffd768" stroke="currentColor" stroke-width="2"/><path d="M20 2v5M20 33v5M2 20h5M33 20h5M7 7l4 4M29 29l4 4M33 7l-4 4M11 29l-4 4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg></span><h3>У каждой программы свой характер</h3><p>Криоэффекты, сухой лёд и тематические сценарии. Наполнение зависит от выбранного научного шоу.</p></article></div>
-      <div class="show-flow light-lab"><div class="flow-intro"><span class="pill">Большое Криошоу</span><h3>60 минут<br>научных открытий!</h3><p>Действующая программа для детей от 5 лет</p></div><ol class="flow-steps"><li><span>01</span><div><h4>Знакомимся с профессором</h4><p>Необычное приветствие и команда юных учёных</p></div></li><li><span>02</span><div><h4>Исследуем физику и жидкий азот</h4><p>Удивительные свойства привычного и необычного</p></div></li><li><span>03</span><div><h4>Наблюдаем химические превращения</h4><p>Зрелищные демонстрации под контролем ведущего</p></div></li><li><span>04</span><div><h4>Встречаем «Мегатуман»</h4><p>Эффектный финал и поздравление участников</p></div></li></ol></div>
+
       <p class="section-note">Площадку и условия демонстраций согласуем заранее<br> Демонстрации со специальными требованиями проводит подготовленный ведущий</p>
       <div class="lab-interlude" aria-hidden="true"><svg class="interlude-flask" viewBox="0 0 100 125"><use href="#lab-flask"/></svg><span class="chem-formula formula-water">H₂O</span><svg class="interlude-test-tube" viewBox="0 0 65 130"><use href="#lab-test-tube"/></svg><span class="chem-formula formula-salt">NaCl</span></div>
     </section>

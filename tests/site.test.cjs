@@ -131,7 +131,7 @@ test('navigation, consent links and embedded form exist without local data submi
   assert.equal(await page.locator('form,input:not([type="checkbox"]),textarea:not([readonly])').count(), 0);
   assert.equal(await page.locator('input[type="checkbox"]').count(), 2);
   assert.equal(await page.locator('iframe#request-form-iframe').count(), 1);
-  assert.equal(await page.locator('script[src^="http"]').count(), 0);
+  assert.deepEqual(await page.locator('script[src^="http"]').evaluateAll(nodes=>nodes.map(node=>node.src)), ['https://mc.yandex.ru/metrika/tag.js?id=114172740']);
   assert.equal(await page.locator('#request-form-iframe').getAttribute('src'), 'about:blank');
   assert.equal(await page.locator('#request-form-launch').count(), 1);
   assert.ok((await page.locator('#request').boundingBox()).height < 500, 'request section should remain compact');
@@ -140,9 +140,12 @@ test('navigation, consent links and embedded form exist without local data submi
   assert.equal(await page.locator('#request-form-fallback').count(), 0, 'do not duplicate the external form link');
   assert.equal(await page.locator('a[href="./privacy.html"],a[href="./consent.html"]').count(), 4);
   assert.equal(await page.locator('img[src^="http"]').count(), 2);
-  const permittedHosts = [new URL(baseURL).host, 'static.tildacdn.com', 'forms.yandex.ru'];
+  const permittedHosts = [new URL(baseURL).host, 'static.tildacdn.com', 'forms.yandex.ru', 'mc.yandex.ru'];
   assert.ok(requests.every(request => request.method === 'GET' && permittedHosts.includes(new URL(request.url).host)));
   assert.equal(await page.locator('.hero-facts').count(), 0);
+  assert.equal(await page.locator('.show-flow,.flow-intro,.flow-steps').count(),0,'redundant 60-minute programme block has been removed');
+  assert.equal(await page.locator('nav a[href="#show"]').count(),0);
+  assert.equal(await page.locator('.site-header nav a').filter({hasText:'Новый год'}).count(),2);
   assert.equal(await page.locator('.dna-graphic').count(), 1);
   assert.equal(await page.locator('#planner a.official-link,#planner a[href*="sumnauka.ru"]').count(), 0);
   await page.close();
@@ -770,7 +773,7 @@ test('discovery strip preserves the four-word sequence and five decorative SVG m
     assert.ok(await svg.locator('circle').count() >= 4);
     assert.ok(await svg.locator('path').count() >= 1);
   }
-  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.10-workshop-tight$/);
+  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.11-header-new-year1$/);
   await page.close();
 });
 
@@ -930,6 +933,105 @@ test('new scientific scenes stay away from text and respect reduced motion on de
     const timings=await page.locator('.lab-interlude>*').evaluateAll(nodes=>nodes.map(e=>{const s=getComputedStyle(e);return [s.animationName,s.animationDuration,s.animationDelay].join('/')}));
     assert.equal(new Set(timings).size,4);
     assert.ok(timings.every(t=>!t.startsWith('none/')));
+    await page.close();
+  }
+});
+
+test('the sticky logo stays visible while scrolling and returns both pages to the top', async () => {
+  for(const width of [320,390,768,1440]) {
+    for(const pagePath of ['/','/new-year.html']) {
+      const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
+      await stubExternalPresentation(page);
+      await page.goto(baseURL+pagePath,{waitUntil:'networkidle'});
+      await page.evaluate(()=>document.fonts.ready);
+      await page.evaluate(()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'}));
+      assert.ok(await page.evaluate(()=>scrollY)>150,'test page has actually scrolled');
+      const header=await page.locator('.site-header-wrap').boundingBox();
+      const logo=await page.locator('.site-header .brand-logo').boundingBox();
+      assert.ok(Math.abs(header.y)<1,'header is pinned to the top');
+      assert.ok(logo.y>=header.y && logo.y+logo.height<=header.y+header.height && logo.x>=0 && logo.x+logo.width<=width,'entire logo stays in visible header');
+      assert.equal(await page.locator('.site-header .brand-logo').evaluate(e=>{const r=e.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('a.brand-logo')===e;}),true,'logo is clickable above page content');
+      await page.locator('.site-header .brand-logo').click();
+      await page.waitForFunction(()=>window.scrollY<2);
+      assert.equal(new URL(page.url()).hash,'#top');
+      if(pagePath==='/'){
+        await page.locator('.header-cta').click();
+        await page.waitForFunction(()=>document.querySelector('#planner-title').getBoundingClientRect().y<innerHeight);
+        const title=await page.locator('#planner-title').boundingBox();
+        assert.ok(title.y>=header.height,'sticky header does not cover an anchor target');
+      }
+      await page.close();
+    }
+  }
+});
+
+test('New Year page renders with the poster, real links and no overflow or script errors', async () => {
+  for(const width of [320,390,768,1440]) {
+    const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
+    const errors=[],failures=[];
+    page.on('pageerror',error=>errors.push(error.message));
+    page.on('response',response=>{if(response.status()>=400)failures.push(response.status()+' '+response.url());});
+    await stubExternalPresentation(page);
+    await page.goto(baseURL+'/new-year.html',{waitUntil:'networkidle'});
+    await page.evaluate(()=>document.fonts.ready);
+    await loadAllImages(page);
+    assert.deepEqual(errors,[]);assert.deepEqual(failures,[]);
+    assert.equal(await page.locator('h1').count(),1);
+    assert.match(await page.locator('h1').innerText(),/Научная\s+Снегурочка/);
+    assert.equal(await page.locator('.winter-poster img').evaluate(e=>e.complete&&e.naturalWidth===1448),true);
+    assert.equal(await page.locator('html').evaluate(e=>e.scrollWidth<=innerWidth),true);
+    assert.equal(await page.locator('#request-form-iframe').getAttribute('src'),'about:blank');
+    assert.equal(await page.locator('.site-header .brand-logo').getAttribute('href'),'#top');
+    assert.equal(await page.locator('a[href="./privacy.html"],a[href="./consent.html"]').count(),4);
+    assert.equal(await page.locator('a[href="mailto:j_kaz@mail.ru"]').count(),1);
+    assert.equal(await page.locator('#plan-package').count(),0,'seasonal page does not change ordinary package prices');
+    const broken=await page.locator('a[href^="#"]').evaluateAll(links=>links.map(a=>a.hash).filter(hash=>hash&&!document.getElementById(hash.slice(1))));
+    assert.deepEqual(broken,[]);
+    if(width<=900){
+      await page.locator('.menu-toggle').click();
+      assert.equal(await page.locator('#mobile-nav').isVisible(),true);
+      await page.keyboard.press('Escape');
+      assert.equal(await page.locator('#mobile-nav').isVisible(),false);
+    }
+    await page.close();
+  }
+});
+
+test('New Year navigation and all request buttons preserve campaign tags and the exact seasonal programme', async () => {
+  for(const width of [390,1440]) {
+    const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
+    await stubExternalPresentation(page);
+    await page.goto(baseURL+'/?utm_source=vk&utm_medium=cpc&utm_campaign=new-year&utm_content=blue&utm_term=snow&private_data=secret',{waitUntil:'networkidle'});
+    if(width<=900)await page.locator('.menu-toggle').click();
+    const nav=width<=900?'#mobile-nav':'.desktop-nav';
+    await page.locator(nav+' a').filter({hasText:'Новый год'}).click();
+    await page.waitForURL('**/new-year.html?**');
+    const current=new URL(page.url());
+    assert.equal(current.searchParams.get('utm_source'),'vk');
+    assert.equal(current.searchParams.has('private_data'),false);
+    const buttons=page.locator('[data-new-year-request]');
+    assert.equal(await buttons.count(),3);
+    for(const button of await buttons.all()) {
+      await button.click();
+      assert.equal(await page.locator('#request-dialog').evaluate(e=>e.open),true);
+      assert.equal(await page.locator('#request-dialog-close').evaluate(e=>e===document.activeElement),true);
+      for(const target of ['#request-form-open','#request-form-iframe']) {
+        const url=new URL(await page.locator(target).getAttribute(target.includes('iframe')?'src':'href'));
+        assert.equal(url.searchParams.get('plan_program'),'Научная Снегурочка');
+        assert.equal(url.searchParams.get('plan_show'),'Научная Снегурочка');
+        assert.equal(url.searchParams.get('request_origin'),'new_year');
+        assert.equal(url.searchParams.get('plan_price'),'Стоимость уточняется');
+        for(const [key,value] of Object.entries({utm_source:'vk',utm_medium:'cpc',utm_campaign:'new-year',utm_content:'blue',utm_term:'snow'}))assert.equal(url.searchParams.get(key),value);
+        assert.equal(url.searchParams.has('private_data'),false);
+        assert.equal(url.searchParams.has('answer_choices_9008993561263860'),false,'another programme must not be selected instead');
+        assert.equal(url.searchParams.has('answer_one_answer_9008993561838392'),false);
+      }
+      await page.keyboard.press('Escape');
+      assert.equal(await page.locator('#request-dialog').evaluate(e=>e.open),false);
+      assert.equal(await button.evaluate(e=>e===document.activeElement),true);
+    }
+    await page.locator('.winter-back').click();
+    await page.waitForURL(url=>url.pathname==='/'&&url.searchParams.get('utm_source')==='vk');
     await page.close();
   }
 });
