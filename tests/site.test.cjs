@@ -146,7 +146,7 @@ test('navigation, consent links and embedded form exist without local data submi
   assert.equal(await page.locator('.hero-facts').count(), 0);
   assert.equal(await page.locator('.show-flow,.flow-intro,.flow-steps').count(),0,'redundant 60-minute programme block has been removed');
   assert.equal(await page.locator('nav a[href="#show"]').count(),0);
-  assert.equal(await page.locator('.site-header nav a').filter({hasText:'Новый год'}).count(),2);
+  assert.equal(await page.locator('.site-header a').filter({hasText:'Новый год'}).count(),2);
   assert.equal(await page.locator('.dna-graphic').count(), 1);
   assert.equal(await page.locator('#planner a.official-link,#planner a[href*="sumnauka.ru"]').count(), 0);
   await page.close();
@@ -511,7 +511,7 @@ test('all seven active programmes show the owner’s exact descriptions in the c
   await page.locator('#show-options summary').click();
   const activeCodes = Object.keys(approvedDescriptions);
   for (const id of ['show-choice', 'plan-show']) {
-    assert.deepEqual(await page.locator(`#${id} option`).evaluateAll((options) => options.map((option) => option.value)), activeCodes);
+    assert.deepEqual(await page.locator(`#${id} option`).evaluateAll((options) => options.map((option) => option.value).sort()), [...activeCodes].sort());
   }
   for (const [code, description] of Object.entries(approvedDescriptions)) {
     await page.selectOption('#show-choice', code);
@@ -797,7 +797,7 @@ test('discovery strip preserves the four-word sequence and five decorative SVG m
     assert.ok(await svg.locator('circle').count() >= 4);
     assert.ok(await svg.locator('path').count() >= 1);
   }
-  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.11-header-new-year1$/);
+  assert.match(await page.locator('link[rel="stylesheet"]').getAttribute('href'), /styles\.css\?v=0\.12-header-bright1$/);
   await page.close();
 });
 
@@ -961,13 +961,19 @@ test('new scientific scenes stay away from text and respect reduced motion on de
   }
 });
 
-test('the sticky logo stays visible while scrolling and returns both pages to the top', async () => {
+test('the sticky logo stays visible and both pages return to the home page top with campaign tags', async () => {
   for(const width of [320,390,768,1440]) {
     for(const pagePath of ['/','/new-year.html']) {
       const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
       await stubExternalPresentation(page);
-      await page.goto(baseURL+pagePath,{waitUntil:'networkidle'});
+      await page.goto(baseURL+pagePath+'?utm_source=vk&utm_campaign=winter',{waitUntil:'networkidle'});
       await page.evaluate(()=>document.fonts.ready);
+      for(const selector of ['.brand-logo','.footer-logo']){
+        const destination=new URL(await page.locator(selector).getAttribute('href'),baseURL);
+        assert.equal(destination.pathname,'/');
+        assert.equal(destination.hash,'#top');
+        assert.equal(destination.searchParams.get('utm_source'),'vk');
+      }
       await page.evaluate(()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'}));
       assert.ok(await page.evaluate(()=>scrollY)>150,'test page has actually scrolled');
       const header=await page.locator('.site-header-wrap').boundingBox();
@@ -976,8 +982,11 @@ test('the sticky logo stays visible while scrolling and returns both pages to th
       assert.ok(logo.y>=header.y && logo.y+logo.height<=header.y+header.height && logo.x>=0 && logo.x+logo.width<=width,'entire logo stays in visible header');
       assert.equal(await page.locator('.site-header .brand-logo').evaluate(e=>{const r=e.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('a.brand-logo')===e;}),true,'logo is clickable above page content');
       await page.locator('.site-header .brand-logo').click();
+      await page.waitForURL(url=>url.pathname==='/'&&url.hash==='#top');
       await page.waitForFunction(()=>window.scrollY<2);
       assert.equal(new URL(page.url()).hash,'#top');
+      assert.equal(new URL(page.url()).searchParams.get('utm_campaign'),'winter');
+      assert.equal(await page.locator('#hero-title').count(),1);
       if(pagePath==='/'){
         await page.locator('.header-cta').click();
         await page.waitForFunction(()=>document.querySelector('#planner-title').getBoundingClientRect().y<innerHeight);
@@ -987,6 +996,38 @@ test('the sticky logo stays visible while scrolling and returns both pages to th
       await page.close();
     }
   }
+});
+
+test('the prominent New Year shortcut is directly visible and clickable on desktop and mobile', async () => {
+  for(const width of [320,390,768,1440]){
+    const page=await openPage({width,height:900});
+    const controls=await page.locator('.brand-logo,.header-new-year,.header-cta,.menu-toggle').evaluateAll(nodes=>nodes.filter(e=>getComputedStyle(e).display!=='none').map(e=>{const r=e.getBoundingClientRect();return{left:r.left,right:r.right,top:r.top,bottom:r.bottom};}));
+    assert.equal(await page.locator('.header-new-year').isVisible(),true);
+    assert.equal(await page.locator('#mobile-nav').isVisible(),false);
+    for(let i=0;i<controls.length;i++){
+      const r=controls[i];assert.ok(r.left>=0&&r.right<=width&&r.bottom-r.top>=44,`${width}px: header controls stay on screen and have usable touch targets`);
+      if(i)assert.ok(r.left>=controls[i-1].right,'header controls do not overlap');
+    }
+    await page.locator('.header-new-year').click();
+    await page.waitForURL('**/new-year.html');
+    await page.close();
+  }
+});
+
+test('header and footer logos also return home from a GitHub Pages project path', async () => {
+  const page=await browser.newPage({viewport:{width:390,height:900},reducedMotion:'reduce'});
+  await stubExternalPresentation(page);
+  for(const selector of ['.brand-logo','.footer-logo']){
+    await page.goto(baseURL+'/my-homework-site/new-year.html?utm_source=avito&private_data=secret',{waitUntil:'networkidle'});
+    await page.locator(selector).click();
+    await page.waitForURL(url=>url.pathname==='/my-homework-site/'&&url.hash==='#top');
+    await page.waitForFunction(()=>scrollY<2);
+    const current=new URL(page.url());
+    assert.equal(current.searchParams.get('utm_source'),'avito');
+    assert.equal(current.searchParams.has('private_data'),false);
+    assert.equal(await page.locator('#hero-title').count(),1);
+  }
+  await page.close();
 });
 
 test('New Year page renders with the poster, real links and no overflow or script errors', async () => {
@@ -1016,7 +1057,7 @@ test('New Year page renders with the poster, real links and no overflow or scrip
     assert.equal(await page.locator('.winter-poster img').evaluate(e=>e.complete&&e.naturalWidth===1448),true);
     assert.equal(await page.locator('html').evaluate(e=>e.scrollWidth<=innerWidth),true);
     assert.equal(await page.locator('#request-form-iframe').getAttribute('src'),'about:blank');
-    assert.equal(await page.locator('.site-header .brand-logo').getAttribute('href'),'#top');
+    assert.equal(await page.locator('.site-header .brand-logo').getAttribute('href'),'/#top');
     assert.equal(await page.locator('a[href="./privacy.html"],a[href="./consent.html"]').count(),4);
     assert.equal(await page.locator('a[href="mailto:j_kaz@mail.ru"]').count(),1);
     assert.equal(await page.locator('#plan-package').count(),0,'seasonal page does not change ordinary package prices');
@@ -1037,9 +1078,7 @@ test('New Year navigation and all request buttons preserve campaign tags and the
     const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
     await stubExternalPresentation(page);
     await page.goto(baseURL+'/?utm_source=vk&utm_medium=cpc&utm_campaign=new-year&utm_content=blue&utm_term=snow&private_data=secret',{waitUntil:'networkidle'});
-    if(width<=900)await page.locator('.menu-toggle').click();
-    const nav=width<=900?'#mobile-nav':'.desktop-nav';
-    await page.locator(nav+' a').filter({hasText:'Новый год'}).click();
+    await page.locator('.header-new-year').click();
     await page.waitForURL('**/new-year.html?**');
     const current=new URL(page.url());
     assert.equal(current.searchParams.get('utm_source'),'vk');
@@ -1086,6 +1125,9 @@ test('festive effects are isolated to New Year, bounded in number and stop for r
     assert.ok(count>=30&&count<=70,'small, fixed decoration budget');
     assert.equal(await page.locator('.winter-scene-divider').count(),2);
     assert.equal(await page.locator('.winter-garland').count(),1);
+    const bulbs=await page.locator('.winter-bulb').evaluateAll(nodes=>nodes.map(e=>{const s=getComputedStyle(e);return{width:parseFloat(s.width),height:parseFloat(s.height),opacity:parseFloat(s.opacity),shadow:s.boxShadow};}));
+    assert.equal(bulbs.length,27);
+    assert.ok(bulbs.every(b=>b.width>=(width<=680?7:11)&&b.height>=(width<=680?9:14)&&b.opacity>=.77&&b.shadow!=='none'),'larger bulbs keep their light between animation peaks');
     const running=await page.evaluate(()=>document.getAnimations().filter(a=>a.playState==='running').length);
     assert.ok(running>5,'festive movement is active when permitted');
     const events=await page.locator('.festive-motion,.winter-confetti-piece').evaluateAll(nodes=>nodes.map(e=>getComputedStyle(e).pointerEvents));

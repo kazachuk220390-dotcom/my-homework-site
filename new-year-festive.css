@@ -10,26 +10,26 @@
 @keyframes winter-gentle-snow{from{transform:translate3d(0,-32px,0) rotate(0)}to{transform:translate3d(var(--snow-sway),calc(100vh + 50px),0) rotate(200deg)}}
 .winter-edge-spark{position:absolute;left:var(--spark-x);top:var(--spark-y);width:3px;height:3px;border-radius:50%;background:#d8b56e;box-shadow:0 0 6px #e4c77d;animation:winter-spark-breathe 6.7s ease-in-out var(--spark-delay) infinite}
 @keyframes winter-spark-breathe{0%,100%{opacity:.2;transform:scale(.75)}50%{opacity:.7;transform:scale(1.1)}}
-.winter-garland{position:relative;height:37px;pointer-events:none;overflow:hidden}
-.winter-garland-wire{position:absolute;left:2%;right:2%;top:-18px;height:43px;border-bottom:1px solid #a5b9cd80;border-radius:0 0 50% 50%}
+.winter-garland{position:relative;height:66px;pointer-events:none;overflow:hidden}
+.winter-garland-wire{position:absolute;left:3%;right:3%;top:-25px;height:59px;border-bottom:1px solid #7f9bbdcc;border-radius:0 0 50% 50%}
 .winter-garland-bulbs{position:absolute;inset:0 4%;display:flex;align-items:flex-start;justify-content:space-between}
-.winter-bulb{display:block;position:relative;width:8px;height:9px;flex:none;margin-top:var(--bulb-drop);border-radius:40% 40% 50% 50%;background:var(--bulb-color);box-shadow:0 0 9px 3px color-mix(in srgb,var(--bulb-color) 44%,transparent);animation:winter-light-breathe 5.4s ease-in-out var(--bulb-delay) infinite}
-.winter-bulb::before{content:"";position:absolute;left:3px;top:-3px;width:2px;height:4px;background:#8fa9bf}
-@keyframes winter-light-breathe{0%,100%{opacity:.48;transform:scale(.94)}50%{opacity:.95;transform:scale(1.04)}}
+.winter-bulb{display:block;position:relative;width:11px;height:14px;flex:none;margin-top:var(--bulb-drop);border:1px solid color-mix(in srgb,var(--bulb-color) 70%,white);border-radius:40% 40% 50% 50%;background:radial-gradient(ellipse at 35% 25%,#fff 0 9%,transparent 40%),var(--bulb-color);box-shadow:0 0 11px 3px color-mix(in srgb,var(--bulb-color) 75%,transparent),0 0 24px 7px color-mix(in srgb,var(--bulb-color) 35%,transparent);animation:winter-light-breathe 5.4s ease-in-out var(--bulb-delay) infinite}
+.winter-bulb::before{content:"";position:absolute;left:3px;top:-4px;width:3px;height:4px;background:#7d97b0}
+@keyframes winter-light-breathe{0%,100%{opacity:.78;transform:scale(.96)}50%{opacity:1;transform:scale(1.05)}}
 .new-year-page .winter-hero{padding-top:18px}
-.new-year-page .winter-copy{position:relative;padding:22px;background:#ffffffed;border:1px solid #c6e7f1;border-radius:23px;box-shadow:0 10px 34px #3370b111,0 0 22px #b8eff522}
+.new-year-page .winter-copy{position:relative;padding:22px;background:#ffffffed;border:1px solid #8ad7f2;border-radius:23px;box-shadow:0 10px 30px #3370b126,0 0 28px #53c4f06b,0 0 55px #8a86ee33}
 .new-year-page .winter-copy h1{font-size:clamp(36px,4.25vw,61px);margin:0;min-width:0}
-.new-year-page .winter-copy h1 span{color:#087fa7;text-shadow:0 2px 18px #67cce725}
+.new-year-page .winter-copy h1 span{color:#087fa7;text-shadow:0 2px 20px #43bce866}
 .new-year-page .winter-back{margin-bottom:20px}
 .winter-title-row{display:flex;align-items:center;gap:12px;min-width:0;margin-bottom:18px;width:fit-content;max-width:100%}
 .winter-title-row>h1,.winter-title-row>h2{min-width:0;flex:0 1 auto}
 .new-year-page .winter-title-row>h2{margin:0}
 .winter-title-glint{display:block;width:22px;height:22px;flex:0 0 22px;color:#d4b469;opacity:.5;animation:winter-title-shimmer 5.8s ease-in-out -2.4s infinite}
 @keyframes winter-title-shimmer{0%,100%{opacity:.25;transform:scale(.85) rotate(-8deg)}50%{opacity:.75;transform:scale(1) rotate(9deg)}}
-.new-year-page .winter-poster>a{position:relative;background:#fff;border-color:#b8ddeb;box-shadow:0 12px 34px #4e7ec526,0 0 24px #b6b7e02b}
+.new-year-page .winter-poster>a{position:relative;background:#fff;border-color:#96ccec;box-shadow:0 12px 34px #4e7ec538,0 0 30px #75cfff80,0 0 58px #9385ec47}
 .new-year-page .winter-tags span{background:linear-gradient(135deg,#eefcff,#e7ecff);border-color:#bed9ee;color:#1d6488}
 .new-year-page .winter-price{color:#164879}
-.new-year-page .winter-features article{position:relative;background:linear-gradient(140deg,#fff 55%,#f0faff);border-color:#bfddeb;box-shadow:0 7px 24px #6688c219,inset 0 1px 0 #fff}
+.new-year-page .winter-features article{position:relative;background:linear-gradient(140deg,#fff 55%,#f0faff);border-color:#9cd8f0;box-shadow:0 7px 24px #6688c226,0 0 22px #67c9ef59,inset 0 1px 0 #fff}
 .new-year-page .winter-index{background:linear-gradient(145deg,#f4fdff,#e7e4fb);border-color:#bddbea;color:#386696}
 .new-year-page .winter-heading{width:fit-content;max-width:100%;padding:12px 15px 4px 0;background:#ffffffed;border-radius:14px}
 .new-year-page .winter-heading .winter-title-row{margin-bottom:8px}
@@ -40,19 +40,19 @@
 .winter-divider-flake--b{right:19%;top:10px;width:55px;height:55px;color:#a0a1d8;opacity:.2;animation-duration:57s;animation-delay:-23s;animation-direction:reverse}
 @keyframes winter-slow-turn{to{transform:rotate(360deg)}}
 .winter-divider-spark{position:absolute;left:52%;top:37%;width:4px;height:4px;border-radius:50%;background:#dabb79;box-shadow:0 0 8px #e5ca88;animation:winter-spark-breathe 8.3s ease-in-out -4.1s infinite}
-.new-year-page .winter-lab-card{position:relative;background:radial-gradient(ellipse at 96% 7%,#e7e2fb 0%,transparent 42%),radial-gradient(ellipse at 0% 100%,#e5f7ff,transparent 48%),#fff;border-color:#c4d8ed;box-shadow:0 15px 40px #5165a21f,0 0 28px #abcced25}
+.new-year-page .winter-lab-card{position:relative;background:radial-gradient(ellipse at 96% 7%,#e7e2fb 0%,transparent 42%),radial-gradient(ellipse at 0% 100%,#e5f7ff,transparent 48%),#fff;border-color:#a2bcea;box-shadow:0 15px 40px #5165a233,0 0 32px #66caff80,0 0 64px #9b87ed66}
 .new-year-page .winter-lab-copy .winter-title-row{margin-bottom:15px}
 .new-year-page .winter-lab-copy{position:relative;min-width:0}
 .new-year-page .winter-lab-part{background:#ffffffed;border-color:#c6dceb;box-shadow:0 3px 14px #7988ba0a}
 .new-year-page .winter-part-number{background:linear-gradient(135deg,#e2f6ff,#e6e0fa);color:#4f6694}
 .new-year-page .winter-lab-copy h2 span{color:#5968aa}
-.new-year-page .winter-details{background:radial-gradient(ellipse at 100% 10%,#e3e0fa88,transparent 55%),#edfaff;border-color:#badcea;box-shadow:0 8px 28px #6e8ab314}
+.new-year-page .winter-details{background:radial-gradient(ellipse at 100% 10%,#e3e0fa88,transparent 55%),#edfaff;border-color:#99d2ee;box-shadow:0 8px 28px #6e8ab32b,0 0 28px #74cfee66,0 0 48px #9c8deb33}
 /* The photo remains intact; ribbons occupy only the reserved outside border. */
 .winter-lab-card.winter-lab-card--photo{display:block;padding:clamp(18px,2.6vw,32px)}
 .winter-lab-card--photo .winter-lab-copy>p:first-of-type{max-width:850px}
 .winter-lab-photo{margin:20px 0 24px;min-width:0}
 .winter-photo-stage{position:relative;margin-inline:-12px;padding:10px 18px 28px;isolation:isolate}
-.winter-photo-stage::before{content:"";position:absolute;inset:7px 9px 22px;border-radius:24px;background:linear-gradient(130deg,#b9ecff88,#e7e8f699 42%,#bcbbef77);box-shadow:0 0 26px #b8dffb88,0 8px 28px #aea3d33d;z-index:-1;pointer-events:none}
+.winter-photo-stage::before{content:"";position:absolute;inset:7px 9px 22px;border-radius:24px;background:linear-gradient(130deg,#b9ecff88,#e7e8f699 42%,#bcbbef77);box-shadow:0 0 34px #70c9ffb3,0 8px 42px #a89ce080;z-index:-1;pointer-events:none}
 .winter-photo-frame{position:relative;z-index:2;border-radius:18px;overflow:hidden;background:#e6f0f9;border:1px solid #d5e6f3;box-shadow:0 2px 9px #314b6a14}
 .winter-photo-frame img{display:block;width:100%;height:auto;object-fit:contain;filter:none;transform:none}
 .winter-lab-photo figcaption{position:relative;margin:8px 0 0;text-align:center;font-size:12px;line-height:1.5;color:#5a7194}
@@ -71,7 +71,7 @@
 .new-year-page.winter-motion-paused .festive-motion,.new-year-page.winter-motion-paused .winter-confetti-piece{animation-play-state:paused!important}
 @media(max-width:1000px){.new-year-page .winter-copy{padding:17px}.new-year-page .winter-copy h1{font-size:40px}.winter-title-row{gap:8px}.winter-lab-offer{padding:18px}}
 @media(max-width:680px){
- .winter-garland{height:30px}.winter-bulb{width:6px;height:7px;margin-top:calc(var(--bulb-drop)*.8)}.winter-garland-wire{top:-22px}
+ .winter-garland{height:48px}.winter-bulb{width:7px;height:9px;margin-top:calc(var(--bulb-drop)*.72);box-shadow:0 0 7px 2px color-mix(in srgb,var(--bulb-color) 75%,transparent),0 0 15px 4px color-mix(in srgb,var(--bulb-color) 35%,transparent)}.winter-bulb::before{left:1px;width:3px}.winter-garland-wire{top:-35px}
  .winter-falling-snow:nth-of-type(n+5){display:none}.winter-falling-snow{width:9px;height:9px;opacity:.42}
  .winter-edge-spark{width:2px;height:2px}.winter-edge-spark:nth-last-child(1){display:none}
  .new-year-page .winter-copy{padding:16px;border-radius:18px}.new-year-page .winter-copy h1{font-size:clamp(36px,9.6vw,46px)}
@@ -80,7 +80,7 @@
  .new-year-page .winter-heading{padding:9px 10px 2px 0}.new-year-page .winter-heading h2{font-size:27px}
  .new-year-page .winter-lab-card--photo{padding:17px 15px}
  .winter-lab-photo{margin:17px 0 20px}.winter-photo-stage{margin-inline:-10px;padding:8px 12px 24px}
- .winter-photo-frame{border-radius:12px}.winter-photo-stage::before{inset:5px 7px 18px;border-radius:16px;box-shadow:0 0 18px #b8dffb88}
+ .winter-photo-frame{border-radius:12px}.winter-photo-stage::before{inset:5px 7px 18px;border-radius:16px;box-shadow:0 0 26px #70c9ffb3,0 5px 30px #a89ce066}
  .winter-silver-ribbon{width:7px;height:50px}.winter-silver-ribbon--left{left:1px}.winter-silver-ribbon--right{right:1px}
  .winter-photo-confetti{left:13px;right:13px;height:18px}.winter-confetti-piece{width:2px;height:6px;bottom:5px}.winter-confetti-piece:nth-child(n+9){display:none}
  .winter-lab-photo figcaption{font-size:10px;margin-top:6px}

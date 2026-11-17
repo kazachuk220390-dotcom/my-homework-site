@@ -778,6 +778,21 @@ html{scroll-padding-top:calc(var(--header-height) + 16px)}
 .site-header-wrap .brand-logo img{width:72px;height:72px;filter:none}
 .site-header-wrap .mobile-nav{top:100%}
 .site-header-wrap .desktop-nav a[aria-current="page"]{color:#087aad}
+.header-new-year{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:10px 22px;flex:none;border:1px solid #b4f1ff;border-radius:15px;background:linear-gradient(115deg,#087cac,#3156c6 65%,#6652ba);color:#fff;font-size:17px;font-weight:800;line-height:1.2;white-space:nowrap;box-shadow:0 0 0 3px #ddf7ff,0 5px 17px #337dbd50,0 0 22px #6edcf54d;transition:box-shadow .2s,background-color .2s}
+.header-new-year svg{width:25px;height:25px;flex:none;color:#e6fcff}
+.header-new-year:hover,.mobile-nav .mobile-new-year:hover{background:linear-gradient(115deg,#066a98,#2546b4 65%,#5541a8);box-shadow:0 0 0 3px #c9f2ff,0 6px 22px #337dbd6b}
+.header-cta-short{display:none}
+.mobile-nav .mobile-new-year{background:linear-gradient(115deg,#087cac,#3156c6 65%,#6652ba);color:#fff;font-weight:800}
+@media(max-width:900px){.site-header--home .header-new-year{margin-right:auto}.site-header--home .header-cta{margin-left:0;min-height:44px}.site-header--home .menu-toggle{min-height:44px;flex:none}}
+@media(max-width:680px){
+ .site-header-wrap .site-header.site-header--home{gap:6px}
+ .site-header--home .header-new-year{gap:5px;min-height:44px;padding:8px;font-size:clamp(12px,3.4vw,14px);border-radius:11px}
+ .site-header--home .header-new-year svg{width:19px;height:19px}
+ .site-header--home .header-cta-full{display:none}.site-header--home .header-cta .header-cta-short{display:inline;font-size:11px}
+ .site-header--home .header-cta{padding:8px;gap:4px;min-height:44px;flex:none}
+ .site-header--home .header-cta .arrow-icon{width:14px;height:14px}
+ .site-header--home .menu-toggle{width:38px;height:44px;flex:none}
+}
 /* New Year is a separate programme page; the regular package calculator is unchanged. */
 .new-year-main{background:linear-gradient(150deg,#f5fcff 0%,#fff 48%,#effbff 100%);padding-bottom:36px}
 .winter-hero{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);align-items:center;gap:40px;padding-block:32px 30px}
