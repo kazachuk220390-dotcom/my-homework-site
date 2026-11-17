@@ -1002,6 +1002,10 @@ test('New Year page renders with the poster, real links and no overflow or scrip
     assert.deepEqual(errors,[]);assert.deepEqual(failures,[]);
     assert.equal(await page.locator('h1').count(),1);
     assert.match(await page.locator('h1').innerText(),/Научная\s+Снегурочка/);
+    assert.match(await page.locator('#frost-lab-title').innerText(),/Морозная\s+лаборатория/);
+    assert.match(await page.locator('#frost-lab').innerText(),/29 900 ₽/);
+    assert.match(await page.locator('.winter-copy').innerText(),/12 000 ₽/);
+    assert.equal(await page.locator('#winter-details-title').innerText(),'Какой вы хотите праздник?');
     assert.equal(await page.locator('.winter-poster img').evaluate(e=>e.complete&&e.naturalWidth===1448),true);
     assert.equal(await page.locator('html').evaluate(e=>e.scrollWidth<=innerWidth),true);
     assert.equal(await page.locator('#request-form-iframe').getAttribute('src'),'about:blank');
@@ -1034,17 +1038,19 @@ test('New Year navigation and all request buttons preserve campaign tags and the
     assert.equal(current.searchParams.get('utm_source'),'vk');
     assert.equal(current.searchParams.has('private_data'),false);
     const buttons=page.locator('[data-new-year-request]');
-    assert.equal(await buttons.count(),3);
+    assert.equal(await buttons.count(),4);
     for(const button of await buttons.all()) {
+      const code=await button.getAttribute('data-new-year-request');
+      const expected=code==='snegurochka'?{name:'Научная Снегурочка',price:'12 000 ₽'}:code==='lab'?{name:'Морозная лаборатория',price:'29 900 ₽'}:null;
       await button.click();
       assert.equal(await page.locator('#request-dialog').evaluate(e=>e.open),true);
       assert.equal(await page.locator('#request-dialog-close').evaluate(e=>e===document.activeElement),true);
       for(const target of ['#request-form-open','#request-form-iframe']) {
         const url=new URL(await page.locator(target).getAttribute(target.includes('iframe')?'src':'href'));
-        assert.equal(url.searchParams.get('plan_program'),'Научная Снегурочка');
-        assert.equal(url.searchParams.get('plan_show'),'Научная Снегурочка');
+        assert.equal(url.searchParams.get('plan_program'),expected?.name??null);
+        assert.equal(url.searchParams.get('plan_show'),expected?.name??null);
         assert.equal(url.searchParams.get('request_origin'),'new_year');
-        assert.equal(url.searchParams.get('plan_price'),'Стоимость уточняется');
+        assert.equal(url.searchParams.get('plan_price'),expected?.price??null);
         for(const [key,value] of Object.entries({utm_source:'vk',utm_medium:'cpc',utm_campaign:'new-year',utm_content:'blue',utm_term:'snow'}))assert.equal(url.searchParams.get(key),value);
         assert.equal(url.searchParams.has('private_data'),false);
         assert.equal(url.searchParams.has('answer_choices_9008993561263860'),false,'another programme must not be selected instead');

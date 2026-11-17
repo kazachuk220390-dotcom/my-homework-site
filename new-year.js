@@ -13,17 +13,23 @@
     if(value&&value.length<=200)form.searchParams.set(key,value);
   }
   form.searchParams.set('request_origin','new_year');
-  form.searchParams.set('plan_package','Новогоднее научное шоу');
-  form.searchParams.set('plan_program','Научная Снегурочка');
-  form.searchParams.set('plan_show','Научная Снегурочка');
-  form.searchParams.set('plan_format','Новогоднее научное шоу');
-  form.searchParams.set('plan_price','Стоимость уточняется');
+  const packages={snegurochka:{name:'Научная Снегурочка',price:'12 000 ₽',duration:'60 минут'},lab:{name:'Морозная лаборатория',price:'29 900 ₽',duration:'120 минут'}};
   fallback.href=form.href;
   document.querySelectorAll('[data-new-year-request]').forEach(button=>button.addEventListener('click',()=>{
     lastTrigger=button;
-    status.hidden=false;
-    status.textContent='Научная Снегурочка — новогоднее научное шоу. Подберём программу под вашу компанию.';
-    const embedded=new URL(form.href);
+    const chosen=packages[button.dataset.newYearRequest];
+    const target=new URL(form.href);
+    if(chosen){
+      target.searchParams.set('plan_package',chosen.name);
+      target.searchParams.set('plan_program',chosen.name);
+      target.searchParams.set('plan_show',chosen.name);
+      target.searchParams.set('plan_format','Новогодняя программа');
+      target.searchParams.set('plan_price',chosen.price);
+    }
+    fallback.href=target.href;
+    status.hidden=!chosen;
+    status.textContent=chosen?chosen.name+' · '+chosen.duration+' · '+chosen.price:'';
+    const embedded=new URL(target.href);
     embedded.searchParams.set('iframe','1');
     embedded.searchParams.set('theme','light');
     if(frame.src!==embedded.href)frame.src=embedded.href;

@@ -837,3 +837,22 @@ html{scroll-padding-top:calc(var(--header-height) + 16px)}
  .new-year-main{padding-bottom:24px}
 }
 #show .feature-grid{margin-bottom:18px}
+
+/* Seasonal packages */
+.winter-price{font-size:clamp(27px,3vw,36px);font-weight:900;color:#114e78;line-height:1.15;margin:0 0 17px;letter-spacing:-.035em}
+.winter-personal a{color:#14648e;text-decoration:underline;text-underline-offset:3px}
+.winter-lab{padding-block:18px 30px;scroll-margin-top:calc(var(--header-height) + 20px)}
+.winter-lab-card{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(22px,4vw,54px);padding:clamp(20px,3.5vw,42px);background:#fff;border:1px solid #bce1f1;border-radius:25px;box-shadow:0 18px 55px #1c659319;align-items:center}
+.winter-lab-art{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;min-height:330px;align-self:stretch;border-radius:20px;background:radial-gradient(ellipse at 50% 55%,#4caacb 0%,#1d618f 40%,#12314f 100%);color:#ecfcff}
+.winter-lab-art svg{width:min(48%,190px);height:auto;filter:drop-shadow(0 0 20px #81efffaa)}
+.winter-lab-art-label{font-weight:800;font-size:clamp(13px,2vw,19px);letter-spacing:.035em;margin:14px 10px;text-align:center}
+.winter-lab-snow{position:absolute;color:#c4f4ff;line-height:1;text-shadow:0 0 18px #a4f4ff;opacity:.8}
+.snow-one{font-size:65px;top:8%;left:8%}.snow-two{font-size:49px;top:14%;right:11%}.snow-three{font-size:45px;bottom:9%;right:8%}
+.winter-lab-copy{min-width:0}.winter-lab-copy .eyebrow{margin-bottom:11px}
+.winter-lab-copy h2{font-size:clamp(32px,4vw,52px);line-height:1.08;margin:0 0 14px;letter-spacing:-.035em;color:#103b62}.winter-lab-copy h2 span{color:#0789b0}
+.winter-lab-copy>p:not(.eyebrow):not(.winter-price){font-size:14px;line-height:1.7;color:#42647a;margin:0 0 17px}
+.winter-lab-list{padding:0;margin:0 0 20px;list-style:none;display:grid;gap:9px}
+.winter-lab-list li{position:relative;padding-left:23px;font-size:14px;line-height:1.5;color:#294f6a}
+.winter-lab-list li::before{content:"✦";position:absolute;left:0;color:#058bb3;font-weight:800}
+.winter-lab-copy .winter-tags{margin-bottom:13px}.winter-terms{font-size:12px;line-height:1.6;color:#4d6e82;margin:12px 4px 0}
+@media(max-width:680px){.winter-lab-card{grid-template-columns:1fr;gap:21px;padding:17px;border-radius:19px}.winter-lab-art{min-height:190px}.winter-lab-art svg{width:96px}.winter-lab-copy h2{font-size:clamp(32px,9vw,42px)}.winter-lab-copy .winter-request{font-size:12px}.winter-lab{padding-block:12px 24px}.winter-lab-list li{font-size:13px}.winter-lab-art-label{margin:7px 10px}.winter-lab-snow.snow-one{font-size:45px}}
