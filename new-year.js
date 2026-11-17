@@ -41,3 +41,22 @@
   dialog.addEventListener('click',event=>{if(event.target===dialog)close();});
   dialog.addEventListener('close',()=>lastTrigger?.focus({preventScroll:true}));
 })();
+
+// A short local confetti entrance; no canvas, animation loop or third-party library.
+(() => {
+  const lab=document.querySelector('.winter-lab-card');
+  if(lab){
+    if('IntersectionObserver' in window){
+      const observer=new IntersectionObserver(entries=>{
+        if(entries.some(entry=>entry.isIntersecting)){
+          lab.classList.add('is-celebrating');
+          observer.disconnect();
+        }
+      },{threshold:.12});
+      observer.observe(lab);
+    }else lab.classList.add('is-celebrating');
+  }
+  const syncVisibility=()=>document.body.classList.toggle('winter-motion-paused',document.hidden);
+  document.addEventListener('visibilitychange',syncVisibility);
+  syncVisibility();
+})();

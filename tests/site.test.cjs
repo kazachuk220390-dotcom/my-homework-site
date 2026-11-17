@@ -1007,6 +1007,9 @@ test('New Year page renders with the poster, real links and no overflow or scrip
     assert.match(await page.locator('.winter-copy').innerText(),/12 000 ₽/);
     assert.equal(await page.locator('#winter-details-title').innerText(),'Какой вы хотите праздник?');
     assert.equal(await page.locator('#snegurochka-program .winter-features article').count(),6);
+    assert.match(await page.locator('[data-new-year-request="snegurochka"]').innerText(),/^Пригласить Снегурочку/);
+    assert.match(await page.locator('[data-new-year-request="lab"]').innerText(),/^Заказать новогодний праздник/);
+    assert.equal(await page.locator('link[href*="new-year-festive.css"]').count(),1);
     assert.equal(await page.locator('#frost-lab .winter-lab-part').count(),3);
     assert.equal((await page.locator('main').innerText()).match(/ледяные шары/giu)?.length,1);
     assert.match(await page.locator('#frost-lab').innerText(),/Серебряная дискотека/iu);
@@ -1066,6 +1069,77 @@ test('New Year navigation and all request buttons preserve campaign tags and the
     }
     await page.locator('.winter-back').click();
     await page.waitForURL(url=>url.pathname==='/'&&url.searchParams.get('utm_source')==='vk');
+    await page.close();
+  }
+});
+
+test('festive effects are isolated to New Year, bounded in number and stop for reduced motion', async () => {
+  assert.doesNotMatch(fs.readFileSync(path.join(root,'index.html'),'utf8'),/new-year-festive\.css|winter-atmosphere/);
+  for(const width of [320,390,768,1440]) {
+    const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'no-preference'});
+    await stubExternalPresentation(page);
+    await page.goto(baseURL+'/new-year.html',{waitUntil:'networkidle'});
+    await page.evaluate(()=>document.fonts.ready);
+    await page.locator('#frost-lab').scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>document.querySelector('.winter-lab-card').classList.contains('is-celebrating'));
+    const count=await page.locator('.festive-motion,.winter-confetti-piece').count();
+    assert.ok(count>=30&&count<=70,'small, fixed decoration budget');
+    assert.equal(await page.locator('.winter-scene-divider').count(),2);
+    assert.equal(await page.locator('.winter-garland').count(),1);
+    const running=await page.evaluate(()=>document.getAnimations().filter(a=>a.playState==='running').length);
+    assert.ok(running>5,'festive movement is active when permitted');
+    const events=await page.locator('.festive-motion,.winter-confetti-piece').evaluateAll(nodes=>nodes.map(e=>getComputedStyle(e).pointerEvents));
+    assert.ok(events.every(value=>value==='none'),'decorations cannot intercept clicks');
+    await page.locator('[data-new-year-request="lab"]').click();
+    assert.equal(await page.locator('#request-dialog').evaluate(e=>e.open),true);
+    const paused=await page.locator('.festive-motion').evaluateAll(nodes=>nodes.map(e=>getComputedStyle(e).animationPlayState));
+    assert.ok(paused.every(value=>value==='paused'),'background motion pauses while completing a request');
+    await page.keyboard.press('Escape');
+    await page.emulateMedia({reducedMotion:'reduce'});
+    assert.equal(await page.evaluate(()=>document.getAnimations().filter(a=>a.playState==='running').length),0);
+    assert.equal(await page.locator('.winter-atmosphere').isVisible(),false);
+    assert.equal(await page.locator('html').evaluate(e=>e.scrollWidth<=innerWidth),true);
+    await page.close();
+  }
+});
+
+test('festive decorations stay out of text, photos and controls at different scroll positions and animation phases', async () => {
+  for(const width of [320,390,768,1440]) {
+    const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'no-preference'});
+    await stubExternalPresentation(page);
+    await page.goto(baseURL+'/new-year.html',{waitUntil:'networkidle'});
+    await page.evaluate(()=>document.fonts.ready);
+    await loadAllImages(page);
+    for(const target of ['.winter-hero','#frost-lab','.site-footer']) {
+      await page.locator(target).scrollIntoViewIfNeeded();
+      for(const time of [0,3,8]) {
+        const collisions=await page.evaluate(time=>{
+          document.getAnimations().forEach(a=>{a.pause();a.currentTime=time*1000;});
+          const rect=e=>{const b=e.getBoundingClientRect();return{left:b.left,right:b.right,top:b.top,bottom:b.bottom};};
+          const headerBottom=document.querySelector('.site-header-wrap').getBoundingClientRect().bottom;
+          const visible=e=>{
+            if(getComputedStyle(e).display==='none'||parseFloat(getComputedStyle(e).opacity)<.01)return null;
+            let r=rect(e);r={left:Math.max(0,r.left),right:Math.min(innerWidth,r.right),top:Math.max(headerBottom,r.top),bottom:Math.min(innerHeight,r.bottom)};
+            for(let p=e.parentElement;p;p=p.parentElement){
+              const style=getComputedStyle(p),box=rect(p);
+              if(['hidden','clip'].includes(style.overflowX)){r.left=Math.max(r.left,box.left);r.right=Math.min(r.right,box.right);}
+              if(['hidden','clip'].includes(style.overflowY)){r.top=Math.max(r.top,box.top);r.bottom=Math.min(r.bottom,box.bottom);}
+            }
+            return r.right>r.left&&r.bottom>r.top?r:null;
+          };
+          const protectedNodes=[...document.querySelectorAll('main h1,main h2,main h3,main p,main img,main button,main a,main .winter-tags,.site-footer a,.site-footer p')].map(e=>({e,r:visible(e)})).filter(o=>o.r);
+          const errors=[];
+          for(const e of document.querySelectorAll('.festive-motion,.winter-confetti-piece')){
+            const r=visible(e);if(!r)continue;
+            for(const p of protectedNodes){
+              if(Math.min(r.right,p.r.right)-Math.max(r.left,p.r.left)>1 && Math.min(r.bottom,p.r.bottom)-Math.max(r.top,p.r.top)>1)errors.push(e.getAttribute('class')+' overlaps '+p.e.tagName+'.'+p.e.className);
+            }
+          }
+          return errors;
+        },time);
+        assert.deepEqual(collisions,[],`${width}px, ${target}, ${time}s`);
+      }
+    }
     await page.close();
   }
 });
