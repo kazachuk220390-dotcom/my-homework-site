@@ -1068,7 +1068,12 @@ test('New Year page renders with the poster, real links and no overflow or scrip
     assert.match(await page.locator('#frost-lab').innerText(),/Серебряная дискотека/iu);
     assert.equal(await page.locator('.winter-poster img').evaluate(e=>e.complete&&e.naturalWidth===1448),true);
     assert.equal(await page.locator('.winter-lab-photo img').evaluate(e=>e.complete&&e.naturalWidth===1280&&e.naturalHeight===853),true);
-    assert.match(await page.locator('.winter-lab-photo figcaption').innerText(), /Иллюстрация программы/);
+    assert.equal(await page.locator('.winter-lab-photo figcaption').count(),0);
+    const footer=await page.locator('.site-footer').evaluate(e=>{
+      const rect=e.getBoundingClientRect(),logo=e.querySelector('.footer-logo').getBoundingClientRect(),identity=e.querySelector('.footer-identity').getBoundingClientRect();
+      return {inset:identity.left-rect.left,top:identity.top-rect.top,logoCenter:Math.abs((logo.left+logo.right-identity.left-identity.right)/2),footerCenter:Math.abs((rect.left+rect.right-innerWidth)/2)};
+    });
+    assert.ok(footer.inset>=16&&footer.top>=20&&footer.logoCenter<2&&footer.footerCenter<2,'footer has centered identity and adequate inset');
     assert.equal(await page.locator('html').evaluate(e=>e.scrollWidth<=innerWidth),true);
     assert.equal(await page.locator('#request-form-iframe').getAttribute('src'),'about:blank');
     assert.equal(await page.locator('.site-header .brand-logo').getAttribute('href'),'/#top');
@@ -1155,6 +1160,33 @@ test('festive effects are isolated to New Year, bounded in number and stop for r
     assert.equal(await page.evaluate(()=>document.getAnimations().filter(a=>a.playState==='running').length),0);
     assert.equal(await page.locator('.winter-atmosphere').isVisible(),false);
     assert.equal(await page.locator('html').evaluate(e=>e.scrollWidth<=innerWidth),true);
+    await page.close();
+  }
+});
+
+test('winter experiment cards reveal once on scroll and compact spacing is preserved', async () => {
+  for(const width of [390,1440]){
+    const page=await browser.newPage({viewport:{width,height:800},reducedMotion:'no-preference'});
+    await stubExternalPresentation(page);
+    await page.goto(baseURL+'/new-year.html',{waitUntil:'networkidle'});
+    const cards=page.locator('#snegurochka-program .winter-features article');
+    assert.equal(await cards.count(),6);
+    assert.equal(await page.locator('.winter-reveal-ready').count(),6);
+    for(const card of await cards.all()){
+      await card.scrollIntoViewIfNeeded();
+      await card.evaluate(el=>new Promise(resolve=>{
+        if(el.classList.contains('is-revealed'))return resolve();
+        const observer=new MutationObserver(()=>{if(el.classList.contains('is-revealed')){observer.disconnect();resolve();}});
+        observer.observe(el,{attributes:true,attributeFilter:['class']});
+      }));
+    }
+    assert.equal(await page.locator('.winter-reveal-ready.is-revealed').count(),6);
+    await page.evaluate(()=>window.scrollTo(0,0));
+    assert.equal(await page.locator('.winter-reveal-ready.is-revealed').count(),6);
+    const dividers=await page.locator('.winter-scene-divider').evaluateAll(nodes=>nodes.map(e=>e.getBoundingClientRect().height));
+    assert.ok(dividers.every(height=>height<=30),'no oversized decorative gaps');
+    await page.emulateMedia({reducedMotion:'reduce'});
+    assert.ok((await cards.evaluateAll(nodes=>nodes.map(e=>getComputedStyle(e).opacity))).every(value=>value==='1'));
     await page.close();
   }
 });
