@@ -961,6 +961,30 @@ test('new scientific scenes stay away from text and respect reduced motion on de
   }
 });
 
+test('home energy effects stay decorative, fit the reserved bridge, and respect reduced motion', async () => {
+  for(const width of [320,390,768,1440]){
+    const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
+    await stubExternalPresentation(page);
+    await page.goto(baseURL+'/',{waitUntil:'networkidle'});
+    assert.equal(await page.locator('link[href*="home-energy.css"]').count(),1);
+    assert.equal(await page.locator('.home-reactor-rays').count(),1);
+    assert.equal(await page.locator('.home-fire-accent').count(),1);
+    const effect=await page.locator('.home-fire-accent').evaluate(e=>{
+      const a=e.getBoundingClientRect(),b=e.parentElement.getBoundingClientRect();
+      return {inside:a.x>=b.x-1&&a.right<=b.right+1&&a.y>=b.y-1&&a.bottom<=b.bottom+1,pointer:getComputedStyle(e).pointerEvents,animations:e.getAnimations({subtree:true}).filter(x=>x.playState==='running').length};
+    });
+    assert.equal(effect.inside,true);
+    assert.equal(effect.pointer,'none');
+    assert.equal(effect.animations,0);
+    assert.equal(await page.locator('html').evaluate(e=>e.scrollWidth<=innerWidth),true);
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    assert.ok(await page.locator('.home-fire-accent').evaluate(e=>e.getAnimations({subtree:true}).filter(a=>a.playState==='running').length>=3));
+    await page.goto(baseURL+'/new-year.html',{waitUntil:'networkidle'});
+    assert.equal(await page.locator('link[href*="home-energy.css"]').count(),0);
+    await page.close();
+  }
+});
+
 test('the sticky logo stays visible and both pages return to the home page top with campaign tags', async () => {
   for(const width of [320,390,768,1440]) {
     for(const pagePath of ['/','/new-year.html']) {
