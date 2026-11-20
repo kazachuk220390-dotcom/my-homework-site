@@ -1055,6 +1055,8 @@ test('New Year page renders with the poster, real links and no overflow or scrip
     assert.equal((await page.locator('main').innerText()).match(/ледяные шары/giu)?.length,1);
     assert.match(await page.locator('#frost-lab').innerText(),/Серебряная дискотека/iu);
     assert.equal(await page.locator('.winter-poster img').evaluate(e=>e.complete&&e.naturalWidth===1448),true);
+    assert.equal(await page.locator('.winter-lab-photo img').evaluate(e=>e.complete&&e.naturalWidth===1280&&e.naturalHeight===853),true);
+    assert.match(await page.locator('.winter-lab-photo figcaption').innerText(), /Иллюстрация программы/);
     assert.equal(await page.locator('html').evaluate(e=>e.scrollWidth<=innerWidth),true);
     assert.equal(await page.locator('#request-form-iframe').getAttribute('src'),'about:blank');
     assert.equal(await page.locator('.site-header .brand-logo').getAttribute('href'),'/#top');
