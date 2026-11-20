@@ -1050,6 +1050,12 @@ test('New Year page renders with the poster, real links and no overflow or scrip
     assert.equal(await page.locator('#snegurochka-program .winter-features article').count(),6);
     assert.equal(await page.locator('#winter-program-title').innerText(),'В программе вас ждут:');
     assert.equal(await page.locator('#snegurochka-program .winter-features article p').count(),0);
+    assert.equal(await page.locator('#snegurochka-program .winter-index').count(),0);
+    const featureCards=await page.locator('#snegurochka-program .winter-features article').evaluateAll(cards=>cards.map(card=>{
+      const title=card.querySelector('h3'),a=card.getBoundingClientRect(),b=title.getBoundingClientRect();
+      return {centerX:Math.abs((a.left+a.right-b.left-b.right)/2),centerY:Math.abs((a.top+a.bottom-b.top-b.bottom)/2),align:getComputedStyle(title).textAlign};
+    }));
+    for(const card of featureCards){assert.ok(card.centerX<2&&card.centerY<2,'experiment card title centered');assert.equal(card.align,'center');}
     assert.deepEqual(await page.locator('#snegurochka-program .winter-features h3').allTextContents(),[
       'Эксперименты с мандаринами','Бенгальские огни','Захватывающие научные эксперименты',
       'Сюрпризные моменты','Подарки от Снегурочки','И многое другое!'
