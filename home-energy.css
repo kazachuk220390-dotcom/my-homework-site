@@ -1,0 +1,48 @@
+/* Warm science effects: home page only. Existing content and photo areas are unchanged. */
+.hero-energy{
+  background:radial-gradient(ellipse at 9% 81%,#ffd79b40,transparent 23%),
+    radial-gradient(ellipse at 83% 12%,#ffc35c25,transparent 20%);
+}
+.hero-reaction{position:relative;isolation:isolate}
+.hero-reaction::before{
+  content:"";position:absolute;inset:4% 3% 30%;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 26%,#ffbc5944,transparent 63%);
+}
+.home-reactor-rays{transform-box:fill-box;transform-origin:center;animation:home-ray-breathe 6s ease-in-out -1.2s infinite}
+.home-reactor-rays path{stroke:#df8a30;stroke-width:2.6;stroke-linecap:round}
+.home-reactor-rays circle{fill:#ffc96d}
+.hero-photo .science-burst{
+  color:#ffe3a3;filter:drop-shadow(0 0 5px #ffcb79) drop-shadow(0 0 12px #f29b43aa);
+}
+.lab-interlude{
+  background:radial-gradient(ellipse at 19% 48%,#ffd58736,transparent 30%);
+  border-radius:28px;
+}
+.nucleon-transition{
+  background:radial-gradient(ellipse at 52% 53%,#ffd08b42,transparent 64%);
+  border-radius:50%;
+}
+.science-bridge{gap:clamp(20px,4.5vw,66px)}
+.science-bridge>svg{flex-shrink:1;min-width:0}
+.home-fire-accent{
+  display:block;flex:0 1 116px;width:116px;height:104px;
+  overflow:visible;pointer-events:none;filter:drop-shadow(0 4px 8px #ed902b28);
+}
+.home-fire-accent .fire-body{transform-origin:49% 77%;animation:home-fire-sway 4.4s ease-in-out infinite alternate}
+.home-fire-accent .fire-core{transform-origin:50% 78%;animation:home-fire-core 5.3s ease-in-out -1.8s infinite}
+.home-fire-accent .fire-ripple{transform-box:fill-box;transform-origin:center;animation:home-energy-ring 7s ease-in-out -1.6s infinite}
+.home-fire-accent .fire-sparks{transform-origin:50% 60%;animation:home-ray-breathe 5.8s ease-in-out -2.4s infinite}
+@keyframes home-fire-sway{0%{transform:scale(.97,1) rotate(-3deg)}100%{transform:scale(1.03,.96) rotate(3deg)}}
+@keyframes home-fire-core{0%,100%{opacity:.8;transform:scale(.94)}50%{opacity:1;transform:scale(1.04)}}
+@keyframes home-energy-ring{0%,100%{opacity:.18;transform:scale(.92)}48%{opacity:.58;transform:scale(1.06)}}
+@keyframes home-ray-breathe{0%,100%{opacity:.64;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
+html.motion-off .home-reactor-rays,html.motion-off .home-fire-accent *{animation-play-state:paused!important}
+body:has(dialog[open]) .home-reactor-rays,body:has(dialog[open]) .home-fire-accent *{animation-play-state:paused!important}
+@media(max-width:680px){
+  .science-bridge{gap:clamp(7px,2.8vw,16px)}
+  .home-fire-accent{width:66px;height:72px;flex-basis:66px}
+  .home-reactor-rays path{stroke-width:2.2}
+}
+@media(prefers-reduced-motion:reduce){
+ html:not(.motion-override) .home-reactor-rays,html:not(.motion-override) .home-fire-accent *{animation:none!important;transform:none!important}
+}
