@@ -60,3 +60,31 @@
   document.addEventListener('visibilitychange',syncVisibility);
   syncVisibility();
 })();
+
+// Reveal the experiment cards as they come into the viewport.
+(() => {
+  if(!('IntersectionObserver' in window)||!window.matchMedia||
+     window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const cards=[...document.querySelectorAll('#snegurochka-program .winter-features article')];
+  const observer=new IntersectionObserver(entries=>{
+    for(const entry of entries){
+      if(!entry.isIntersecting)continue;
+      entry.target.classList.add('is-revealed');
+      observer.unobserve(entry.target);
+    }
+  },{threshold:.16});
+  for(const [index,card] of cards.entries()){
+    card.style.setProperty('--reveal-delay',((index%3)*95)+'ms');
+    card.classList.add('winter-reveal-ready');
+    observer.observe(card);
+  }
+  // Make all cards immediately readable when the user's motion preference changes.
+  const media=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const revealAll=event=>{
+    if(!event.matches)return;
+    for(const card of cards)card.classList.add('is-revealed');
+    observer.disconnect();
+  };
+  if(media.addEventListener)media.addEventListener('change',revealAll);
+  else if(media.addListener)media.addListener(revealAll);
+})();
