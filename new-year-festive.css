@@ -95,3 +95,7 @@
 }
 .new-year-page .festive-motion,.new-year-page .winter-confetti-piece{pointer-events:none}
 .new-year-page:has(dialog[open]) .festive-motion,.new-year-page:has(dialog[open]) .winter-confetti-piece{animation-play-state:paused!important}
+
+/* Compact Snegurochka program cards: titles only. */
+#snegurochka-program .winter-features h3{margin:0}
+@media(max-width:680px){#snegurochka-program .winter-features article{display:flex;align-items:center;min-height:70px}#snegurochka-program .winter-index{top:50%;transform:translateY(-50%)}}
