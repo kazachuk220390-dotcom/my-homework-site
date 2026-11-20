@@ -1047,12 +1047,13 @@ test('New Year page renders with the poster, real links and no overflow or scrip
     assert.match(await page.locator('#frost-lab').innerText(),/29 900 ₽/);
     assert.match(await page.locator('.winter-copy').innerText(),/12 000 ₽/);
     assert.equal(await page.locator('#winter-details-title').innerText(),'Какой вы хотите праздник?');
-    assert.equal(await page.locator('#snegurochka-program .winter-features article').count(),0);
+    assert.equal(await page.locator('#snegurochka-program .winter-features article').count(),6);
     assert.equal(await page.locator('#winter-program-title').innerText(),'В программе вас ждут:');
-    const shortProgram=await page.locator('#snegurochka-program .winter-program-note').innerText();
-    assert.match(shortProgram,/Эксперименты с мандаринами/iu);
-    assert.match(shortProgram,/бенгальских огней/iu);
-    assert.match(shortProgram,/Каждому ребёнку — небольшой подарок/iu);
+    assert.equal(await page.locator('#snegurochka-program .winter-features article p').count(),0);
+    assert.deepEqual(await page.locator('#snegurochka-program .winter-features h3').allTextContents(),[
+      'Эксперименты с мандаринами','Бенгальские огни','Захватывающие научные эксперименты',
+      'Сюрпризные моменты','Подарки от Снегурочки','И многое другое!'
+    ]);
     assert.match(await page.locator('[data-new-year-request="snegurochka"]').innerText(),/^Пригласить Снегурочку/);
     assert.match(await page.locator('[data-new-year-request="lab"]').innerText(),/^Заказать новогодний праздник/);
     assert.equal(await page.locator('link[href*="new-year-festive.css"]').count(),1);
