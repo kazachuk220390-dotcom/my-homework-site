@@ -46,3 +46,38 @@ body:has(dialog[open]) .home-reactor-rays,body:has(dialog[open]) .home-fire-acce
 @media(prefers-reduced-motion:reduce){
  html:not(.motion-override) .home-reactor-rays,html:not(.motion-override) .home-fire-accent *{animation:none!important;transform:none!important}
 }
+
+/* Keep the lead photo in the mobile layout and balance the header links. */
+@media (max-width: 680px) {
+  .site-header--home .header-new-year {
+    margin-inline: auto;
+  }
+
+  .hero {
+    gap: 16px;
+  }
+
+  .hero .hero-actions {
+    min-height: 0;
+  }
+
+  .hero .hero-reaction {
+    height: 82px;
+  }
+
+  .hero-photo {
+    aspect-ratio: auto;
+  }
+
+  .hero-photo > img {
+    position: relative;
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+}
+
+@media (max-width: 365px) {
+  .site-header--home .header-cta .arrow-icon {
+    display: none;
+  }
+}
