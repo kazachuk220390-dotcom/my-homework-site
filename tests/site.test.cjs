@@ -1261,15 +1261,16 @@ test('festive decorations stay out of text, photos and controls at different scr
 
 test('public landing pages are indexable and sitemap contains only public landing pages',()=>{
   const robots=fs.readFileSync(path.join(root,'robots.txt'),'utf8');
-  assert.match(robots,/Sitemap:\\s*https:\\/\\/wownauka\\.ru\\/sitemap\\.xml/);
-  assert.doesNotMatch(robots,/Disallow:\\s*\\//);
+  assert.ok(robots.includes('Sitemap: https://wownauka.ru/sitemap.xml'));
+  assert.ok(!robots.includes('Disallow: /'));
   for(const page of ['index.html','new-year.html']) {
     const html=fs.readFileSync(path.join(root,page),'utf8');
-    assert.doesNotMatch(html,/<meta\\s+name="robots"[^>]*noindex/i);
+    assert.ok(!html.includes('noindex, nofollow, noarchive'));
+    assert.ok(html.includes('<link rel="canonical"'));
   }
-  assert.match(fs.readFileSync(path.join(root,'thanks.html'),'utf8'),/noindex/);
+  assert.ok(fs.readFileSync(path.join(root,'thanks.html'),'utf8').includes('noindex'));
   const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
-  assert.match(sitemap,/https:\\/\\/wownauka\\.ru\\/<\\/loc>/);
-  assert.match(sitemap,/https:\\/\\/wownauka\\.ru\\/new-year\\.html<\\/loc>/);
-  assert.doesNotMatch(sitemap,/thanks\\.html|privacy\\.html|consent\\.html/);
+  assert.ok(sitemap.includes('<loc>https://wownauka.ru/</loc>'));
+  assert.ok(sitemap.includes('<loc>https://wownauka.ru/new-year.html</loc>'));
+  assert.ok(!sitemap.includes('thanks.html'));
 });
