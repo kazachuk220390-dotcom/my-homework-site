@@ -126,7 +126,8 @@ test('navigation, consent links and embedded form exist without local data submi
   const brokenTargets = await page.locator('a[href^="#"]').evaluateAll((links) => links
     .map((link) => link.getAttribute('href')).filter((href) => href !== '#' && !document.getElementById(href.slice(1))));
   assert.deepEqual(brokenTargets, []);
-  assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
+  assert.equal(await page.locator('meta[name="robots"]').count(),0);
+  assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://wownauka.ru/');
   assert.equal(await page.locator('.review-bar').count(), 0);
   assert.match(await page.locator('#request-title').innerText(), /Ваш праздник — наши научные открытия!/);
   assert.equal(await page.locator('form,input:not([type="checkbox"]),textarea:not([readonly])').count(), 0);
@@ -1067,6 +1068,8 @@ test('New Year page renders with the poster, real links and no overflow or scrip
     assert.deepEqual(errors,[]);assert.deepEqual(failures,[]);
     assert.equal(await page.locator('h1').count(),1);
     assert.match(await page.locator('h1').innerText(),/Научная\s+Снегурочка/);
+    assert.equal(await page.locator('meta[name="robots"]').count(),0);
+    assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://wownauka.ru/new-year.html');
     assert.match(await page.locator('#frost-lab-title').innerText(),/Морозная\s+лаборатория/);
     assert.match(await page.locator('#frost-lab').innerText(),/29 900 ₽/);
     assert.match(await page.locator('.winter-copy').innerText(),/12 000 ₽/);
@@ -1254,4 +1257,19 @@ test('festive decorations stay out of text, photos and controls at different scr
     }
     await page.close();
   }
+});
+
+test('public landing pages are indexable and sitemap contains only public landing pages',()=>{
+  const robots=fs.readFileSync(path.join(root,'robots.txt'),'utf8');
+  assert.match(robots,/Sitemap:\\s*https:\\/\\/wownauka\\.ru\\/sitemap\\.xml/);
+  assert.doesNotMatch(robots,/Disallow:\\s*\\//);
+  for(const page of ['index.html','new-year.html']) {
+    const html=fs.readFileSync(path.join(root,page),'utf8');
+    assert.doesNotMatch(html,/<meta\\s+name="robots"[^>]*noindex/i);
+  }
+  assert.match(fs.readFileSync(path.join(root,'thanks.html'),'utf8'),/noindex/);
+  const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
+  assert.match(sitemap,/https:\\/\\/wownauka\\.ru\\/<\\/loc>/);
+  assert.match(sitemap,/https:\\/\\/wownauka\\.ru\\/new-year\\.html<\\/loc>/);
+  assert.doesNotMatch(sitemap,/thanks\\.html|privacy\\.html|consent\\.html/);
 });
