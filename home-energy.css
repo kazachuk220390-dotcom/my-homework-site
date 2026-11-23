@@ -1,9 +1,40 @@
-/* Warm science effects: home page only. Existing content and photo areas are unchanged. */
+/* Science effects for the home page. */
 .hero-energy{
   background:radial-gradient(ellipse at 9% 81%,#ffd79b40,transparent 23%),
     radial-gradient(ellipse at 83% 12%,#ffc35c25,transparent 20%);
 }
-.hero-reaction{position:relative;isolation:isolate}
+.hero {
+  --hero-column-gap: 40px;
+  column-gap: var(--hero-column-gap);
+}
+.hero-actions {
+  max-width: none;
+  margin-inline-end: calc(-1 * var(--hero-column-gap));
+  column-gap: 8px;
+  padding-inline-end: 8px;
+}
+.hero-reaction {
+  position: relative;
+  isolation: isolate;
+  margin-inline: auto;
+}
+.hero-dna-scene {
+  position: absolute;
+  top: 17%;
+  left: 49.7%;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.hero-dna-scene > svg {
+  position: static;
+}
+.hero-dna-scene > .mol-a {
+  width: 80px;
+  height: auto;
+}
 .hero-reaction::before{
   content:"";position:absolute;inset:4% 3% 30%;z-index:-1;pointer-events:none;
   background:radial-gradient(ellipse at 50% 26%,#ffbc5944,transparent 63%);
@@ -22,25 +53,49 @@
   background:radial-gradient(ellipse at 52% 53%,#ffd08b42,transparent 64%);
   border-radius:50%;
 }
-.science-bridge{gap:clamp(20px,4.5vw,66px)}
-.science-bridge>svg{flex-shrink:1;min-width:0}
-.home-fire-accent{
-  display:block;flex:0 1 116px;width:116px;height:104px;
-  overflow:visible;pointer-events:none;filter:drop-shadow(0 4px 8px #ed902b28);
+.hero-title-lead {
+  display: inline-flex;
+  align-items: center;
+  gap: .07em;
 }
-.home-fire-accent .fire-body{transform-origin:49% 77%;animation:home-fire-sway 4.4s ease-in-out infinite alternate}
-.home-fire-accent .fire-core{transform-origin:50% 78%;animation:home-fire-core 5.3s ease-in-out -1.8s infinite}
-.home-fire-accent .fire-ripple{transform-box:fill-box;transform-origin:center;animation:home-energy-ring 7s ease-in-out -1.6s infinite}
-.home-fire-accent .fire-sparks{transform-origin:50% 60%;animation:home-ray-breathe 5.8s ease-in-out -2.4s infinite}
-@keyframes home-fire-sway{0%{transform:scale(.97,1) rotate(-3deg)}100%{transform:scale(1.03,.96) rotate(3deg)}}
+.home-fire-accent {
+  display: block;
+  flex: none;
+  width: 1.16em;
+  height: 1em;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 0 .14em #ffab538c) drop-shadow(0 .045em .08em #f4653866);
+}
+.home-fire-accent .fire-body{transform-origin:49% 77%;animation:home-fire-sway 2.8s ease-in-out infinite alternate}
+.home-fire-accent .fire-core{transform-origin:50% 78%;animation:home-fire-core 2.3s ease-in-out -1.1s infinite}
+.home-fire-accent .fire-ripple{transform-box:fill-box;transform-origin:center;animation:home-energy-ring 4.1s ease-in-out -1.6s infinite}
+.home-fire-accent .fire-sparks{transform-origin:50% 60%;animation:home-fire-sparks 2.9s ease-out -1.4s infinite}
+@keyframes home-fire-sway{0%{transform:scale(.94,.98) rotate(-4deg)}100%{transform:scale(1.07,1.05) rotate(4deg)}}
 @keyframes home-fire-core{0%,100%{opacity:.8;transform:scale(.94)}50%{opacity:1;transform:scale(1.04)}}
 @keyframes home-energy-ring{0%,100%{opacity:.18;transform:scale(.92)}48%{opacity:.58;transform:scale(1.06)}}
+@keyframes home-fire-sparks{0%,100%{opacity:.5;transform:scale(.84)}35%{opacity:1;transform:scale(1.16)}}
 @keyframes home-ray-breathe{0%,100%{opacity:.64;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
 html.motion-off .home-reactor-rays,html.motion-off .home-fire-accent *{animation-play-state:paused!important}
 body:has(dialog[open]) .home-reactor-rays,body:has(dialog[open]) .home-fire-accent *{animation-play-state:paused!important}
-@media(max-width:680px){
-  .science-bridge{gap:clamp(7px,2.8vw,16px)}
-  .home-fire-accent{width:66px;height:72px;flex-basis:66px}
+@media (max-width: 900px) {
+  .hero {
+    --hero-column-gap: 25px;
+  }
+  .hero-dna-scene {
+    left: 48%;
+  }
+  .hero-dna-scene > .mol-a {
+    width: 68px;
+  }
+}
+@media (max-width: 680px) {
+  .hero-dna-scene {
+    top: 4%;
+    right: 1%;
+    left: auto;
+    translate: none;
+  }
   .home-reactor-rays path{stroke-width:2.2}
 }
 @media(prefers-reduced-motion:reduce){
@@ -54,6 +109,7 @@ body:has(dialog[open]) .home-reactor-rays,body:has(dialog[open]) .home-fire-acce
   }
 
   .hero {
+    --hero-column-gap: 0px;
     gap: 16px;
   }
 
