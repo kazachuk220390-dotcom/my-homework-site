@@ -63,6 +63,7 @@
   flex: none;
   width: 1.16em;
   height: 1em;
+  translate: .22em 0;
   overflow: visible;
   pointer-events: none;
   filter: drop-shadow(0 0 .14em #ffab538c) drop-shadow(0 .045em .08em #f4653866);
