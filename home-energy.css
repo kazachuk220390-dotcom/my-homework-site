@@ -61,65 +61,54 @@
   align-items: center;
   gap: .07em;
 }
-.home-fire-accent {
+.hero-spark {
   position: relative;
   z-index: -1;
-  display: block;
   flex: none;
   width: 1.16em;
   height: 1em;
-  translate: .57em -.08em;
-  scale: 1.42;
-  overflow: visible;
   pointer-events: none;
-  filter: drop-shadow(0 0 .12em #ff9a4b88);
 }
-.home-fire-accent :is(.blast-wave,.blast-rays,.blast-core,.blast-embers) {
-  transform-origin: 50% 50%;
-  animation-duration: 4.8s;
-  animation-iteration-count: infinite;
+.hero-spark img {
+  position: absolute;
+  top: 46%;
+  left: .27em;
+  width: 1.8em;
+  height: auto;
+  max-width: none;
+  translate: 0 -50%;
+  transform-origin: 17% 78%;
+  animation: hero-spark-drift 5.6s ease-out infinite;
 }
-.blast-wave {
-  opacity: .56;
-  animation-name: home-blast-wave;
+.vapor-transition {
+  position: relative;
+  height: clamp(64px, 6vw, 84px);
+  pointer-events: none;
 }
-.blast-rays {
-  opacity: .78;
-  animation-name: home-blast-rays;
+.vapor-transition img {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline: 0;
+  width: clamp(118px, 13vw, 186px);
+  height: auto;
+  margin-inline: auto;
+  translate: 0 -50%;
+  animation: vapor-drift 8.5s ease-in-out infinite;
 }
-.blast-core {
-  scale: .78;
-  animation-name: home-blast-core;
+@keyframes hero-spark-drift {
+  0%, 100% { opacity: .48; transform: scale(.9); }
+  16% { opacity: 1; transform: scale(1.05); }
+  48% { opacity: .78; transform: scale(1.02); }
+  75% { opacity: .53; transform: scale(.95); }
 }
-.blast-embers {
-  opacity: .8;
-  animation-name: home-blast-embers;
-}
-@keyframes home-blast-wave {
-  0%, 100% { opacity: .52; transform: scale(.75); }
-  27% { opacity: .64; transform: scale(1); }
-  63% { opacity: 0; transform: scale(1.18); }
-  81% { opacity: 0; transform: scale(.75); }
-}
-@keyframes home-blast-rays {
-  0%, 100% { opacity: .68; transform: scale(.83) rotate(-4deg); }
-  23% { opacity: .88; transform: scale(1.04) rotate(3deg); }
-  62% { opacity: .45; transform: scale(.98) rotate(6deg); }
-}
-@keyframes home-blast-core {
-  0%, 100% { transform: scale(.86); }
-  23% { transform: scale(1.09); }
-  62% { transform: scale(.93); }
-}
-@keyframes home-blast-embers {
-  0%, 100% { opacity: .68; transform: scale(.82); }
-  25% { opacity: 1; transform: scale(1); }
-  64% { opacity: 0; transform: scale(1.2); }
-  81% { opacity: 0; transform: scale(.82); }
+@keyframes vapor-drift {
+  0%, 100% { opacity: .76; transform: translate(-2px, 3px) scale(.95); }
+  41% { opacity: .98; transform: translate(3px, -3px) scale(1.04); }
+  72% { opacity: .86; transform: translate(5px, -1px) scale(1.01); }
 }
 @keyframes home-ray-breathe{0%,100%{opacity:.64;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
-html.motion-off .home-reactor-rays,html.motion-off .home-fire-accent *{animation-play-state:paused!important}
-body:has(dialog[open]) .home-reactor-rays,body:has(dialog[open]) .home-fire-accent *{animation-play-state:paused!important}
+html.motion-off :is(.home-reactor-rays,.hero-spark img,.vapor-transition img){animation-play-state:paused!important}
+body:has(dialog[open]) :is(.home-reactor-rays,.hero-spark img,.vapor-transition img){animation-play-state:paused!important}
 @media (max-width: 900px) {
   .hero {
     --hero-column-gap: 25px;
@@ -132,9 +121,9 @@ body:has(dialog[open]) .home-reactor-rays,body:has(dialog[open]) .home-fire-acce
   }
 }
 @media (max-width: 680px) {
-  .home-fire-accent {
-    translate: .48em -.08em;
-    scale: 1.24;
+  .hero-spark img {
+    left: .22em;
+    width: 1.65em;
   }
   .hero-dna-scene {
     top: 4%;
@@ -145,7 +134,7 @@ body:has(dialog[open]) .home-reactor-rays,body:has(dialog[open]) .home-fire-acce
   .home-reactor-rays path{stroke-width:2.2}
 }
 @media(prefers-reduced-motion:reduce){
- html:not(.motion-override) .home-reactor-rays,html:not(.motion-override) .home-fire-accent *{animation:none!important;transform:none!important}
+ html:not(.motion-override) :is(.home-reactor-rays,.hero-spark img,.vapor-transition img){animation:none!important;transform:none!important}
 }
 
 /* Keep the lead photo in the mobile layout and balance the header links. */
