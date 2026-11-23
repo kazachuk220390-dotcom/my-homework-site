@@ -1093,7 +1093,9 @@ test('New Year page renders with the poster, real links and no overflow or scrip
     assert.equal(await page.locator('#frost-lab .winter-lab-part').count(),3);
     assert.doesNotMatch(await page.locator('#snegurochka-program').innerText(),/ледяные шары|Фейерверк в бокале/iu);
     assert.match(await page.locator('#frost-lab').innerText(),/Серебряная дискотека/iu);
-    assert.equal(await page.locator('.winter-poster img').evaluate(e=>e.complete&&e.naturalWidth===1448),true);
+    assert.equal(await page.locator('.winter-poster img').getAttribute('src'),'./assets/posters/snegurochka-ny.webp');
+    assert.equal(await page.locator('.winter-poster a').getAttribute('href'),'./assets/posters/snegurochka-ny.webp');
+    assert.equal(await page.locator('.winter-poster img').evaluate(e=>e.complete&&e.naturalWidth===1448&&e.naturalHeight===1086),true);
     assert.equal(await page.locator('.winter-lab-photo img').evaluate(e=>e.complete&&e.naturalWidth===1280&&e.naturalHeight===853),true);
     assert.equal(await page.locator('.winter-lab-photo figcaption').count(),0);
     const footer=await page.locator('.site-footer').evaluate(e=>{
