@@ -80,6 +80,22 @@
 @keyframes home-ray-breathe{0%,100%{opacity:.64;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
 html.motion-off :is(.home-reactor-rays,.hero-title-word .mol-a){animation-play-state:paused!important}
 body:has(dialog[open]) :is(.home-reactor-rays,.hero-title-word .mol-a){animation-play-state:paused!important}
+@media (min-width: 420px) and (max-width: 680px) {
+  .hero-title-word .mol-a {
+    bottom: 105%;
+  }
+}
+@media (min-width: 681px) {
+  .hero-title-word {
+    position: static;
+  }
+  .hero-title-word .mol-a {
+    top: .25em;
+    bottom: auto;
+    left: 83%;
+    translate: -50% -50%;
+  }
+}
 @media (max-width: 900px) {
   .hero {
     --hero-column-gap: 25px;
