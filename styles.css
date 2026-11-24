@@ -820,12 +820,15 @@ html{scroll-padding-top:calc(var(--header-height) + 16px)}
 .winter-index{display:grid;place-items:center;width:34px;height:34px;background:#e8f9fc;color:#1687a8;border:1px solid #bee4ee;border-radius:50%;font-size:11px;font-weight:800;margin-bottom:15px}
 .winter-features h3{font-size:18px;line-height:1.25;margin:0 0 10px;color:#174b6c}
 .winter-features p{font-size:13px;line-height:1.7;color:#4d6e82;margin:0}
-.winter-details{display:flex;align-items:center;justify-content:space-between;gap:30px;margin-top:4px;padding:28px;border:1px solid #c8e6ee;border-radius:20px;background:#eaf8fc}
-.winter-details>div{min-width:0;max-width:740px}
-.winter-details .eyebrow{margin-bottom:10px}
-.winter-details h2{font-size:clamp(25px,2.6vw,34px)}
-.winter-details p:last-child{font-size:13px;line-height:1.7;margin:13px 0 0;color:#496c81;max-width:640px}
-.winter-details>.button{flex:none;min-height:48px}
+.closing-request{display:flex;align-items:center;justify-content:space-between;gap:30px;margin-top:4px;padding:28px;border:1px solid #c8e6ee;border-radius:20px;background:#eaf8fc}
+.closing-request>div:first-child{min-width:0;max-width:740px}
+.closing-request .eyebrow{margin-bottom:10px}
+.closing-request h2{font-size:clamp(25px,2.6vw,34px)}
+.closing-request>div:first-child p:last-child{font-size:13px;line-height:1.7;margin:13px 0 0;color:#496c81;max-width:640px}
+.closing-request>.button,.closing-request-action{flex:none}
+.closing-request .button-primary{min-height:48px}
+.closing-request-action{text-align:center}
+.closing-request-action p{margin:7px 0 0;font-size:12px;color:#496c81}
 @media(max-width:1000px){.winter-hero{gap:25px}.winter-copy h1{font-size:44px}.winter-lead{font-size:14px}.winter-features article{padding:20px}}
 @media(max-width:680px){
  :root{--header-height:66px}
@@ -847,8 +850,8 @@ html{scroll-padding-top:calc(var(--header-height) + 16px)}
  .winter-features article{position:relative;padding:19px 18px 19px 66px}
  .winter-index{position:absolute;left:18px;top:20px;margin:0;width:30px;height:30px}
  .winter-features h3{font-size:17px;margin-bottom:8px}
- .winter-details{display:block;padding:21px 18px;margin-top:3px}
- .winter-details h2{font-size:27px}.winter-details>.button{margin-top:18px;width:100%;justify-content:space-between}
+ .closing-request{display:block;padding:21px 18px;margin-top:3px}
+ .closing-request h2{font-size:27px}.closing-request .button-primary{margin-top:18px;width:100%;justify-content:space-between}
  .new-year-main{padding-bottom:24px}
 }
 #show .feature-grid{margin-bottom:18px}
@@ -883,3 +886,21 @@ html{scroll-padding-top:calc(var(--header-height) + 16px)}
 .winter-lab-part a{color:#14648e;text-decoration:underline;text-underline-offset:2px}
 .winter-lab-included strong{color:#174b6c}
 @media(max-width:680px){.winter-lab-part{grid-template-columns:29px minmax(0,1fr);gap:9px;padding:12px 10px}.winter-part-number{width:29px;height:29px}.winter-lab-part h3{font-size:16px}.winter-program-note{font-size:13px}}
+
+.closing-request{background:radial-gradient(ellipse at 100% 10%,#e3e0fa88,transparent 55%),#edfaff;border-color:#99d2ee;box-shadow:0 8px 28px #6e8ab32b,0 0 28px #74cfee66,0 0 48px #9c8deb33}
+.site-footer--card{position:relative;z-index:1;background:#fff}
+.site-footer--card{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;justify-items:center;
+  gap:24px 40px;margin-block:24px 20px;padding:clamp(24px,3.5vw,46px);
+  border:1px solid #d4e5f2;border-radius:22px;text-align:center;
+}
+.site-footer--card .footer-identity{display:flex;flex-direction:column;align-items:center;min-width:0;text-align:center}
+.site-footer--card .footer-identity p{margin:8px 0 0}
+.site-footer--card .footer-meta{min-width:0;max-width:420px;margin:0;align-items:center;text-align:center}
+.site-footer--card .footer-meta h2{text-align:center}
+.site-footer--card .footer-meta a{overflow-wrap:anywhere}
+.site-footer--card .footer-legal{grid-column:1/-1;width:100%;margin:0;padding-top:16px}
+@media(max-width:680px){
+  .site-footer--card{grid-template-columns:minmax(0,1fr);gap:20px;padding:26px 18px;margin-block:18px 16px;border-radius:18px}
+  .site-footer--card .footer-legal{gap:10px}
+}

@@ -60,24 +60,24 @@
 .hero-spark {
   position: absolute;
   z-index: -1;
-  inset: -.08em -.06em -.12em;
+  inset: -.67em -.37em -.61em -.16em;
   overflow: hidden;
   pointer-events: none;
-  mask-image: radial-gradient(ellipse at 52% 54%, #000 50%, #000d 78%, transparent);
+  mask-image: radial-gradient(ellipse 72% 72% at 50% 51%, #000 61%, #000d 85%, transparent);
 }
 .hero-spark img {
   width: 100%;
   height: 100%;
   object-fit: fill;
-  opacity: .38;
+  opacity: .55;
   transform-origin: 16% 76%;
   animation: hero-spark-drift 5.6s ease-out infinite;
 }
 @keyframes hero-spark-drift {
-  0%, 100% { opacity: .28; transform: scale(.97); }
-  16% { opacity: .48; transform: scale(1.025); }
-  48% { opacity: .39; transform: scale(1.01); }
-  75% { opacity: .3; transform: scale(.98); }
+  0%, 100% { opacity: .4; transform: scale(.97); }
+  16% { opacity: .67; transform: scale(1.025); }
+  48% { opacity: .56; transform: scale(1.01); }
+  75% { opacity: .44; transform: scale(.98); }
 }
 @keyframes home-ray-breathe{0%,100%{opacity:.64;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
 html.motion-off :is(.home-reactor-rays,.hero-spark img){animation-play-state:paused!important}
@@ -94,6 +94,9 @@ body:has(dialog[open]) :is(.home-reactor-rays,.hero-spark img){animation-play-st
   }
 }
 @media (max-width: 680px) {
+  .hero-spark {
+    inset-inline-end: -.14em;
+  }
   .hero-dna-scene {
     top: 4%;
     right: 1%;
