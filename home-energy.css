@@ -70,7 +70,9 @@
   height: 100%;
   object-fit: fill;
   opacity: .55;
-  transform-origin: 16% 76%;
+  /* The flare starts at the upper left and fans down toward the photo. */
+  scale: 1 -1;
+  transform-origin: center;
   animation: hero-spark-drift 5.6s ease-out infinite;
 }
 @keyframes hero-spark-drift {
