@@ -20,20 +20,15 @@
 }
 .hero-dna-scene {
   position: absolute;
-  top: 17%;
+  top: calc(17% + 79px);
   left: 49.7%;
   translate: -50% 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
+  display: grid;
+  justify-items: center;
+  min-width: 80px;
 }
 .hero-dna-scene > svg {
   position: static;
-}
-.hero-dna-scene > .mol-a {
-  width: 80px;
-  height: auto;
 }
 .hero-reaction::before{
   content:"";position:absolute;inset:4% 3% 30%;z-index:-1;pointer-events:none;
@@ -57,50 +52,47 @@
   position: relative;
   isolation: isolate;
 }
-.hero-spark {
+.hero-copy > .eyebrow {
+  position: relative;
+  z-index: 1;
+}
+.hero-title-word {
+  position: relative;
+  white-space: nowrap;
+}
+.hero-title-word .mol-a {
   position: absolute;
+  top: auto;
+  right: auto;
+  bottom: 79%;
+  left: calc(100% - .12em);
   z-index: -1;
-  inset: -.67em -.37em -.61em -.16em;
-  overflow: hidden;
+  width: clamp(34px, .89em, 58px);
+  height: auto;
+  opacity: .8;
+  filter: drop-shadow(0 0 8px #76daf6);
   pointer-events: none;
-  mask-image: radial-gradient(ellipse 72% 72% at 50% 51%, #000 61%, #000d 85%, transparent);
+  animation: title-molecule-drift 7s ease-in-out infinite;
 }
-.hero-spark img {
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  opacity: .55;
-  /* The flare starts at the upper left and fans down toward the photo. */
-  scale: 1 -1;
-  transform-origin: center;
-  animation: hero-spark-drift 5.6s ease-out infinite;
-}
-@keyframes hero-spark-drift {
-  0%, 100% { opacity: .4; transform: scale(.97); }
-  16% { opacity: .67; transform: scale(1.025); }
-  48% { opacity: .56; transform: scale(1.01); }
-  75% { opacity: .44; transform: scale(.98); }
+@keyframes title-molecule-drift {
+  50% { transform: translate(4px, -3px) rotate(4deg); }
 }
 @keyframes home-ray-breathe{0%,100%{opacity:.64;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
-html.motion-off :is(.home-reactor-rays,.hero-spark img){animation-play-state:paused!important}
-body:has(dialog[open]) :is(.home-reactor-rays,.hero-spark img){animation-play-state:paused!important}
+html.motion-off :is(.home-reactor-rays,.hero-title-word .mol-a){animation-play-state:paused!important}
+body:has(dialog[open]) :is(.home-reactor-rays,.hero-title-word .mol-a){animation-play-state:paused!important}
 @media (max-width: 900px) {
   .hero {
     --hero-column-gap: 25px;
   }
   .hero-dna-scene {
+    top: calc(17% + 68px);
     left: 48%;
-  }
-  .hero-dna-scene > .mol-a {
-    width: 68px;
+    min-width: 68px;
   }
 }
 @media (max-width: 680px) {
-  .hero-spark {
-    inset-inline-end: -.14em;
-  }
   .hero-dna-scene {
-    top: 4%;
+    top: calc(4% + 68px);
     right: 1%;
     left: auto;
     translate: none;
@@ -108,7 +100,7 @@ body:has(dialog[open]) :is(.home-reactor-rays,.hero-spark img){animation-play-st
   .home-reactor-rays path{stroke-width:2.2}
 }
 @media(prefers-reduced-motion:reduce){
- html:not(.motion-override) :is(.home-reactor-rays,.hero-spark img){animation:none!important;transform:none!important}
+ html:not(.motion-override) :is(.home-reactor-rays,.hero-title-word .mol-a){animation:none!important;transform:none!important}
 }
 
 /* Keep the lead photo in the mobile layout and balance the header links. */
